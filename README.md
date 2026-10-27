@@ -104,6 +104,10 @@ In your agent, run it once per repo. It will:
 - Ask you what labels you apply to tickets when you triage them (`/triage` uses labels)
 - Ask you where you want to save any docs we create
 
+**Project mode** remains the default: setup saves preferences under `docs/agents/` and maintains the original project `CLAUDE.md` / `AGENTS.md` pointers. **Local-only mode** is optional: save the same preferences in `..\.skills\<main-checkout-folder-name>\` on Windows, or `../.skills/<main-checkout-folder-name>/` on Linux/macOS, relative to the main checkout. Worktrees share their main checkout's preferences. Glossaries, ADRs and local tickets remain in the project.
+
+In Local-only mode, each consuming skill follows a short reference to the [shared guide](./skills/engineering/setup-matt-pocock-skills/REPOSITORY-CONFIG.md), which finds that checkout's preferences. Install the setup skill alongside any skill that needs Local-only preferences. No app-specific integration, extra runtime, hashes or environment-variable overrides are required. Setup preserves the existing mode on reruns and asks before switching; installation alone creates no preference files.
+
 ### 3. Bam - you're ready to go.
 
 ## Why These Skills Exist

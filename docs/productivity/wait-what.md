@@ -31,6 +31,10 @@ If you have no `GLOSSARY.md` (and no `GLOSSARY-MAP.md` pointing to one for the c
 - Project nouns replace invented ones. The terms in your `GLOSSARY.md` come back.
 - You can use it twice in a row, and it does not degrade into terseness.
 
+## Prerequisites
+
+Optional Local-only preferences are available when `setup-matt-pocock-skills` is installed alongside this skill; it follows a link to the shared guide, and otherwise retains the project's existing configuration and fallback behavior.
+
 ## Where it fits
 
 You can use `wait-what` at any point, in any conversation, inside any other skill. It repairs one message after the fact. The real fix is a shared language agreed upfront, and that is [grill-with-docs](https://aihero.dev/skills-grill-with-docs): a [grilling](https://www.aihero.dev/ai-coding-dictionary/grilling) session that runs [domain-modeling](https://aihero.dev/skills-domain-modeling) as it goes, so it records the words you both use in your `GLOSSARY.md`. If you're unsure which skill fits the moment, [ask-matt](https://aihero.dev/skills-ask-matt) routes you.

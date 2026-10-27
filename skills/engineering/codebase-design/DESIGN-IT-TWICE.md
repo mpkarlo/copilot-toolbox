@@ -4,6 +4,8 @@ When the user wants to explore alternative interfaces for a chosen deepening can
 
 Uses the vocabulary in [SKILL.md](SKILL.md): **module**, **interface**, **seam**, **adapter**, **leverage**.
 
+Before using repository-specific domain-document preferences, follow [the Local-only lookup guide](../setup-matt-pocock-skills/REPOSITORY-CONFIG.md). If none are selected, keep the project's existing glossary behavior.
+
 ## Process
 
 ### 1. Frame the problem space
