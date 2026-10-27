@@ -4,7 +4,7 @@
 
 Those files are the only thing that varies between repos. The skills themselves are identical everywhere. One user-level bootstrap loads the shared configuration guide, which supplies the current repo's preferences to the session. Individual skills keep their existing instructions, without repeated resolver requirements or project instruction pointers. That is why the set is not tied to GitHub, and why you never edit a skill file to point it at another tracker.
 
-It is a prompt-driven skill backed by a deterministic, read-only path resolver. It inspects your remote and existing preferences, proposes what it found, and waits for confirmation before writing the local files. Glossaries, ADRs, tickets and other project artifacts stay where they were.
+It is a prompt-driven skill. The shared guide uses Git and the agent's existing OS and file tools to locate preferences, without adding a runtime or package dependency. It inspects your remote and existing preferences, proposes what it found, and waits for confirmation before writing the local files. Glossaries, ADRs, tickets and other project artifacts stay where they were.
 
 ## When to reach for it
 
@@ -12,18 +12,18 @@ You invoke this by typing `/setup-matt-pocock-skills`; the [agent](https://www.a
 
 Reach for it once per repo before tracker-dependent work, or to choose custom domain-document paths. If [triage](https://aihero.dev/skills-triage), [to-spec](https://aihero.dev/skills-to-spec), [to-tickets](https://aihero.dev/skills-to-tickets) or [wayfinder](https://aihero.dev/skills-wayfinder) lack a tracker or mapping, setup supplies them. Optional glossary lookups do not require setup: absent domain preferences retain conventional project paths. You can run setup halfway through a project without losing earlier work.
 
-## Prerequisites
+## Where configuration lives
 
-Install setup alongside the consuming skills, even for individual-skill installs. The shared resolver requires Git and Node.js 18 or newer, runs from the current project, and saves preferences in a visible sibling folder beside the main checkout:
+Preferences live in a visible sibling folder beside the main checkout. These paths are relative to that checkout, not the current worktree or installed skills:
 
-| Main checkout | Configuration directory |
+| Platform | Relative configuration directory |
 | --- | --- |
-| `C:\Code\my-skills` | `C:\Code\skill-config\mpkarlo-my-skills-ea29c2237fcb\` |
-| `/home/me/code/my-skills` | `/home/me/code/skill-config/mpkarlo-my-skills-ea29c2237fcb/` |
+| Windows | `..\skill-config\<owner>-<repo>-<short-hash>\` |
+| Linux / macOS | `../skill-config/<owner>-<repo>-<short-hash>/` |
 
 Set `MATT_POCOCK_SKILLS_CONFIG_HOME` to an absolute path to override the `skill-config` root consistently in all harnesses. A home-folder `skill-config` is another option when clones are spread across different parents. Directly under the root, `<owner>-<repo>-<short-hash>/` holds `issue-tracker.md`, `domain.md`, and `triage-labels.md` when a role-applying skill is installed. Relative overrides are errors. These files are personal and not committed; teammates run setup independently.
 
-For example, the complete Windows tracker path for that checkout is `C:\Code\skill-config\mpkarlo-my-skills-ea29c2237fcb\issue-tracker.md`. The readable name is sanitised and the hash is the first 12 SHA-256 hex characters of the canonical identity `github.com/mpkarlo/my-skills`. Setup prints the resolved absolute directory and every written file path before confirmation and after saving. Installation alone creates no preference files.
+The readable name is sanitised and the hash is the first 12 SHA-256 hex characters of the canonical repository identity. Setup prints your resolved absolute directory and every written file path before confirmation and after saving. Installation alone creates no preference files.
 
 The identity comes from `origin`'s fetch URL, or the sole remote when there is no `origin`. Multiple remotes without `origin` require an explicit choice. Transport, credentials, trailing slash and `.git` are removed; the hostname is lowercased, as are repository paths on GitHub.com and GitLab.com. Non-default ports remain distinct. Worktrees resolve from their main checkout, so share preferences even when located elsewhere. Clones share only when their checkout parents or override roots match; forks do not share with upstream. A remote-less Git repo uses its real Git common directory as the identity and its main checkout name as the readable prefix. If you have not initialised Git, setup asks before doing so.
 

@@ -20,7 +20,7 @@ Use a stable installed skill path, not a temporary implementation worktree. If t
 
 ## Session-level loading rules
 
-Run the resolver below with **no config-kind arguments**, from the current project, once before using the engineering skills. Parse its JSON. Read available `files.tracker`, `files.labels`, and `files.domain` into session context so the skills' existing "should have been provided" preconditions are satisfied centrally.
+Use Git and the agent's existing shell and file tools to resolve the directory below from the current project, once before using the engineering skills. Read available `issue-tracker.md`, `triage-labels.md`, and `domain.md` into session context so the skills' existing "should have been provided" preconditions are satisfied centrally. No Node.js, package installation, or bundled executable is needed.
 
 - Tracker operations require readable, nonempty tracker instructions and a confirmed target. If missing, incomplete or invalid, stop only tracker operations and tell the user to run `/setup-matt-pocock-skills`. Never infer GitHub or local markdown, even if a skill mentions a fallback.
 - Operations applying triage roles also require a readable, complete label mapping. Missing mappings mean setup first, not invented label strings.
@@ -29,34 +29,40 @@ Run the resolver below with **no config-kind arguments**, from the current proje
 
 Pass these rules, the project directory, and any resolved preference paths to subagents, including fresh worktrees. Re-resolve when switching repositories. Do not create symlinks, move glossaries or ADRs, or change project output paths to implement this indirection. Explicit project/user instructions take precedence over preferences; report conflicts rather than overriding them.
 
-## Shared resolver
-
-Node.js 18 or newer and Git are required. Run the bundled read-only helper with the current project as the working directory:
-
-```text
-node "<installed setup-matt-pocock-skills directory>/scripts/repository-config.mjs" [tracker] [labels] [domain]
-```
-
-Find that directory from this reference's installed location, not a hardcoded home path. The arguments are literal optional config kinds, not flags: supply only the kinds this operation needs. With no arguments the helper locates config for setup, even when no config exists. With arguments it requires those files to be readable and nonempty. On a nonzero exit, report the error and stop the config-dependent operation. Do not reproduce the identity algorithm independently.
-
-On success, parse its JSON and read the requested `files.tracker`, `files.labels`, and/or `files.domain` paths. Successful path resolution does not mean you have read the preferences. If the helper is missing, tell the user to install setup alongside the consumer and run `/setup-matt-pocock-skills` here.
-
 ## Resolve the current repository
 
-Use the fetch URL of `origin`. Without `origin`, use the sole remote. Multiple remotes without `origin` are ambiguous: stop and ask which is canonical rather than choosing upstream. Normalise HTTPS, SSH and SCP-style URLs to `host[:port]/namespace/repository`: strip credentials, transport, trailing slash and `.git`. Lowercase the hostname, and repository paths on GitHub.com and GitLab.com only. Preserve nested namespaces and non-default ports. Reject URLs that do not identify a repository. Never include credentials in displayed identities.
+Run `git rev-parse --show-toplevel`, `git rev-parse --git-dir`, and `git rev-parse --git-common-dir` from the current project. Resolve relative results against that working directory and resolve filesystem links before comparing them. Check command failures; outside a Git working tree, stop configuration-dependent operations and tell the user to run setup.
+
+List remote names with `git remote`. Use the fetch URL of `origin` (`git config --get-all remote.origin.url`). Without `origin`, use the sole remote's configured fetch URL. Multiple remotes without `origin` are ambiguous: stop and ask which is canonical rather than choosing upstream. Normalise HTTP(S), SSH, Git and SCP-style URLs to `host[:port]/namespace/repository`: strip credentials, transport, trailing slash and `.git`. Omit default ports (HTTP 80, HTTPS 443, SSH 22, Git 9418). Lowercase the hostname, and repository paths on GitHub.com and GitLab.com only. Preserve nested namespaces, other hosts' path case and non-default ports. Reject URLs with query strings, fragments, unsupported transports or no repository path. If multiple fetch URLs normalise to different identities, stop and ask which is canonical. Never include credentials in displayed identities or saved preferences.
 
 Name the config directory `<slug>-<hash>`. The slug is the last two repository path components (normally owner and repo), lowercased, joined with a hyphen, sanitised to ASCII letters/digits/hyphens and limited to 80 characters. The hash is the first 12 hex characters of SHA-256 of the full UTF-8 identity, distinguishing hosts, namespaces and forks. For a Git repository without remotes, use `local:<absolute real Git common directory>` as the identity and the main checkout folder name as the slug. Resolve `git rev-parse --git-common-dir` relative to the current working directory.
 
+For the slug, replace runs of other characters with `-`, trim leading/trailing hyphens, truncate to 80 characters and trim trailing hyphens again; use `repository` if empty. Compute the hash with existing OS tools, not by guessing it or installing a runtime. Hash the identity exactly, without a newline or byte-order mark:
+
+Windows PowerShell, with `$identity` already set to the canonical identity:
+
+```powershell
+$sha256 = [System.Security.Cryptography.SHA256]::Create()
+try {
+    $bytes = [System.Text.Encoding]::UTF8.GetBytes($identity)
+    $hash = ([System.BitConverter]::ToString($sha256.ComputeHash($bytes))).Replace('-', '').ToLowerInvariant().Substring(0, 12)
+} finally {
+    $sha256.Dispose()
+}
+```
+
+On Linux use `printf '%s' "$identity" | sha256sum`; on macOS use `printf '%s' "$identity" | shasum -a 256`. Take the first 12 lowercase hex characters of the digest. If the platform tool is unavailable or fails, report that limitation rather than installing software, inventing a hash, or choosing a different directory.
+
 ## Resolve the user config directory
 
-The default root is a visible `skill-config` folder **beside the main checkout**, on every platform. Linked worktrees use Git's main checkout entry, not their own parent directory or the installed skill location. For the main working tree, use its project root even when Git metadata is stored separately.
+The default root is a visible `skill-config` folder **beside the main checkout**, on every platform. If the resolved Git directory and common directory are equal, use the project root as the main checkout, including repositories with separately stored Git metadata. Otherwise use the first `worktree` entry from `git worktree list --porcelain -z`; parse NUL-delimited entries so spaces and quoted paths are handled correctly. If that entry is bare or has no usable checkout, report the unsupported layout rather than guessing a parent. Linked worktrees use this main checkout, not their own parent directory or the installed skill location.
 
-| Main checkout | Configuration directory |
+| Platform | Configuration directory, relative to the main checkout |
 | --- | --- |
-| `C:\Code\my-skills` | `C:\Code\skill-config\mpkarlo-my-skills-ea29c2237fcb\` |
-| `/home/me/code/my-skills` | `/home/me/code/skill-config/mpkarlo-my-skills-ea29c2237fcb/` |
+| Windows | `..\skill-config\<owner>-<repo>-<short-hash>\` |
+| Linux / macOS | `../skill-config/<owner>-<repo>-<short-hash>/` |
 
-`MATT_POCOCK_SKILLS_CONFIG_HOME`, when set, overrides the entire root and must be absolute. For example, set it to `C:\Users\me\skill-config` or `/home/me/skill-config` for a home-folder location shared across checkout parents. Preferences live directly in `<root>/<slug>-<hash>/`, without an extra `repositories` folder:
+`MATT_POCOCK_SKILLS_CONFIG_HOME`, when set, overrides the entire root and must be an absolute, nonempty path. Do not expand a literal `~` or accept a drive-relative Windows path. A home-folder `skill-config` can provide a shared root across checkout parents. Preferences live directly in `<root>/<slug>-<hash>/`, without an extra `repositories` folder:
 
 - `issue-tracker.md`: tracker workflow, target repository, and PR request-surface flag
 - `triage-labels.md`: canonical-role mapping
