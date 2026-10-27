@@ -94,4 +94,4 @@ Off the main flow entirely.
 
 ## Precondition
 
-**`/setup-matt-pocock-skills`**: run before your first tracker-dependent engineering flow to configure preferences in the sibling `skill-config` folder. A one-time user-level instruction loads the shared configuration guide for every skill; project instructions and individual skills need no resolver boilerplate. Without domain preferences, conventional glossary/ADR paths still work. Custom issue trackers also work.
+**`/setup-matt-pocock-skills`**: run before your first engineering flow to configure the issue tracker, triage labels, and doc layout the other skills assume. Custom issue trackers also work. Project mode remains the default; optional Local-only mode keeps preferences outside the repository and uses a repository-level app instruction to load them.

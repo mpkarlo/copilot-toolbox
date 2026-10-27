@@ -1,39 +1,44 @@
 ## What it does
 
-`setup-matt-pocock-skills` answers three questions about one repo: where issues live, what the triage labels are called, and where the domain docs sit. It records the answers as markdown files in a user-local configuration directory keyed by the canonical Git remote, not in the project.
+`setup-matt-pocock-skills` answers three questions about one repo: where issues live, what the triage labels are called, and where the domain docs sit. It records the answers as markdown files under `docs/agents/` by default. Optional **Local-only mode** saves those same preferences outside the repository instead.
 
-Those files are the only thing that varies between repos. The skills themselves are identical everywhere. One user-level bootstrap loads the shared configuration guide, which supplies the current repo's preferences to the session. Individual skills keep their existing instructions, without repeated resolver requirements or project instruction pointers. That is why the set is not tied to GitHub, and why you never edit a skill file to point it at another tracker.
+Those files are the only thing that varies between repos. The skills themselves are identical everywhere. They read `docs/agents/issue-tracker.md` at run time and do what it says. That is why the set is not tied to GitHub, and why you never edit a skill file to point it at another tracker. Invoking it with "link the skills to a custom issue tracker" works with anything you can connect to programmatically, with no changes to the skills.
 
-It is a prompt-driven skill. The shared guide uses Git and the agent's existing OS and file tools to locate preferences, without adding a runtime or package dependency. It inspects your remote and existing preferences, proposes what it found, and waits for confirmation before writing the local files. Glossaries, ADRs, tickets and other project artifacts stay where they were.
+It is a prompt-driven skill, not a deterministic script. It reads your `git remote`, `CLAUDE.md` and `GLOSSARY.md`, proposes what it found, and waits for you to confirm before it writes anything.
 
 ## When to reach for it
 
 You invoke this by typing `/setup-matt-pocock-skills`; the [agent](https://www.aihero.dev/ai-coding-dictionary/agent) won't reach for it on its own. Its metadata marks it non-invokable on purpose, so no other skill can fire it for you.
 
-Reach for it once per repo before tracker-dependent work, or to choose custom domain-document paths. If [triage](https://aihero.dev/skills-triage), [to-spec](https://aihero.dev/skills-to-spec), [to-tickets](https://aihero.dev/skills-to-tickets) or [wayfinder](https://aihero.dev/skills-wayfinder) lack a tracker or mapping, setup supplies them. Optional glossary lookups do not require setup: absent domain preferences retain conventional project paths. You can run setup halfway through a project without losing earlier work.
+Reach for it once per repo, before the first use of any other engineering skill. If [triage](https://aihero.dev/skills-triage), [to-spec](https://aihero.dev/skills-to-spec), [to-tickets](https://aihero.dev/skills-to-tickets) or [wayfinder](https://aihero.dev/skills-wayfinder) start guessing where your issues go, or apply labels your tracker doesn't have, this repo has not been set up yet. You can run it in a repo halfway through a project. The skill reads what is already there, so no earlier work is lost.
 
-## Where configuration lives
+## Prerequisites
 
-Preferences live in a visible sibling folder beside the main checkout. These paths are relative to that checkout, not the current worktree or installed skills:
+**Project mode** is the original default. It writes into the repo you run it in:
 
-| Platform | Relative configuration directory |
+| It writes | Where |
 | --- | --- |
-| Windows | `..\skill-config\<owner>-<repo>-<short-hash>\` |
-| Linux / macOS | `../skill-config/<owner>-<repo>-<short-hash>/` |
+| `issue-tracker.md` | `docs/agents/` |
+| `domain.md` | `docs/agents/` |
+| `triage-labels.md` | `docs/agents/`, only when the `triage` skill is installed |
+| An `## Agent skills` block | whichever of `CLAUDE.md` or `AGENTS.md` already exists |
 
-Set `MATT_POCOCK_SKILLS_CONFIG_HOME` to an absolute path to override the `skill-config` root consistently in all harnesses. A home-folder `skill-config` is another option when clones are spread across different parents. Directly under the root, `<owner>-<repo>-<short-hash>/` holds `issue-tracker.md`, `domain.md`, and `triage-labels.md` when a role-applying skill is installed. Relative overrides are errors. These files are personal and not committed; teammates run setup independently.
+You commit those files as markdown so the team shares the preferences. Existing Project-mode setups continue working without migration.
 
-The readable name is sanitised and the hash is the first 12 SHA-256 hex characters of the canonical repository identity. Setup prints your resolved absolute directory and every written file path before confirmation and after saving. Installation alone creates no preference files.
+## Optional Local-only mode
 
-The identity comes from `origin`'s fetch URL, or the sole remote when there is no `origin`. Multiple remotes without `origin` require an explicit choice. Transport, credentials, trailing slash and `.git` are removed; the hostname is lowercased, as are repository paths on GitHub.com and GitLab.com. Non-default ports remain distinct. Worktrees resolve from their main checkout, so share preferences even when located elsewhere. Clones share only when their checkout parents or override roots match; forks do not share with upstream. A remote-less Git repo uses its real Git common directory as the identity and its main checkout name as the readable prefix. If you have not initialised Git, setup asks before doing so.
+Choose Local-only mode to keep this checkout's preferences out of source control without changing project instructions. The same three preference files go in a sibling folder:
 
-## One bootstrap, not one change per skill
+| Platform | Configuration directory, relative to the main checkout |
+| --- | --- |
+| Windows | `..\.skills\<main-checkout-folder-name>\` |
+| Linux / macOS | `../.skills/<main-checkout-folder-name>/` |
 
-Setup offers one short block in the **user-level instruction file your harness loads**, after confirming its exact path and text. The block points to the shared `REPOSITORY-CONFIG.md` in a stable installed setup directory. It applies across projects: the guide resolves the current repository and loads its preferences at session start or before the first engineering skill, then again when changing repositories.
+Git identifies the main checkout so linked worktrees share its preferences. This uses existing tools, not an additional runtime, hash or configuration-root override. Setup reports the exact preference paths before confirmation and after saving. The files are specific to this checkout, not universal settings across projects.
 
-No project `AGENTS.md` or `CLAUDE.md` changes are needed. Each harness needs its own one-time bootstrap; setup does not assume that one harness reads another's global file. If you decline that edit, explicitly load the guide yourself each session. If the harness has no user-level instruction support, discovery cannot be automatic. This is agent instruction indirection, not a filesystem alias for external scripts.
+Setup supplies a reference to its installed shared guide for the Copilot App's **repository-level Instructions setting**, separately for each repository. It does not edit app-level instructions or project files. In another [harness](https://www.aihero.dev/ai-coding-dictionary/harness), use an equivalent repository-scoped setting or load the guide manually each session. The guide loads preferences for the existing skills without per-skill edits; it is not a filesystem redirect for external programs.
 
-Tracker operations still stop when tracker configuration is missing, and role-applying operations require a label mapping. Domain preferences are optional: without `domain.md`, skills retain root `GLOSSARY.md`, `GLOSSARY-MAP.md` when present, and relevant `docs/adr/` paths. Missing artifacts remain normal. With a configured layout, the shared guide supplies alternate project paths without changing the domain skills.
+Rerunning setup preserves the existing mode. Switching or migrating requires confirmation; when both locations contain preferences, the guide asks which to use rather than merging them. Missing preferences retain each skill's original setup guidance and fallbacks; read errors are reported. Glossaries, ADRs and local tickets remain project artifacts. Project mode retains its offer to rename legacy `CONTEXT` artifacts; Local-only mode records their existing paths instead.
 
 ## The three decisions
 
@@ -42,7 +47,7 @@ It starts each section with the recommended answer, and skips any question its e
 | Decision | What it proposes | When it asks |
 | --- | --- | --- |
 | **Issue tracker** | the one matching your `git remote` | always, because this is the one real choice |
-| **Triage labels** | keep the five canonical names (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`) | if `triage`, `to-spec`, or `to-tickets` is installed |
+| **Triage labels** | keep the five canonical names (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`) | only if the `triage` skill is installed |
 | **Domain docs** | single-context: one `GLOSSARY.md` plus `docs/adr/` at the root | only if it spots monorepo signals, and then it offers a multi-context `GLOSSARY-MAP.md` |
 
 The tracker options:
@@ -51,12 +56,12 @@ The tracker options:
 | --- | --- | --- |
 | **GitHub** | the repo's GitHub Issues | the `gh` CLI |
 | **GitLab** | the repo's GitLab Issues | the `glab` CLI |
-| **Local markdown** | files under `.scratch/<feature>/` in this repo | a local Git repo, no remote needed |
+| **Local markdown** | files under `.scratch/<feature>/` in this repo | nothing in Project mode; Local-only discovery needs a Git working tree |
 | **Other** | wherever you say | one paragraph from you describing the workflow |
 
 The first three ship as templates in the skill and work out of the box. Local markdown is a full option, not a fallback. The skill supports a solo project with no remote. One caveat: don't use local markdown if you use GitHub. They are alternatives, so pick one.
 
-"Other" is a full option too. It is how Jira, Linear, Azure DevOps and Beads all work. You describe the workflow, the skill records your prose in the user-local `issue-tracker.md`, and the downstream skills follow the prose. Users have already built this: a Jira-over-[MCP](https://www.aihero.dev/ai-coding-dictionary/mcp) variant, a Gitea CLI shaped like `gh`, a hand-built local dashboard.
+"Other" is a full option too. It is how Jira, Linear, Azure DevOps and Beads all work. You describe the workflow, the skill records your prose in `issue-tracker.md` in the selected mode's directory, and the downstream skills follow the prose. Users have already built this: a Jira-over-[MCP](https://www.aihero.dev/ai-coding-dictionary/mcp) variant, a Gitea CLI shaped like `gh`, a hand-built local dashboard.
 
 ## Common questions
 
@@ -66,23 +71,23 @@ No. GitHub, GitLab and local markdown under `.scratch/` all ship as ready-made t
 
 **Do I need to re-run it after updating the skills?**
 
-Rerun to migrate legacy project config, change trackers, or refresh instructions that have drifted from newer templates. Setup reads existing preferences first and preserves customisations. You can edit the local files directly for everyday changes.
+The direct answer after v1.1 was yes. The skill's own closing message is softer. It tells you to re-run only to switch trackers or start over. Both are defensible. The seed templates change between versions, so a `docs/agents/issue-tracker.md` from an older release can go out of date against the skills that now read it. If a downstream skill does something different from what the docs describe, re-run setup. It is cheap. Local-only mode refreshes its own preferences without changing the selected mode.
 
-**Will it edit project `CLAUDE.md`, `AGENTS.md`, or existing `docs/agents/` files?**
+**It wrote to `CLAUDE.md`, but I'm on Codex.**
 
-No. Setup can read them as migration input, then copy confirmed preferences to sibling storage. It leaves project files and old pointers untouched. It separately offers a single user-level bootstrap, with explicit confirmation, in the file your [harness](https://www.aihero.dev/ai-coding-dictionary/harness) actually loads.
+In Project mode, this is a known gap, and still open. The file-selection rule is "edit `CLAUDE.md` if it exists, else `AGENTS.md`". It checks which file exists, not which harness is running. In a repo with a `CLAUDE.md` left over from Claude Code, the skill writes its `## Agent skills` block to a file Codex never reads. Users have two workarounds: move the block to `AGENTS.md` by hand, or keep `AGENTS.md` canonical and make `CLAUDE.md` a one-line pointer at it. If neither file exists, the skill asks you which to create instead of picking one. This has confused people who expected it to decide. Local-only mode leaves both project files untouched and uses the repository-level app setting instead.
 
 **It didn't create my triage labels.**
 
-When the label section runs, setup writes the role mapping and creates missing configured labels on GitHub or GitLab. An identity mapping still needs to be recorded locally. [Wayfinder](https://aihero.dev/skills-wayfinder)'s `wayfinder:map` and `wayfinder:<type>` labels are separate from these five triage roles.
+When the label section runs, setup writes the role mapping and creates missing configured labels on GitHub or GitLab, in either storage mode. [Wayfinder](https://aihero.dev/skills-wayfinder)'s `wayfinder:map` and `wayfinder:<type>` labels are separate from these five triage roles.
 
 **Can I configure the other skills' behaviour here ([grilling](https://www.aihero.dev/ai-coding-dictionary/grilling) cadence, question format, tone)?**
 
-No. It configures three things: tracker, labels, doc layout. Skills stay opinionated about everything else. Interaction preferences belong in your `CLAUDE.md` as plain instructions, which every skill already reads.
+No. It configures three things: tracker, labels, doc layout. Users have asked to make it the place for per-user preferences. The answer is that skills stay opinionated and take no per-user config. Preferences belong in your `CLAUDE.md` as plain instructions, which every skill already reads.
 
-**Can I keep config outside every repo, or share it across clones?**
+**Can I keep the config in `~/.claude` instead of committing it to every repo?**
 
-Yes. The default is the sibling `skill-config` folder, and worktrees share their main checkout's preferences. Use `MATT_POCOCK_SKILLS_CONFIG_HOME` for a shared root when clones have different parents. Changing the remote changes the directory name; moving the main checkout changes the default root. Rerun setup or explicitly copy confirmed preferences into the newly resolved directory. Older AppData/XDG/Application Support config is not silently read or moved. Missing required tracker or label preferences stop their dependent operations with a setup-first message. Domain preferences remain optional.
+Choose Local-only mode to avoid committing preferences, but this fork uses the sibling `.skills/<main-checkout-folder-name>/` directory, not `~/.claude`. A user who runs the skills across many repos has an open request for user-level storage; this option keeps separate preferences per main checkout. Worktrees share their main checkout's configuration, while separate clones have separate paths. Moving or renaming the checkout changes that path; changing its remote does not. Setup does not move preferences automatically.
 
 **Isn't it strange to have a skill that configures the other skills?**
 
@@ -90,9 +95,9 @@ One long-standing complaint says yes, in these words: *"having a skill to set up
 
 ## It's working if
 
-- Setup reports the exact user-local directory containing your confirmed preferences.
-- One user-level bootstrap points to an existing installed guide; individual skills have no repeated lookup boilerplate.
-- Project instruction files, legacy config and domain artifacts are unchanged by preference setup.
+- Project mode writes `docs/agents/` preferences and the original `## Agent skills` pointer.
+- Local-only mode reports the sibling preference paths, and you add the supplied reference to the app's repository-level Instructions setting.
+- Local-only mode leaves project files unchanged; reruns retain the chosen mode.
 - The tracker it proposed matches the remote you use, and the label strings match labels that exist in your tracker.
 - Afterwards, `/to-tickets` publishes without asking you where issues live, and `/triage` applies labels rather than inventing them.
 - Nothing in the skill files themselves changed. If setup edited a `SKILL.md`, something went wrong.

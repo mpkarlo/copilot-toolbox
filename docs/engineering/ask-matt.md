@@ -20,7 +20,7 @@ You invoke this by typing `/ask-matt`; the agent won't reach for it on its own.
 
 The router names skills; it does not install them. Everything it points at has to be installed for the recommendation to be actionable, and it only knows the promoted skills in this repo.
 
-The tracker-dependent routes (triage, `to-spec`, `to-tickets`, `implement`) assume [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) has configured an issue tracker in the sibling `skill-config` folder. A one-time user-level instruction loads the shared configuration guide, rather than each skill having its own resolver requirements. Domain preferences are optional; conventional glossary/ADR paths still work without them. The router recommends routes even before setup has happened.
+The tracker-dependent routes (triage, `to-spec`, `to-tickets`, `implement`) assume [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) has already configured an issue tracker in the repo. The router recommends them even before that has happened. Project mode remains the default; optional Local-only mode stores those preferences outside the repository and loads them through a repository-level app instruction.
 
 ## Flows, not skills
 

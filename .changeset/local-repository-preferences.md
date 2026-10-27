@@ -2,10 +2,10 @@
 "mattpocock-skills": minor
 ---
 
-Store repository tracker workflows, triage-label mappings and domain-document preferences in user-local configuration keyed by the canonical Git remote. Setup no longer writes instruction-file pointers or `docs/agents/` preferences.
+Add optional Local-only storage for repository tracker workflows, triage-label mappings and domain-document preferences. Project mode remains the default, using the original `docs/agents/` preferences and project instruction pointers.
 
-Consumers use a shared guide with Git and existing OS tools, with explicit setup-first errors for missing configuration and an absolute `MATT_POCOCK_SKILLS_CONFIG_HOME` override. Preferences live in a visible sibling `skill-config/<owner>-<repo>-<short-hash>/` folder beside the main checkout. Worktrees share preferences; clones share when their parent directories or override roots match, while forks remain distinct. Existing project preferences can be confirmed and copied during setup without editing legacy files.
+Local-only preferences live in `../.skills/<main-checkout-folder-name>/`, relative to the main checkout. Worktrees share those preferences. Setup preserves the existing mode on reruns and asks before switching or migrating; it does not edit project files in Local-only mode.
 
-Glossaries, ADRs, local tickets and other project artifacts keep their existing output locations. Configuration discovery adds no runtime or package dependency.
+A repository-level app instruction references one shared guide to load Local-only preferences without per-skill lookup changes, hashes, environment-variable overrides or an additional runtime dependency. Missing preferences retain each skill's original setup guidance and fallbacks.
 
-One user-level bootstrap block per harness loads the shared guide into sessions, replacing repeated per-skill resolver requirements. Domain preferences are optional and conventional project glossary/ADR lookups remain available without setup. Tracker and triage-label operations still require explicit configuration; wayfinder no longer guesses local markdown when it is absent.
+Glossaries, ADRs, local tickets and other project artifacts keep their original locations. Project mode retains its offer to rename legacy context artifacts; Local-only mode records their existing paths instead.
