@@ -20,7 +20,7 @@ You invoke this by typing `/ask-matt`; the agent won't reach for it on its own.
 
 The router names skills; it does not install them. Everything it points at has to be installed for the recommendation to be actionable, and it only knows the promoted skills in this repo.
 
-The tracker-dependent routes (triage, `to-spec`, `to-tickets`, `implement`) assume [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) has configured the current repo's preferences in user-local storage. Install setup alongside consumers: its Git and Node.js resolver keys config by the canonical remote. Domain consumers read the local domain paths too, while the actual glossaries and ADRs remain in the project. Missing preferences mean setup first, not a tracker fallback. The router recommends routes even before setup has happened.
+The tracker-dependent routes (triage, `to-spec`, `to-tickets`, `implement`) assume [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) has configured the current repo's preferences in a sibling `skill-config` folder beside the main checkout (or an absolute override root). Worktrees share that location. Install setup alongside consumers: its Git and Node.js resolver keys config by the canonical remote. Domain consumers read the local domain paths too, while the actual glossaries and ADRs remain in the project. Missing preferences mean setup first, not a tracker fallback. The router recommends routes even before setup has happened.
 
 ## Flows, not skills
 

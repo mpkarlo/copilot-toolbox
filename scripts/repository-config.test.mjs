@@ -8,6 +8,7 @@ import test from "node:test";
 import { canonicalRemote, configRoot, configLocation, resolveRepository, requireConfig } from "../skills/engineering/setup-matt-pocock-skills/scripts/repository-config.mjs";
 
 test("transport aliases share an identity without credentials; forks and hosts stay distinct", () => {
+  const options = { platform: "linux", env: {}, mainCheckoutRoot: "/code/repo" };
   const aliases = [
     "https://github.com/Owner/Repo.git",
     "git@github.com:owner/repo.git",
@@ -17,24 +18,25 @@ test("transport aliases share an identity without credentials; forks and hosts s
   assert.deepEqual(aliases.map(canonicalRemote), Array(4).fill("github.com/owner/repo"));
   assert.equal(canonicalRemote("git@git.example:group/sub/Repo.git"), "git.example/group/sub/Repo");
   assert.notEqual(canonicalRemote("ssh://git@git.example:2222/group/Repo"), canonicalRemote("https://git.example/group/Repo"));
-  assert.notEqual(configLocation("github.com/owner/repo").directory, configLocation("github.com/fork/repo").directory);
-  assert.notEqual(configLocation("github.com/owner/repo").directory, configLocation("gitlab.com/owner/repo").directory);
-  assert.match(path.basename(configLocation("github.com/owner/repo").directory), /^[a-f0-9]{64}$/);
+  assert.notEqual(configLocation("github.com/owner/repo", options).directory, configLocation("github.com/fork/repo", options).directory);
+  assert.notEqual(configLocation("github.com/owner/repo", options).directory, configLocation("gitlab.com/owner/repo", options).directory);
+  assert.match(configLocation("github.com/owner/repo", options).directory, /^\/code\/skill-config\/owner-repo-[a-f0-9]{12}$/);
+  assert.match(configLocation("git.example/group/sub/CON", options).directory, /sub-con-[a-f0-9]{12}$/);
   for (const url of ["file:///tmp/repo", "not-a-remote", "https://host/", "https://host/repo?token=secret"]) {
     assert.throws(() => canonicalRemote(url));
   }
 });
 
-test("config roots are platform-specific, absolute, and explicitly overridable", () => {
-  assert.equal(configRoot({ platform: "win32", env: { LOCALAPPDATA: "C:\\Local" }, home: "C:\\Users\\me" }), "C:\\Local\\matt-pocock-skills");
-  assert.equal(configRoot({ platform: "win32", env: {}, home: "C:\\Users\\me" }), "C:\\Users\\me\\AppData\\Local\\matt-pocock-skills");
-  assert.equal(configRoot({ platform: "linux", env: {}, home: "/home/me" }), "/home/me/.config/matt-pocock-skills");
-  assert.equal(configRoot({ platform: "linux", env: { XDG_CONFIG_HOME: "/config" }, home: "/home/me" }), "/config/matt-pocock-skills");
-  assert.equal(configRoot({ platform: "darwin", env: {}, home: "/Users/me" }), "/Users/me/Library/Application Support/matt-pocock-skills");
+test("config roots are beside the main checkout on every platform and explicitly overridable", () => {
+  assert.equal(configRoot({ platform: "win32", env: {}, mainCheckoutRoot: "C:\\Code\\repo" }), "C:\\Code\\skill-config");
+  assert.equal(configRoot({ platform: "linux", env: {}, mainCheckoutRoot: "/code/repo" }), "/code/skill-config");
+  assert.equal(configRoot({ platform: "darwin", env: {}, mainCheckoutRoot: "/Users/me/code/repo" }), "/Users/me/code/skill-config");
   assert.equal(configRoot({ platform: "darwin", env: { MATT_POCOCK_SKILLS_CONFIG_HOME: "/override" } }), "/override");
   assert.equal(configRoot({ platform: "win32", env: { MATT_POCOCK_SKILLS_CONFIG_HOME: "D:\\Config" } }), "D:\\Config");
   assert.throws(() => configRoot({ platform: "linux", env: { MATT_POCOCK_SKILLS_CONFIG_HOME: "relative" } }), /must be absolute/);
-  assert.throws(() => configRoot({ platform: "linux", env: { XDG_CONFIG_HOME: "relative" } }), /must be absolute/);
+  assert.throws(() => configRoot({ platform: "linux", env: {} }), /main checkout path/);
+  assert.throws(() => configRoot({ platform: "linux", env: {}, mainCheckoutRoot: "relative" }), /main checkout path/);
+  assert.throws(() => configRoot({ platform: "linux", env: {}, mainCheckoutRoot: "/" }), /inside the repository/);
 });
 
 test("missing and empty config fail setup-first; only requested kinds are required", (t) => {
@@ -64,25 +66,49 @@ test("Git resolution shares config across clones, subdirectories, and worktrees,
   run(repo, "init", "--quiet");
   const options = { env: { MATT_POCOCK_SKILLS_CONFIG_HOME: path.join(temporary, "config") } };
   const local = resolveRepository(repo, options);
+  const defaults = { env: {} };
+  const localDefault = resolveRepository(repo, defaults);
+  assert.equal(path.dirname(localDefault.directory), path.join(temporary, "skill-config"));
   assert.match(local.identity, /^local:/);
   run(repo, "-c", "user.name=Test", "-c", "user.email=test@example.invalid", "commit", "--quiet", "--allow-empty", "-m", "fixture");
-  const worktree = path.join(temporary, "worktree");
+  const worktree = path.join(temporary, "worktrees", "linked");
+  mkdirSync(path.dirname(worktree));
   run(repo, "worktree", "add", "--quiet", "-b", "fixture", worktree);
   assert.equal(resolveRepository(worktree, options).directory, local.directory);
+  assert.equal(resolveRepository(worktree, defaults).directory, localDefault.directory);
+  assert.equal(resolveRepository(worktree, defaults).mainCheckoutRoot, repo);
   run(repo, "remote", "add", "origin", "https://github.com/fork/repo.git");
   run(repo, "remote", "add", "upstream", "https://github.com/owner/repo.git");
   const resolved = resolveRepository(worktree, options);
+  const resolvedDefault = resolveRepository(worktree, defaults);
+  assert.match(path.basename(resolvedDefault.directory), /^fork-repo-[a-f0-9]{12}$/);
+  assert.equal(resolveRepository(repo, defaults).directory, resolvedDefault.directory);
   assert.equal(resolved.identity, "github.com/fork/repo");
   assert.notEqual(resolved.directory, local.directory);
   const sub = path.join(worktree, "nested");
   mkdirSync(sub);
   assert.equal(resolveRepository(sub, options).directory, resolved.directory);
+  assert.equal(resolveRepository(sub, defaults).directory, resolvedDefault.directory);
   assert.equal(resolveRepository(sub, options).repositoryRoot.replaceAll("\\", "/"), worktree.replaceAll("\\", "/"));
   const clone = path.join(temporary, "clone");
   mkdirSync(clone);
   run(clone, "init", "--quiet");
   run(clone, "remote", "add", "mirror", "git@github.com:fork/repo.git");
   assert.equal(resolveRepository(clone, options).directory, resolved.directory);
+  assert.equal(resolveRepository(clone, defaults).directory, resolvedDefault.directory);
+  const otherParent = path.join(temporary, "elsewhere");
+  const otherClone = path.join(otherParent, "clone");
+  mkdirSync(otherClone, { recursive: true });
+  run(otherClone, "init", "--quiet");
+  run(otherClone, "remote", "add", "origin", "https://github.com/fork/repo.git");
+  assert.notEqual(resolveRepository(otherClone, defaults).directory, resolvedDefault.directory);
+  assert.equal(resolveRepository(otherClone, options).directory, resolved.directory);
+  const separate = path.join(temporary, "separate");
+  const metadata = path.join(temporary, "metadata", "repo.git");
+  mkdirSync(separate);
+  mkdirSync(path.dirname(metadata));
+  run(separate, "init", "--quiet", `--separate-git-dir=${metadata}`);
+  assert.equal(path.dirname(resolveRepository(separate, defaults).directory), path.join(temporary, "skill-config"));
   run(clone, "remote", "add", "other", "https://gitlab.com/other/repo.git");
   assert.throws(() => resolveRepository(clone, options), /Multiple Git remotes/);
   run(repo, "config", "--add", "remote.origin.url", "https://github.com/different/repo.git");

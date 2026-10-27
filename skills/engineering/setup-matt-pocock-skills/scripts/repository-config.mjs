@@ -1,7 +1,6 @@
 import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { readFileSync, realpathSync } from "node:fs";
-import { homedir } from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -37,28 +36,32 @@ export function canonicalRemote(remote) {
   return `${host}${port}/${repo}`;
 }
 
-export function configRoot({ platform = process.platform, env = process.env, home = homedir() } = {}) {
+export function configRoot({ platform = process.platform, env = process.env, mainCheckoutRoot } = {}) {
   const paths = platform === "win32" ? path.win32 : path.posix;
   const override = env.MATT_POCOCK_SKILLS_CONFIG_HOME;
   if (override) {
     if (!paths.isAbsolute(override)) throw new Error("MATT_POCOCK_SKILLS_CONFIG_HOME must be absolute.");
     return override;
   }
-  if (platform === "win32") {
-    const base = env.LOCALAPPDATA || paths.join(home, "AppData", "Local");
-    if (!paths.isAbsolute(base)) throw new Error("LOCALAPPDATA must be absolute.");
-    return paths.join(base, "matt-pocock-skills");
+  if (!mainCheckoutRoot || !paths.isAbsolute(mainCheckoutRoot)) {
+    throw new Error("An absolute main checkout path is required to locate sibling skill-config. Set MATT_POCOCK_SKILLS_CONFIG_HOME to override it.");
   }
-  if (platform === "darwin") return paths.join(home, "Library", "Application Support", "matt-pocock-skills");
-  const base = env.XDG_CONFIG_HOME || paths.join(home, ".config");
-  if (!paths.isAbsolute(base)) throw new Error("XDG_CONFIG_HOME must be absolute.");
-  return paths.join(base, "matt-pocock-skills");
+  const root = paths.join(paths.dirname(mainCheckoutRoot), "skill-config");
+  const relative = paths.relative(mainCheckoutRoot, root);
+  if (!relative.startsWith(`..${paths.sep}`) && relative !== "..") {
+    throw new Error("Sibling skill-config would be inside the repository. Set MATT_POCOCK_SKILLS_CONFIG_HOME to an external directory.");
+  }
+  return root;
 }
 
 export function configLocation(identity, options = {}) {
   const paths = (options.platform || process.platform) === "win32" ? path.win32 : path.posix;
-  const key = createHash("sha256").update(identity, "utf8").digest("hex");
-  const directory = paths.join(configRoot(options), "repositories", key);
+  const hash = createHash("sha256").update(identity, "utf8").digest("hex").slice(0, 12);
+  const name = identity.startsWith("local:")
+    ? options.mainCheckoutRoot ? paths.basename(options.mainCheckoutRoot) : "local-repo"
+    : identity.split("/").slice(-2).join("-");
+  const slug = name.toLowerCase().replace(/[^a-z0-9-]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 80) || "repo";
+  const directory = paths.join(configRoot(options), `${slug}-${hash}`);
   return {
     identity,
     directory,
@@ -80,6 +83,16 @@ function git(cwd, args) {
 
 export function resolveRepository(cwd = process.cwd(), options = {}) {
   const repositoryRoot = path.resolve(git(cwd, ["rev-parse", "--show-toplevel"]));
+  const commonDirectory = realpathSync(path.resolve(cwd, git(cwd, ["rev-parse", "--git-common-dir"])));
+  const gitDirectory = realpathSync(path.resolve(cwd, git(cwd, ["rev-parse", "--git-dir"])));
+  const worktrees = git(cwd, ["worktree", "list", "--porcelain", "-z"]).split("\0");
+  const mainEntry = worktrees[0];
+  if (!mainEntry.startsWith("worktree ") || worktrees[1] === "bare") {
+    throw new Error("Cannot locate a main working-tree checkout for sibling configuration.");
+  }
+  const mainCheckoutRoot = gitDirectory === commonDirectory
+    ? repositoryRoot
+    : path.resolve(mainEntry.slice("worktree ".length));
   const remotes = git(cwd, ["remote"]).split(/\r?\n/).filter(Boolean);
   let identity;
   if (remotes.length) {
@@ -90,10 +103,9 @@ export function resolveRepository(cwd = process.cwd(), options = {}) {
     if (identities.size !== 1) throw new Error("Canonical remote has multiple repository URLs. Resolve the ambiguity before setup.");
     [identity] = identities;
   } else {
-    const common = git(cwd, ["rev-parse", "--git-common-dir"]);
-    identity = `local:${realpathSync(path.resolve(cwd, common))}`;
+    identity = `local:${commonDirectory}`;
   }
-  return { ...configLocation(identity, options), repositoryRoot };
+  return { ...configLocation(identity, { ...options, mainCheckoutRoot }), repositoryRoot, mainCheckoutRoot };
 }
 
 export function requireConfig(location, names) {

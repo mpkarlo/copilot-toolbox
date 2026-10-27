@@ -14,19 +14,18 @@ Reach for it once per repo, before the first use of any other engineering skill.
 
 ## Prerequisites
 
-Install setup alongside the consuming skills, even for individual-skill installs. The shared resolver requires Git and Node.js 18 or newer, runs from the current project, and chooses this user config root:
+Install setup alongside the consuming skills, even for individual-skill installs. The shared resolver requires Git and Node.js 18 or newer, runs from the current project, and saves preferences in a visible sibling folder beside the main checkout:
 
-| Platform | Default root |
+| Main checkout | Configuration directory |
 | --- | --- |
-| Windows | `%LOCALAPPDATA%\matt-pocock-skills`, or `%USERPROFILE%\AppData\Local\matt-pocock-skills` when unset |
-| Linux / other Unix | `$XDG_CONFIG_HOME/matt-pocock-skills`, or `~/.config/matt-pocock-skills` when unset |
-| macOS | `~/Library/Application Support/matt-pocock-skills` |
+| `C:\Code\my-skills` | `C:\Code\skill-config\mpkarlo-my-skills-ea29c2237fcb\` |
+| `/home/me/code/my-skills` | `/home/me/code/skill-config/mpkarlo-my-skills-ea29c2237fcb/` |
 
-Set `MATT_POCOCK_SKILLS_CONFIG_HOME` to an absolute path to override the root consistently in all harnesses. Under it, `repositories/<SHA-256-of-identity>/` holds `issue-tracker.md`, `domain.md`, and `triage-labels.md` when a role-applying skill is installed. Relative environment-provided roots are errors. These files are personal and not committed; teammates run setup independently.
+Set `MATT_POCOCK_SKILLS_CONFIG_HOME` to an absolute path to override the `skill-config` root consistently in all harnesses. A home-folder `skill-config` is another option when clones are spread across different parents. Directly under the root, `<owner>-<repo>-<short-hash>/` holds `issue-tracker.md`, `domain.md`, and `triage-labels.md` when a role-applying skill is installed. Relative overrides are errors. These files are personal and not committed; teammates run setup independently.
 
-For example, the complete Windows tracker path is `%LOCALAPPDATA%\matt-pocock-skills\repositories\<key>\issue-tracker.md`. `domain.md` and `triage-labels.md` are saved beside it. `<key>` is the SHA-256 digest of the canonical identity, such as `github.com/mpkarlo/my-skills`, not the checkout folder name. Setup prints the resolved absolute directory and every written file path before confirmation and after saving. Installation alone creates no preference files.
+For example, the complete Windows tracker path for that checkout is `C:\Code\skill-config\mpkarlo-my-skills-ea29c2237fcb\issue-tracker.md`. The readable name is sanitised and the hash is the first 12 SHA-256 hex characters of the canonical identity `github.com/mpkarlo/my-skills`. Setup prints the resolved absolute directory and every written file path before confirmation and after saving. Installation alone creates no preference files.
 
-The identity comes from `origin`'s fetch URL, or the sole remote when there is no `origin`. Multiple remotes without `origin` require an explicit choice. Transport, credentials, trailing slash and `.git` are removed; the hostname is lowercased, as are repository paths on GitHub.com and GitLab.com. Non-default ports remain distinct. Clones and worktrees share preferences, but forks do not share with upstream. A remote-less Git repo uses its real Git common directory instead, so local-only worktrees still share config. If you have not initialised Git, setup asks before doing so.
+The identity comes from `origin`'s fetch URL, or the sole remote when there is no `origin`. Multiple remotes without `origin` require an explicit choice. Transport, credentials, trailing slash and `.git` are removed; the hostname is lowercased, as are repository paths on GitHub.com and GitLab.com. Non-default ports remain distinct. Worktrees resolve from their main checkout, so share preferences even when located elsewhere. Clones share only when their checkout parents or override roots match; forks do not share with upstream. A remote-less Git repo uses its real Git common directory as the identity and its main checkout name as the readable prefix. If you have not initialised Git, setup asks before doing so.
 
 ## The three decisions
 
@@ -75,7 +74,7 @@ No. It configures three things: tracker, labels, doc layout. Skills stay opinion
 
 **Can I keep config outside every repo, or share it across clones?**
 
-Yes. That is now the default. Use `MATT_POCOCK_SKILLS_CONFIG_HOME` for a custom root. Clones and worktrees with the same canonical remote use the same local directory. Changing the remote changes the key, so rerun setup or explicitly copy confirmed preferences into the newly resolved directory. A missing, empty, unreadable or incomplete required config stops the dependent operation with a setup-first message, never an invented tracker default.
+Yes. The default is the sibling `skill-config` folder, and worktrees share their main checkout's preferences. Use `MATT_POCOCK_SKILLS_CONFIG_HOME` for a shared root when clones have different parents. Changing the remote changes the directory name; moving the main checkout changes the default root. Rerun setup or explicitly copy confirmed preferences into the newly resolved directory. Older AppData/XDG/Application Support config is not silently read or moved. A missing, empty, unreadable or incomplete required config stops the dependent operation with a setup-first message, never an invented tracker default.
 
 **Isn't it strange to have a skill that configures the other skills?**
 

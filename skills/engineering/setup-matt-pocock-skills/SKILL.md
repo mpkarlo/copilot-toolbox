@@ -22,11 +22,10 @@ The three preference files are `issue-tracker.md`, `triage-labels.md` (when need
 
 | Platform | Configuration directory |
 | --- | --- |
-| Windows | `%LOCALAPPDATA%\matt-pocock-skills\repositories\<key>\` |
-| Linux / other Unix | `${XDG_CONFIG_HOME:-$HOME/.config}/matt-pocock-skills/repositories/<key>/` |
-| macOS | `~/Library/Application Support/matt-pocock-skills/repositories/<key>/` |
+| Windows | `<main-checkout-parent>\skill-config\<owner>-<repo>-<short-hash>\` |
+| Linux / macOS / other Unix | `<main-checkout-parent>/skill-config/<owner>-<repo>-<short-hash>/` |
 
-`<key>` is the SHA-256 digest of the canonical repository identity, for example `github.com/mpkarlo/my-skills`, not the checkout folder name. If `LOCALAPPDATA` is unset, Windows uses `%USERPROFILE%\AppData\Local`. The absolute `MATT_POCOCK_SKILLS_CONFIG_HOME` override replaces the platform root; files then live in `<override>/repositories/<key>/`. Use the shared resolver to compute the key and exact paths, not a separate implementation.
+For example, a main checkout at `C:\Code\my-skills` with canonical identity `github.com/mpkarlo/my-skills` uses `C:\Code\skill-config\mpkarlo-my-skills-ea29c2237fcb\`. The readable name is sanitised and the hash is the first 12 SHA-256 hex characters of the full identity. Worktrees resolve from the main checkout, not their own parent. The absolute `MATT_POCOCK_SKILLS_CONFIG_HOME` override replaces `skill-config`'s root; files then live in `<override>/<owner>-<repo>-<short-hash>/`. Use the shared resolver to compute exact paths, not a separate implementation.
 
 Show the resolved absolute directory before confirmation and again after writing, listing the full path of each file written. Do not merely say "user-local configuration". Setup creates these files only after the user confirms; installing the skills does not create preferences.
 
@@ -38,6 +37,7 @@ Look at the current repo to understand its starting state. Read whatever exists;
 
 - The resolver's canonical remote identity: is this a GitHub repo? Which one? Do not confuse a fork with upstream.
 - The resolved local configuration files, if present. Reuse user edits when updating setup.
+- If the user previously ran this fork's AppData/XDG/Application Support setup, use its confirmed files as migration input as described in `REPOSITORY-CONFIG.md`. Copy only after confirmation; do not silently read old config as a runtime fallback, move it, or delete it.
 - `AGENTS.md`, `CLAUDE.md`, and legacy `docs/agents/` preferences, read-only, as possible migration input. Present any migration for confirmation, then copy agreed preferences to user storage. Leave existing files and pointers untouched.
 - `GLOSSARY.md` and `GLOSSARY-MAP.md` at the repo root, and the legacy `CONTEXT.md` / `CONTEXT-MAP.md`. If legacy artifacts exist, record their actual paths in the local domain config; do not rename project artifacts during preference setup.
 - `docs/adr/` and any `src/*/docs/adr/` directories
@@ -107,4 +107,4 @@ For "other" issue trackers, write the local `issue-tracker.md` using the user's 
 
 ### 5. Done
 
-Run the resolver requiring `tracker domain` and also `labels` when Section B ran, then read the written files to confirm the agreed preferences. Tell the user the exact local directory and which skills read it. They can edit these files directly later. Configuration is personal, not committed or automatically shared with teammates; each user runs setup. Changing the canonical remote changes the key, so rerun setup or explicitly migrate confirmed preferences to the newly resolved directory.
+Run the resolver requiring `tracker domain` and also `labels` when Section B ran, then read the written files to confirm the agreed preferences. Tell the user the exact local directory and which skills read it. They can edit these files directly later. Configuration is personal, not committed or automatically shared with teammates; each user runs setup. Changing the canonical remote changes the key, and moving the main checkout to another parent changes the default root, so rerun setup or explicitly migrate confirmed preferences to the newly resolved directory.
