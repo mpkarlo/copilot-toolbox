@@ -12,6 +12,8 @@ Both axes run as **parallel sub-agents** so they don't pollute each other's cont
 
 The issue tracker should have been provided to you. If not, tell the user to run `/setup-matt-pocock-skills`.
 
+Before using repo-specific tracker, triage-label, or domain-document preferences, follow [the Local-only lookup guide](../setup-matt-pocock-skills/REPOSITORY-CONFIG.md). If none are selected, keep this skill's existing behavior.
+
 ## Process
 
 ### 1. Pin the fixed point

@@ -21,6 +21,8 @@ You must supply the fixed point. If you do not, the skill asks for one rather th
 
 ## Prerequisites
 
+Optional Local-only preferences are available when `setup-matt-pocock-skills` is installed alongside this skill; it follows a link to the shared guide, and otherwise retains the project's existing configuration and fallback behavior.
+
 The Standards axis needs nothing. It reads whatever the repo documents (`CODING_STANDARDS.md`, `CONTRIBUTING.md`, and the like) and falls back on a built-in baseline when the repo documents nothing.
 
 The Spec axis needs a spec to exist and be findable. It looks in this order:

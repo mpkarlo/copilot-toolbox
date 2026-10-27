@@ -21,6 +21,8 @@ Reach for it when the *words* are the problem:
 
 ## Prerequisites
 
+Optional Local-only preferences are available when `setup-matt-pocock-skills` is installed alongside this skill; it follows a link to the shared guide, and otherwise retains the project's existing configuration and fallback behavior.
+
 None up front. The skill writes into two places and creates both lazily:
 
 - **`GLOSSARY.md`** at the repo root. The skill creates it when you settle the first term. In a repo with a `GLOSSARY-MAP.md` at the root, terms go into the per-context `GLOSSARY.md` the map points at instead.

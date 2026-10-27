@@ -2,7 +2,7 @@
 
 `setup-matt-pocock-skills` answers three questions about one repo: where issues live, what the triage labels are called, and where the domain docs sit. It records the answers as markdown files under `docs/agents/` by default. Optional **Local-only mode** saves those same preferences outside the repository instead.
 
-Those files are the only thing that varies between repos. The skills themselves are identical everywhere. They read `docs/agents/issue-tracker.md` at run time and do what it says. That is why the set is not tied to GitHub, and why you never edit a skill file to point it at another tracker. Invoking it with "link the skills to a custom issue tracker" works with anything you can connect to programmatically, with no changes to the skills.
+Those files are the only thing that varies between repos. The skills themselves keep their original behavior. Project mode uses `docs/agents/`; in Local-only mode, each consumer reads a short reference to one shared guide, which finds preferences outside the repository. That is why the set is not tied to GitHub, and why you never edit a skill file to point it at another tracker.
 
 It is a prompt-driven skill, not a deterministic script. It reads your `git remote`, `CLAUDE.md` and `GLOSSARY.md`, proposes what it found, and waits for you to confirm before it writes anything.
 
@@ -34,9 +34,9 @@ Choose Local-only mode to keep this checkout's preferences out of source control
 | Windows | `..\.skills\<main-checkout-folder-name>\` |
 | Linux / macOS | `../.skills/<main-checkout-folder-name>/` |
 
-Git identifies the main checkout so linked worktrees share its preferences. This uses existing tools, not an additional runtime, hash or configuration-root override. Setup reports the exact preference paths before confirmation and after saving. The files are specific to this checkout, not universal settings across projects.
+Git identifies the main checkout so linked worktrees share its preferences. This uses existing tools, not an additional runtime, hash or configuration-root override. Setup reports the exact preference paths before confirmation and after saving. The files are specific to this checkout, not universal settings across projects. Local-only mode requires a Git working tree; if Git is unavailable, the original Project mode remains available.
 
-Setup supplies a reference to its installed shared guide for the Copilot App's **repository-level Instructions setting**, separately for each repository. It does not edit app-level instructions or project files. In another [harness](https://www.aihero.dev/ai-coding-dictionary/harness), use an equivalent repository-scoped setting or load the guide manually each session. The guide loads preferences for the existing skills without per-skill edits; it is not a filesystem redirect for external programs.
+Each preference-consuming skill has one short, app-agnostic reference to the shared guide. Install `setup-matt-pocock-skills` alongside any consumer that needs Local-only preferences. No app-specific setting or persistent global instruction is required. The guide is instruction-based; it does not redirect literal filesystem reads by external programs.
 
 Rerunning setup preserves the existing mode. Switching or migrating requires confirmation; when both locations contain preferences, the guide asks which to use rather than merging them. Missing preferences retain each skill's original setup guidance and fallbacks; read errors are reported. Glossaries, ADRs and local tickets remain project artifacts. Project mode retains its offer to rename legacy `CONTEXT` artifacts; Local-only mode records their existing paths instead.
 
@@ -75,7 +75,7 @@ The direct answer after v1.1 was yes. The skill's own closing message is softer.
 
 **It wrote to `CLAUDE.md`, but I'm on Codex.**
 
-In Project mode, this is a known gap, and still open. The file-selection rule is "edit `CLAUDE.md` if it exists, else `AGENTS.md`". It checks which file exists, not which harness is running. In a repo with a `CLAUDE.md` left over from Claude Code, the skill writes its `## Agent skills` block to a file Codex never reads. Users have two workarounds: move the block to `AGENTS.md` by hand, or keep `AGENTS.md` canonical and make `CLAUDE.md` a one-line pointer at it. If neither file exists, the skill asks you which to create instead of picking one. This has confused people who expected it to decide. Local-only mode leaves both project files untouched and uses the repository-level app setting instead.
+In Project mode, this is a known gap, and still open. The file-selection rule is "edit `CLAUDE.md` if it exists, else `AGENTS.md`". It checks which file exists, not which harness is running. In a repo with a `CLAUDE.md` left over from Claude Code, the skill writes its `## Agent skills` block to a file Codex never reads. Users have two workarounds: move the block to `AGENTS.md` by hand, or keep `AGENTS.md` canonical and make `CLAUDE.md` a one-line pointer at it. If neither file exists, the skill asks you which to create instead of picking one. This has confused people who expected it to decide. Local-only mode leaves both project files untouched; its consumer skills reference the shared guide directly.
 
 **It didn't create my triage labels.**
 
@@ -96,7 +96,7 @@ One long-standing complaint says yes, in these words: *"having a skill to set up
 ## It's working if
 
 - Project mode writes `docs/agents/` preferences and the original `## Agent skills` pointer.
-- Local-only mode reports the sibling preference paths, and you add the supplied reference to the app's repository-level Instructions setting.
+- Local-only mode reports the sibling preference paths, and consuming skills follow the shared-guide reference to find them.
 - Local-only mode leaves project files unchanged; reruns retain the chosen mode.
 - The tracker it proposed matches the remote you use, and the label strings match labels that exist in your tracker.
 - Afterwards, `/to-tickets` publishes without asking you where issues live, and `/triage` applies labels rather than inventing them.

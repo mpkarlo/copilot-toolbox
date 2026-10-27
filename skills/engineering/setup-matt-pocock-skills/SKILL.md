@@ -21,7 +21,7 @@ For Local-only mode, read [REPOSITORY-CONFIG.md](./REPOSITORY-CONFIG.md) and use
 Keep the mode already used by this repository when rerunning setup. If no preference files exist in either location, ask which mode to use, recommending **Project mode**:
 
 - **Project mode** (original): save preferences under `docs/agents/` and maintain the original pointer in the existing `CLAUDE.md` or `AGENTS.md` file.
-- **Local-only mode** (opt-in): save preferences under `..\.skills\<main-checkout-folder-name>\` on Windows or `../.skills/<main-checkout-folder-name>/` on Linux/macOS, relative to the main checkout. Do not edit project files. In the Copilot App, present the exact reference from `REPOSITORY-CONFIG.md` for its repository-level Instructions setting and wait for the user to confirm they added it. In another harness, use an equivalent repository-scoped setting or explain that the guide must be loaded manually.
+- **Local-only mode** (opt-in): save preferences under `..\.skills\<main-checkout-folder-name>\` on Windows or `../.skills/<main-checkout-folder-name>/` on Linux/macOS, relative to the main checkout. Do not edit project files. The consuming skills refer to the shared `REPOSITORY-CONFIG.md` guide; install this setup skill alongside any skill that needs Local-only preferences.
 
 If both locations contain preferences and setup cannot determine the chosen mode, ask which to use. Do not merge or migrate files unless the user explicitly requests it.
 
@@ -35,13 +35,12 @@ Look at the current repo to understand its starting state. Read whatever exists;
 
 - The canonical remote: is this a GitHub repo? Which one? Do not confuse a fork with upstream.
 - Existing project preferences in `docs/agents/`, and Local-only preferences in the main checkout's sibling `.skills/<main-checkout-folder-name>/`, if present. Reuse user edits when updating setup.
-- `AGENTS.md` and `CLAUDE.md` at the repo root: does either exist? Is there already an `## Agent skills` section in either? For Local-only mode in the Copilot App, use its repository-level Instructions setting, not app-level instructions or repository files.
+- `AGENTS.md` and `CLAUDE.md` at the repo root: does either exist? Is there already an `## Agent skills` section in either?
 - `GLOSSARY.md` and `GLOSSARY-MAP.md` at the repo root, and the legacy `CONTEXT.md` / `CONTEXT-MAP.md`. In Project mode, preserve the original offer to `git mv` legacy artifacts to their `GLOSSARY` names and update `docs/agents/domain.md`. In Local-only mode, leave the artifacts unchanged and record their existing paths in the local domain preferences.
 - `docs/adr/` and any `src/*/docs/adr/` directories
 - `.scratch/`: a sign that a local-markdown issue tracker convention is already in use
 - Is the `triage` skill installed? (a `triage` skill folder alongside this one, or `triage` in your available skills.) This decides whether Section B runs at all.
 - Monorepo signals: a `pnpm-workspace.yaml`, a `workspaces` field in `package.json`, or a populated `packages/*` with its own `src/`. These are present only in a genuinely large multi-package repo; their absence means single-context, which is almost every repo.
-- For Local-only mode, whether the repository-level Instructions setting already contains the preference pointer. If its contents cannot be inspected, show the user the proposed text and ask them to add it. If the setting is unavailable, explain that the guide must be loaded manually. Never edit app-level instructions.
 
 ### 2. Present findings and ask
 
@@ -83,7 +82,6 @@ Show the user a draft of:
 - The canonical repository and selected mode
 - The contents of `issue-tracker.md`, `domain.md`, and `triage-labels.md` (the last when Section B ran), with their exact write paths for the selected mode
 - In Project mode, the original `## Agent skills` block for the selected project instruction file (see step 4).
-- In Local-only mode, the exact reference from `REPOSITORY-CONFIG.md` for the Copilot App's repository-level Instructions setting. Ask the user to confirm before they add it; do not modify app-level instructions.
 
 Let them edit before writing.
 
@@ -121,7 +119,7 @@ The block:
 
 Include the `### Triage labels` sub-block, and write `triage-labels.md` in the selected directory, only when `triage` is installed and Section B ran. When it isn't, both are omitted.
 
-**Local-only mode:** leave all repository files unchanged. Present the repository-level Instructions reference for the Copilot App and wait for the user to confirm it is added before claiming automatic discovery. Do not modify app-level instructions. If no equivalent repository-scoped setting is available, tell the user to load the guide manually each session.
+**Local-only mode:** leave all repository files unchanged. The consuming skill's guide reference loads preferences when that skill is used. Install this setup skill alongside the consuming skill so its shared guide is available.
 
 When Section B ran on GitHub or GitLab, create each configured label the tracker lacks (`gh label create` / `glab label create`).
 
@@ -137,4 +135,4 @@ For "other" issue trackers, write the local `issue-tracker.md` using the user's 
 
 ### 5. Done
 
-Read the written files to confirm they contain the agreed preferences and report read failures explicitly. In Local-only mode, ask the user to confirm that the Copilot App's repository-level Instructions setting contains the pointer; do not claim automatic discovery until confirmed. Tell the user the selected mode and exact preference paths. They can edit preferences directly later. Local-only preferences are not committed or automatically shared with teammates. Worktrees share the main checkout's Local-only preferences.
+Read the written files to confirm they contain the agreed preferences and report read failures explicitly. Tell the user the selected mode and exact preference paths. They can edit preferences directly later. Local-only preferences are not committed or automatically shared with teammates. Worktrees share the main checkout's Local-only preferences.

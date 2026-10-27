@@ -69,6 +69,10 @@ Not by itself. One user's approach is a standing instruction in the repo's agent
 - The Evidence section shows a before and an after, not a claim that tests pass.
 - Every PR states a door and a blast radius, and the one-way doors are the ones you slow down on.
 
+## Prerequisites
+
+Optional Local-only preferences are available when `setup-matt-pocock-skills` is installed alongside this skill; it follows a link to the shared guide, and otherwise retains the project's existing configuration and fallback behavior.
+
 ## Where it fits
 
 `pr` comes between review and retro when the build ships as a pull request: `to-spec → to-tickets → implement → code-review → pr → retro`. It is model-invoked, so it also fires on its own any time the agent writes a PR body outside that chain.
