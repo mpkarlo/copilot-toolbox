@@ -2,6 +2,8 @@
 
 How the engineering skills should consume this repo's domain documentation when exploring the codebase.
 
+This preference file lives in the resolved user-local configuration directory. All artifact paths below are relative to the project root, not this file's directory. Setup adapts them to the confirmed layout; consumers use those paths for both reads and writes. The artifacts themselves stay in the project.
+
 ## Before exploring, read these
 
 - **`GLOSSARY.md`** at the repo root, or

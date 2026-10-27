@@ -30,7 +30,7 @@ The Spec axis needs a spec to exist and be findable. It looks in this order:
 3. A spec file under `docs/`, `specs/`, or `.scratch/` matching the branch or feature name.
 4. Asking you.
 
-Step 1 depends on the tracker doc, which [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) writes. Without it the axis still works if you hand it a path. With no spec at all, the skill skips the Spec sub-agent and the report says "no spec available" rather than inventing requirements.
+Step 1 uses [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills)' shared Git/Node.js resolver to read the current repo's user-local tracker workflow, keyed by canonical remote. Install setup alongside this skill. Missing or invalid config stops tracker fetching with a setup-first message, rather than guessing or following instruction-file pointers. An explicitly supplied local spec still works without tracker config. With no spec at all, the skill skips the Spec sub-agent and reports "no spec available".
 
 ## The two axes
 

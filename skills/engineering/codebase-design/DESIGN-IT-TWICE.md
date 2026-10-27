@@ -27,7 +27,7 @@ Prompt each sub-agent with a separate technical brief (file paths, coupling deta
 - Agent 3: "Optimise for the most common caller: make the default case trivial."
 - Agent 4 (if applicable): "Design around ports & adapters for cross-seam dependencies."
 
-Include both [SKILL.md](SKILL.md) vocabulary and GLOSSARY.md vocabulary in the brief so each sub-agent names things consistently with the architecture language and the project's domain language.
+Before looking up project vocabulary, read [REPOSITORY-CONFIG.md](../setup-matt-pocock-skills/REPOSITORY-CONFIG.md), run its resolver in the current project with `domain`, and read `files.domain` and the configured glossary/map. On missing or invalid config, stop the lookup and tell the user to run `/setup-matt-pocock-skills`. Include both [SKILL.md](SKILL.md) vocabulary and the configured glossary vocabulary in the brief so each sub-agent names things consistently. Pass the project directory and this resolution contract to subagents.
 
 Each sub-agent outputs:
 

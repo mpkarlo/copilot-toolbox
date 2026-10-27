@@ -22,7 +22,7 @@ The wayfinder split comes down to session count: `/grill-with-docs` for single-s
 
 ## Prerequisites
 
-The skill writes into your repo, so you need to be somewhere it is safe to write. Resolved terms go to a `GLOSSARY.md` glossary at the root, or to the relevant context's `GLOSSARY.md`, if a `GLOSSARY-MAP.md` at the root marks the repo as multi-context. Decisions go to `docs/adr/`. The skill creates both only when it needs them. Nothing exists until the first term or decision is settled, so you set up nothing in advance.
+The skill writes into your repo, so you need to be somewhere it is safe to write. First install and run [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills). Through `domain-modeling`, its Git/Node.js resolver reads the current repo's user-local domain layout by canonical remote; missing preferences mean setup first. Terms and decisions still go to project glossaries and ADRs at the configured paths (`GLOSSARY.md` / `GLOSSARY-MAP.md` and `docs/adr/` by default), created only when needed. Preferences move outside the repo, not these artifacts.
 
 It also needs two other skills present, because its own `SKILL.md` is one line that delegates to them. [grilling](https://aihero.dev/skills-grilling) supplies the interview, and [domain-modeling](https://aihero.dev/skills-domain-modeling) supplies the writing. Installing `grill-with-docs` alone gets you a skill that does not work.
 

@@ -26,7 +26,7 @@ The same-session case is worth naming because the skill's own first line doesn't
 
 `implement` commits to the branch you are on. It does not create one, and it does not ask. Check you are on the branch you want the work on before you start.
 
-If the tickets came from [to-tickets](https://aihero.dev/skills-to-tickets), [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) configured the tracker they live on. `code-review` reads the same configuration to find the originating spec at close-out.
+Before fetching tracker tickets, `implement` uses [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills)' shared Git/Node.js resolver to read this repo's user-local tracker preferences, keyed by its canonical remote. Missing or invalid tracker config stops that fetch with a setup-first message. Local spec paths need no tracker. Install setup alongside the consumers; [tdd](https://aihero.dev/skills-tdd) also reads its domain-path preferences, and `code-review` resolves tracker config when fetching the originating spec at close-out.
 
 ## What one run does
 

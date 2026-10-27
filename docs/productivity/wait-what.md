@@ -2,13 +2,17 @@
 
 You type `wait-what` when you did not understand a message. The [agent](https://www.aihero.dev/ai-coding-dictionary/agent) then re-pitches what it just said. It adds the context you were missing, writes in plain English, and uses the vocabulary from your project's `GLOSSARY.md`.
 
-The skill is three lines long. That is the design, not an unfinished draft. Skills against verbosity usually fail because they grow too long. A four-hundred-line concision skill still leaves the [model](https://www.aihero.dev/ai-coding-dictionary/model) verbose, because the model copies the length of the skill, not its request. This one has a single precise leading word and nothing else.
+The re-pitch instruction is deliberately short. Skills against verbosity usually fail because they grow too long. A four-hundred-line concision skill still leaves the [model](https://www.aihero.dev/ai-coding-dictionary/model) verbose, because the model copies the length of the skill, not its request. This one keeps the leading word and a separate rule for finding project vocabulary.
 
 ## When to reach for it
 
 You invoke it by typing `/wait-what`. The agent will not reach for it on its own, and it shouldn't. Only you know when you stopped following.
 
 Use it as soon as you notice you're skimming. For example, the agent has started to use jargon it invented, put five acronyms in one sentence, or explained a decision whose premise you never saw. It fixes the conversation you're already in. To stop the jargon arriving at all, use [grill-with-docs](https://aihero.dev/skills-grill-with-docs), which builds the shared language upfront.
+
+## Prerequisites
+
+The re-pitch needs only the conversation. In a Git project, a glossary lookup uses [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills)' shared Git/Node.js resolver to read user-local domain preferences keyed by the canonical remote. Missing or invalid config gets an explicit setup-first message, not guessed glossary paths; the conversation can still be re-pitched without the lookup. Outside a Git project, no repository config is needed.
 
 ## The name is the mechanism
 
@@ -22,7 +26,13 @@ The skill says re-pitch **that**, not "that last message". What lost you is usua
 
 The body reuses the leading words already in your global `CLAUDE.md` and your project's `GLOSSARY.md`. ASD-STE100 Simplified Technical English sets the register. The ubiquitous language supplies the nouns. The skill, `CLAUDE.md` and `GLOSSARY.md` use the same [tokens](https://www.aihero.dev/ai-coding-dictionary/token), so invoking it is not a new instruction. It is a reminder of one the agent already agreed to.
 
-If you have no `GLOSSARY.md` (and no `GLOSSARY-MAP.md` pointing to one for the context at hand), the skill still works. You lose only the domain-vocabulary half.
+If the glossary/map at the configured project path does not exist, the skill still works. You lose only the domain-vocabulary half. The glossary stays in the project; only its path preference lives in user storage.
+
+## Common questions
+
+**Does this require a glossary to explain a message?**
+
+No. The conversation is enough for the re-pitch. Local configuration is needed only to look up project vocabulary without guessing its location.
 
 ## It's working if
 

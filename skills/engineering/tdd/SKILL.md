@@ -7,7 +7,7 @@ description: Test-driven development. Use when the user wants to build features 
 
 TDD is the red → green loop. This skill is the reference that makes that loop produce tests worth keeping: what a good test is, where tests go, the anti-patterns, and the rules of the loop. Every section applies on every cycle: consult them before and during the loop, not after.
 
-When exploring the codebase, read `GLOSSARY.md` (if it exists) so test names and interface vocabulary match the project's domain language, and respect ADRs in the area you're touching.
+When exploring the codebase, read [REPOSITORY-CONFIG.md](../setup-matt-pocock-skills/REPOSITORY-CONFIG.md), run its resolver in the current project with `domain`, and read `files.domain`. Read the glossary/map and ADRs at the configured project paths so test names and interfaces use the project's domain language. If config is missing or invalid, stop and tell the user to run `/setup-matt-pocock-skills`. Missing artifacts in a configured layout are normal.
 
 ## What a good test is
 

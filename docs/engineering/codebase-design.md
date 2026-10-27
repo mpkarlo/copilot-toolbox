@@ -20,6 +20,10 @@ Several skills are close to it. Pick by the problem you have:
 | You want the design argued with, not just named | [grilling](https://aihero.dev/skills-grilling) |
 | There's a concrete behaviour to build and you want tests that survive a refactor | [tdd](https://aihero.dev/skills-tdd) |
 
+## Prerequisites
+
+The design vocabulary itself needs no repository configuration. When the "design it twice" reference looks up project glossary vocabulary for subagent briefs, install and run [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) first. Its Git/Node.js resolver reads this repo's user-local domain preferences by canonical remote; missing or invalid config stops that lookup with a setup-first message. Glossaries and ADRs remain project artifacts at their configured paths.
+
 ## The vocabulary
 
 The glossary is the skill. The skill defines every term against the others, and gives each one the word it replaces.

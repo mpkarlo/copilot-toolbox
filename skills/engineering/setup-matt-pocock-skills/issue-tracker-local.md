@@ -2,6 +2,8 @@
 
 Issues and specs for this repo live as markdown files in `.scratch/`.
 
+All artifact paths are relative to the current project root, not this user-local config directory. Read the label mapping from the resolved local `files.labels`, not from a project file.
+
 ## Conventions
 
 - One feature per directory: `.scratch/<feature-slug>/`

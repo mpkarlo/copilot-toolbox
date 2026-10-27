@@ -9,6 +9,8 @@ metadata:
     url: "https://github.com/humanlayer/skills/blob/main/plugins/show-me/skills/show-me/SKILL.md"
 ---
 
+Before using project domain vocabulary, read [REPOSITORY-CONFIG.md](../setup-matt-pocock-skills/REPOSITORY-CONFIG.md), run its resolver in the current project with `domain`, and read `files.domain` and the glossary/map at its configured project paths. If config is missing or invalid, stop that lookup and tell the user to run `/setup-matt-pocock-skills`; do not assume root glossary paths. Missing artifacts in a configured layout are normal.
+
 Use this template for writing the PR body:
 
 ```markdown

@@ -94,4 +94,4 @@ Off the main flow entirely.
 
 ## Precondition
 
-**`/setup-matt-pocock-skills`**: run before your first engineering flow to configure the issue tracker, triage labels, and doc layout the other skills assume. Custom issue trackers also work.
+**`/setup-matt-pocock-skills`**: run before your first engineering flow to configure the issue tracker, triage labels, and domain-doc paths in user-local storage keyed by the canonical Git remote. Install it alongside consumers, even for individual-skill installs. Consumers resolve the current repo's local preferences directly, not through `AGENTS.md` / `CLAUDE.md` pointers. Missing preferences mean setup first, never a tracker fallback. Glossaries, ADRs and other project artifacts stay in the project. Custom issue trackers also work.

@@ -104,6 +104,10 @@ In your agent, run it once per repo. It will:
 - Ask you what labels you apply to tickets when you triage them (`/triage` uses labels)
 - Ask you where you want to save any docs we create
 
+Preferences are saved outside the project in a user-local directory keyed by its canonical Git remote. Setup does not write `AGENTS.md` / `CLAUDE.md` pointers or `docs/agents/` config. Glossaries, ADRs and local tickets remain project artifacts. Install setup alongside consumers; their shared resolver requires Git and Node.js 18 or newer.
+
+The root is `%LOCALAPPDATA%\matt-pocock-skills` on Windows, `$XDG_CONFIG_HOME/matt-pocock-skills` (or `~/.config/matt-pocock-skills`) on Linux, and `~/Library/Application Support/matt-pocock-skills` on macOS. Set the absolute `MATT_POCOCK_SKILLS_CONFIG_HOME` override to choose another root. See the [resolution and migration contract](./skills/engineering/setup-matt-pocock-skills/REPOSITORY-CONFIG.md). Each user runs setup; clones and worktrees of the same remote share preferences, while forks remain separate. Missing config means setup first, not an assumed tracker.
+
 ### 3. Bam - you're ready to go.
 
 ## Why These Skills Exist

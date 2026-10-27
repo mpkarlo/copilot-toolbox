@@ -1,5 +1,7 @@
 # GLOSSARY.md Format
 
+Resolve and read the current project's local `domain.md` through [REPOSITORY-CONFIG.md](../setup-matt-pocock-skills/REPOSITORY-CONFIG.md) before choosing paths. Layouts below are examples; configured glossary/map locations take precedence for both reads and writes. Keep artifacts in the project.
+
 ## Structure
 
 ```md
