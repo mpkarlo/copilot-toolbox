@@ -16,6 +16,20 @@ This is a prompt-driven skill, not a deterministic script. Explore, present what
 
 Read [REPOSITORY-CONFIG.md](./REPOSITORY-CONFIG.md) first. If this is not yet a Git working tree, ask before initialising one. Then use the bundled resolver with no config-kind arguments to obtain the repository identity, directory, and file paths. Never write preference files under `docs/agents/` or create/edit `AGENTS.md` / `CLAUDE.md` pointers. Glossaries, ADRs and local tracker artifacts remain in the project.
 
+## Where configuration is saved
+
+The three preference files are `issue-tracker.md`, `triage-labels.md` (when needed), and `domain.md`, saved in this directory:
+
+| Platform | Configuration directory |
+| --- | --- |
+| Windows | `%LOCALAPPDATA%\matt-pocock-skills\repositories\<key>\` |
+| Linux / other Unix | `${XDG_CONFIG_HOME:-$HOME/.config}/matt-pocock-skills/repositories/<key>/` |
+| macOS | `~/Library/Application Support/matt-pocock-skills/repositories/<key>/` |
+
+`<key>` is the SHA-256 digest of the canonical repository identity, for example `github.com/mpkarlo/my-skills`, not the checkout folder name. If `LOCALAPPDATA` is unset, Windows uses `%USERPROFILE%\AppData\Local`. The absolute `MATT_POCOCK_SKILLS_CONFIG_HOME` override replaces the platform root; files then live in `<override>/repositories/<key>/`. Use the shared resolver to compute the key and exact paths, not a separate implementation.
+
+Show the resolved absolute directory before confirmation and again after writing, listing the full path of each file written. Do not merely say "user-local configuration". Setup creates these files only after the user confirms; installing the skills does not create preferences.
+
 ## Process
 
 ### 1. Explore

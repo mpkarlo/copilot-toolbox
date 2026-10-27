@@ -2,7 +2,7 @@
 
 `setup-matt-pocock-skills` answers three questions about one repo: where issues live, what the triage labels are called, and where the domain docs sit. It records the answers as markdown files in a user-local configuration directory keyed by the canonical Git remote, not in the project.
 
-Those preferences are the only thing that varies between repos. Consumers resolve the current repo's local files directly; no `AGENTS.md` or `CLAUDE.md` pointer is needed. The tracker remains configurable prose, so you never edit a skill to use another tracker.
+Those files are the only thing that varies between repos. The skills themselves are identical everywhere. They read the current repo's user-local `issue-tracker.md` at run time and do what it says, without `AGENTS.md` or `CLAUDE.md` pointers. That is why the set is not tied to GitHub, and why you never edit a skill file to point it at another tracker. Invoking it with "link the skills to a custom issue tracker" works with anything you can connect to programmatically, with no changes to the skills.
 
 It is a prompt-driven skill backed by a deterministic, read-only path resolver. It inspects your remote and existing preferences, proposes what it found, and waits for confirmation before writing the local files. Glossaries, ADRs, tickets and other project artifacts stay where they were.
 
@@ -23,6 +23,8 @@ Install setup alongside the consuming skills, even for individual-skill installs
 | macOS | `~/Library/Application Support/matt-pocock-skills` |
 
 Set `MATT_POCOCK_SKILLS_CONFIG_HOME` to an absolute path to override the root consistently in all harnesses. Under it, `repositories/<SHA-256-of-identity>/` holds `issue-tracker.md`, `domain.md`, and `triage-labels.md` when a role-applying skill is installed. Relative environment-provided roots are errors. These files are personal and not committed; teammates run setup independently.
+
+For example, the complete Windows tracker path is `%LOCALAPPDATA%\matt-pocock-skills\repositories\<key>\issue-tracker.md`. `domain.md` and `triage-labels.md` are saved beside it. `<key>` is the SHA-256 digest of the canonical identity, such as `github.com/mpkarlo/my-skills`, not the checkout folder name. Setup prints the resolved absolute directory and every written file path before confirmation and after saving. Installation alone creates no preference files.
 
 The identity comes from `origin`'s fetch URL, or the sole remote when there is no `origin`. Multiple remotes without `origin` require an explicit choice. Transport, credentials, trailing slash and `.git` are removed; the hostname is lowercased, as are repository paths on GitHub.com and GitLab.com. Non-default ports remain distinct. Clones and worktrees share preferences, but forks do not share with upstream. A remote-less Git repo uses its real Git common directory instead, so local-only worktrees still share config. If you have not initialised Git, setup asks before doing so.
 
@@ -45,9 +47,9 @@ The tracker options:
 | **Local markdown** | files under `.scratch/<feature>/` in this repo | a local Git repo, no remote needed |
 | **Other** | wherever you say | one paragraph from you describing the workflow |
 
-The first three ship as templates. Local markdown is an explicit choice, never a fallback for missing config. A remote proposes a tracker, but setup must confirm the choice. Tracker commands use the confirmed target explicitly, avoiding a fork's upstream default.
+The first three ship as templates in the skill and work out of the box. Local markdown is a full option, not a fallback. The skill supports a solo project with no remote. One caveat: don't use local markdown if you use GitHub. They are alternatives, so pick one.
 
-"Other" is a full option too. It is how Jira, Linear, Azure DevOps and Beads all work. Describe the workflow and setup records it in the local `issue-tracker.md`. Consumers follow that prose. Store no credentials there.
+"Other" is a full option too. It is how Jira, Linear, Azure DevOps and Beads all work. You describe the workflow, the skill records your prose in the user-local `issue-tracker.md`, and the downstream skills follow the prose. Users have already built this: a Jira-over-[MCP](https://www.aihero.dev/ai-coding-dictionary/mcp) variant, a Gitea CLI shaped like `gh`, a hand-built local dashboard.
 
 ## Common questions
 
@@ -69,7 +71,7 @@ When the label section runs, setup writes the role mapping and creates missing c
 
 **Can I configure the other skills' behaviour here ([grilling](https://www.aihero.dev/ai-coding-dictionary/grilling) cadence, question format, tone)?**
 
-No. The local configuration is limited to tracker, labels and domain-doc paths/rules. General interaction preferences still belong in your own standing instructions or the invocation, not in this setup's configuration.
+No. It configures three things: tracker, labels, doc layout. Skills stay opinionated about everything else. Interaction preferences belong in your `CLAUDE.md` as plain instructions, which every skill already reads.
 
 **Can I keep config outside every repo, or share it across clones?**
 
