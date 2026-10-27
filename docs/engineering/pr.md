@@ -14,10 +14,6 @@ Type `/pr`, or the agent reaches for it automatically whenever it is writing a P
 | The code is written but nobody has reviewed it yet | [code-review](https://aihero.dev/skills-code-review) first, then `pr` |
 | The PR is open and review comments are coming back | Nothing in this set yet; `pr` only writes the body |
 
-## Prerequisites
-
-For project domain vocabulary, install and run [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills). Its Git/Node.js resolver reads this repo's user-local domain preferences by canonical remote, then the configured project glossary/map. Missing or invalid config stops that lookup with a setup-first message, rather than assuming root paths. Missing glossary artifacts are normal. The PR body format and publication behavior are unchanged.
-
 ## The template
 
 Three sections, in this order:

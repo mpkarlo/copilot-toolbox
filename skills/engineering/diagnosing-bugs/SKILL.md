@@ -7,7 +7,7 @@ description: Diagnosis loop for hard bugs and performance regressions. Use when 
 
 A discipline for hard bugs. Skip phases only when explicitly justified.
 
-When exploring the codebase, read [REPOSITORY-CONFIG.md](../setup-matt-pocock-skills/REPOSITORY-CONFIG.md), run its resolver in the current project with `domain`, and read `files.domain`. Read the glossary/map and ADRs at the configured project paths to understand the relevant modules. If config is missing or invalid, stop and tell the user to run `/setup-matt-pocock-skills`. Missing artifacts in a configured layout are normal.
+When exploring the codebase, read `GLOSSARY.md` (if it exists) to get a clear mental model of the relevant modules, and check ADRs in the area you're touching.
 
 ## Redact
 

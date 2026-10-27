@@ -21,10 +21,6 @@ Reach for it on the hard ones: a bug you can't solve at first look, an intermitt
 | Asking what would have prevented the bug, once it is fixed | [retro](https://aihero.dev/skills-retro), run in the same session |
 | No good seam exists to lock the bug down | [improve-codebase-architecture](https://aihero.dev/skills-improve-codebase-architecture), which you start yourself |
 
-## Prerequisites
-
-Install and run [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) before exploring the project. Its Git/Node.js resolver reads the current repo's user-local domain preferences by canonical remote, then the skill reads the glossary/map and relevant ADRs at their configured project paths. Missing or invalid config stops exploration with a setup-first message; missing artifacts in a configured layout are normal. Repro, instrumentation and regression-test output behavior is unchanged.
-
 ## The tight loop is the skill
 
 Phase 1 gets the most effort because it is the only hard phase. The skill lists ways to build the loop, roughly in order of preference:

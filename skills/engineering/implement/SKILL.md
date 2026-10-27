@@ -6,7 +6,7 @@ disable-model-invocation: true
 
 Implement the work described by the user in the spec or tickets.
 
-Read [REPOSITORY-CONFIG.md](../setup-matt-pocock-skills/REPOSITORY-CONFIG.md). Before fetching a tracker ticket reference, run its resolver in the current project with `tracker` and read the resolved file. If config is missing or invalid, stop the tracker operation and tell the user to run `/setup-matt-pocock-skills`; never guess a tracker. Local spec paths do not require a tracker. Fetch the ticket and state its title before starting. If the reference is ambiguous, ask.
+If the user passes a ticket reference, fetch it from the issue tracker and state its title before starting. If the reference is ambiguous, ask.
 
 Call the Skill tool with "tdd" where possible, at pre-agreed seams.
 

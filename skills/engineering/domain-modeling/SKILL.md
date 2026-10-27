@@ -9,9 +9,7 @@ Actively build and sharpen the project's domain model as you design. This is the
 
 ## File structure
 
-First read [REPOSITORY-CONFIG.md](../setup-matt-pocock-skills/REPOSITORY-CONFIG.md), run its resolver in the current project with `domain`, and read `files.domain`. Use its configured paths and consumer rules for all glossary/map/ADR reads and writes below. If config is missing or invalid, stop and tell the user to run `/setup-matt-pocock-skills`. Do not relocate artifacts into user storage.
-
-The following are example project layouts, not overrides of configured paths. Most repos have a single context:
+Most repos have a single context:
 
 ```
 /

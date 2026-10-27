@@ -20,9 +20,9 @@ You invoke this by typing `/triage` and then describing what you want in plain l
 
 ## Prerequisites
 
-`triage` reads and writes your issue tracker, so install and run [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) first. Its Git/Node.js resolver finds the current repo's tracker, label mapping and domain paths in user-local storage keyed by the canonical remote. The role names below are **canonical**, but actual label strings may differ. Even an identity mapping must be recorded locally. Missing or invalid preferences stop the operation with a setup-first message.
+`triage` reads and writes your issue tracker, so [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) must first configure that tracker and its label vocabulary. The role names below are **canonical**. The label strings in your tracker may differ, and setup provides the mapping. If your tracker already uses the canonical names exactly, you have nothing to map and nothing to set up.
 
-The local `issue-tracker.md` also decides whether external pull requests count as a request surface, and who counts as external. That flag is off by default, and setup no longer asks about it. To bring PRs into scope, turn it on in the resolved user-local file, not `docs/agents/`.
+The tracker config also decides whether external pull requests count as a request surface, and who counts as external. That flag is off by default, and setup no longer asks about it. To bring PRs into scope, turn it on in the sibling `skill-config` directory's `issue-tracker.md`.
 
 ## The state machine
 
@@ -75,7 +75,7 @@ No. They are already agent-ready. `to-tickets` applies the `ready-for-agent` lab
 Only if you have inbound work. `triage` is older than that flow and does a different job: it handles reports other people filed. If everything in your tracker came from your own planning, you will rarely use it. If you maintain anything public, or your team files bugs to you, it is where that work starts. The main use is open-source repos that take issues from external contributors.
 
 **The agent tried to apply `ready-for-agent` and `gh` said the label doesn't exist.**
-This was reported in [#616](https://github.com/mattpocock/skills/issues/616). Setup now records the state-label mapping in user-local `triage-labels.md` and creates missing configured state labels on GitHub or GitLab. Rerun setup to confirm the target and mapping if they are missing or stale. The category labels `bug` and `enhancement` are separate from that five-role mapping.
+This was reported in [#616](https://github.com/mattpocock/skills/issues/616). Setup writes the label vocabulary into the sibling `skill-config` directory's `triage-labels.md` and creates missing configured state labels on GitHub or GitLab. The category labels `bug` and `enhancement` remain separate from that five-role mapping.
 
 **Five states aren't enough. What about blocked, or deferred, or implemented?**
 This is the most-filed gap on the skill. It comes in three forms:

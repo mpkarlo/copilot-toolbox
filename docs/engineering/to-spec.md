@@ -19,7 +19,7 @@ Reach for it when the build is too big for one agent [session](https://www.aiher
 
 ## Prerequisites
 
-Install and run [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) first. Its Git/Node.js resolver finds this repo's user-local tracker workflow, triage-label mapping and domain paths by canonical remote. `to-spec` reads all three before starting and stops with a setup-first message if required preferences are missing or invalid. Real trackers and explicitly configured local markdown under `.scratch/` both work; artifact output locations are unchanged.
+`to-spec` publishes the spec as an issue, so [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) must first configure a tracker and the triage-label vocabulary for this repo. Either kind of tracker works: a real tracker like GitHub, or local markdown files under `.scratch/`, which work with no extra setup.
 
 ## The spec is a decision record
 

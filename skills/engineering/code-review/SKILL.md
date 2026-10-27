@@ -10,7 +10,7 @@ Two-axis review of the diff between `HEAD` and a fixed point the user supplies:
 
 Both axes run as **parallel sub-agents** so they don't pollute each other's context, then this skill aggregates their findings.
 
-Read [REPOSITORY-CONFIG.md](../setup-matt-pocock-skills/REPOSITORY-CONFIG.md). Before fetching tracker references, run its resolver in the current project with `tracker` and read the resolved file. On missing or invalid config, stop that operation and tell the user to run `/setup-matt-pocock-skills`. Do not guess a tracker or follow instruction-file pointers. A review of an explicitly supplied local spec without tracker operations does not require tracker config.
+The issue tracker should have been provided to you. If not, tell the user to run `/setup-matt-pocock-skills`.
 
 ## Process
 

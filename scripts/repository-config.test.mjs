@@ -163,32 +163,27 @@ test("CLI works from a symlinked skill install and reads config without changing
   assert.deepEqual(readdirSync(repo).sort(), [".git", ...Object.keys(artifacts)].sort());
 });
 
-test("tracker and domain consumers name the shared resolver and explicit config requirements", () => {
-  const consumers = {
-    "engineering/to-spec/SKILL.md": "tracker labels domain",
-    "engineering/to-tickets/SKILL.md": "tracker labels domain",
-    "engineering/triage/SKILL.md": "tracker labels domain",
-    "engineering/wayfinder/SKILL.md": "tracker domain",
-    "engineering/implement-spec/SKILL.md": "tracker domain",
-    "engineering/implement/SKILL.md": "tracker",
-    "engineering/code-review/SKILL.md": "tracker",
-    "engineering/prototype/SKILL.md": "tracker",
-    "engineering/domain-modeling/SKILL.md": "domain",
-    "engineering/tdd/SKILL.md": "domain",
-    "engineering/diagnosing-bugs/SKILL.md": "domain",
-    "engineering/improve-codebase-architecture/SKILL.md": "domain",
-    "engineering/pr/SKILL.md": "domain",
-    "engineering/codebase-design/DESIGN-IT-TWICE.md": "domain",
-    "productivity/wait-what/SKILL.md": "domain",
-  };
-  for (const [filename, kinds] of Object.entries(consumers)) {
+test("one shared bootstrap replaces resolver boilerplate in individual consumers", () => {
+  const guide = readFileSync(new URL("../skills/engineering/setup-matt-pocock-skills/REPOSITORY-CONFIG.md", import.meta.url), "utf8");
+  assert.match(guide, /One-time user-level bootstrap/);
+  assert.match(guide, /no config-kind arguments/);
+  assert.match(guide, /Domain configuration is optional/);
+  assert.match(guide, /Never infer GitHub or local markdown/);
+  assert.match(guide, /Pass these rules, the project directory/);
+  const consumers = [
+    "engineering/to-spec/SKILL.md", "engineering/to-tickets/SKILL.md",
+    "engineering/triage/SKILL.md", "engineering/implement-spec/SKILL.md",
+    "engineering/implement/SKILL.md", "engineering/code-review/SKILL.md",
+    "engineering/prototype/SKILL.md", "engineering/domain-modeling/SKILL.md",
+    "engineering/tdd/SKILL.md", "engineering/diagnosing-bugs/SKILL.md",
+    "engineering/improve-codebase-architecture/SKILL.md", "engineering/pr/SKILL.md",
+    "engineering/codebase-design/DESIGN-IT-TWICE.md", "productivity/wait-what/SKILL.md",
+  ];
+  for (const filename of consumers) {
     const content = readFileSync(new URL(`../skills/${filename}`, import.meta.url), "utf8");
-    assert.match(content, /REPOSITORY-CONFIG\.md/, filename);
-    assert.ok(content.includes(`\`${kinds}\``), `${filename} must require ${kinds}`);
-    assert.match(content, /\/setup-matt-pocock-skills/, filename);
-    assert.doesNotMatch(content, /should have been provided|default to the local-markdown tracker/, filename);
-    for (const [, reference] of content.matchAll(/\]\(([^)]+REPOSITORY-CONFIG\.md)\)/g)) {
-      assert.doesNotThrow(() => readFileSync(new URL(reference, new URL(`../skills/${filename}`, import.meta.url))), filename);
-    }
+    assert.doesNotMatch(content, /REPOSITORY-CONFIG\.md|repository-config\.mjs|files\.domain/, filename);
   }
+  const wayfinder = readFileSync(new URL("../skills/engineering/wayfinder/SKILL.md", import.meta.url), "utf8");
+  assert.doesNotMatch(wayfinder, /default to the local-markdown tracker/);
+  assert.match(wayfinder, /If not, stop and tell the user to run/);
 });

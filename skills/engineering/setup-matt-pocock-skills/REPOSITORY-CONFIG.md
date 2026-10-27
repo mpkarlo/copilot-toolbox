@@ -1,6 +1,33 @@
 # Repository-local preferences in user storage
 
-Setup and consuming skills resolve preferences for the current project, never for the installed skills repository. Install `setup-matt-pocock-skills` alongside consumers, even when installing individual skills. Reading this reference does not invoke the user-only setup skill.
+This is the single session-level guide for repository preferences. A user-level instruction points here once per harness; individual skills do not need resolver instructions. Install `setup-matt-pocock-skills` alongside the skills you use. Reading this reference does not invoke the user-only setup skill.
+
+## One-time user-level bootstrap
+
+Add the following block to the user-level instruction file your harness actually loads, replacing the placeholder with the absolute path of this installed guide. Do not put it in a project's `AGENTS.md` or `CLAUDE.md`. Setup presents the exact target and text for confirmation before writing it. Keep one block per user-level instruction file, preserving unrelated content. A different harness needs its own user-level bootstrap; a relative link or a configuration folder alone is not automatically discovered.
+
+```markdown
+## Matt Pocock skills: local repository preferences
+
+Before using Matt Pocock's engineering skills in a Git project, read
+`<absolute installed setup-matt-pocock-skills path>/REPOSITORY-CONFIG.md`
+and follow its session-level loading rules for the current project.
+Load preferences again when changing repositories. Pass this instruction
+and the project directory to subagents.
+```
+
+Use a stable installed skill path, not a temporary implementation worktree. If the harness has no user-level instruction mechanism, report that limitation rather than editing project instructions or duplicating the block into skills. This is an instruction-based lookup, not an operating-system alias: it does not redirect literal filesystem reads by external scripts.
+
+## Session-level loading rules
+
+Run the resolver below with **no config-kind arguments**, from the current project, once before using the engineering skills. Parse its JSON. Read available `files.tracker`, `files.labels`, and `files.domain` into session context so the skills' existing "should have been provided" preconditions are satisfied centrally.
+
+- Tracker operations require readable, nonempty tracker instructions and a confirmed target. If missing, incomplete or invalid, stop only tracker operations and tell the user to run `/setup-matt-pocock-skills`. Never infer GitHub or local markdown, even if a skill mentions a fallback.
+- Operations applying triage roles also require a readable, complete label mapping. Missing mappings mean setup first, not invented label strings.
+- Domain configuration is optional. When `domain.md` exists and is valid, use its project-relative glossary/map/ADR paths wherever skills mention conventional paths. If absent, retain the original conventions: root `GLOSSARY.md`, root `GLOSSARY-MAP.md` when present, and relevant `docs/adr/` directories. Missing domain artifacts are normal; do not require setup or create files merely to read vocabulary.
+- If an existing config file is unreadable, empty or invalid, report its exact path rather than silently ignoring it. Block the operation needing that config; unrelated work and conversation can continue.
+
+Pass these rules, the project directory, and any resolved preference paths to subagents, including fresh worktrees. Re-resolve when switching repositories. Do not create symlinks, move glossaries or ADRs, or change project output paths to implement this indirection. Explicit project/user instructions take precedence over preferences; report conflicts rather than overriding them.
 
 ## Shared resolver
 
@@ -41,7 +68,7 @@ Worktrees share their main checkout's config. Clones with the same canonical rem
 
 ## Missing configuration and migration
 
-If a needed file is missing, unreadable, empty, or lacks the instructions the operation needs, report its exact path and stop the config-dependent operation. Tell the user to run `/setup-matt-pocock-skills` in this repository. Do not silently default to GitHub, local markdown, canonical label strings, or a domain layout. If this reference is unavailable, install setup alongside the consumer first.
+For missing required tracker/label files, report their exact paths and stop the dependent operation with a setup-first message. Domain preferences remain optional as described above. If this reference is unavailable, install setup and repair the user-level bootstrap path.
 
 Consumers do not follow `AGENTS.md` / `CLAUDE.md` pointers or fall back to `docs/agents/*`. Setup may read those legacy files as migration input, show them for confirmation, and copy agreed preferences into user storage. Leave legacy files and instruction pointers untouched unless their removal is explicitly requested. Do not copy tokens or credentials into preferences.
 

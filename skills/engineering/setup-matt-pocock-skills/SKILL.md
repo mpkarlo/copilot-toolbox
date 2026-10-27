@@ -1,6 +1,6 @@
 ---
 name: setup-matt-pocock-skills
-description: "Configure this repo for the engineering skills: set up its issue tracker, triage label vocabulary, and domain doc layout. Run once before first use of the other engineering skills."
+description: "Configure this repo for the engineering skills: set up its issue tracker, triage label vocabulary, and optional domain doc layout. Run before tracker-dependent work or to customise domain paths."
 disable-model-invocation: true
 ---
 
@@ -44,6 +44,7 @@ Look at the current repo to understand its starting state. Read whatever exists;
 - `.scratch/`: a sign that a local-markdown issue tracker convention is already in use
 - Are `triage`, `to-spec`, or `to-tickets` installed? (folders alongside this one, or in your available skills.) Any of these requires Section B.
 - Monorepo signals: a `pnpm-workspace.yaml`, a `workspaces` field in `package.json`, or a populated `packages/*` with its own `src/`. These are present only in a genuinely large multi-package repo; their absence means single-context, which is almost every repo.
+- The current harness's supported user-level instruction file: is the shared-guide bootstrap already present? Discover its supported location rather than assuming a project instruction file is global. If uncertain, ask the user which user-level file they use. Never edit another harness's global file by accident.
 
 ### 2. Present findings and ask
 
@@ -86,12 +87,15 @@ Show the user a draft of:
 
 - The canonical repository identity and resolved user-local directory
 - The contents of `issue-tracker.md`, `domain.md`, and `triage-labels.md` (the last when Section B ran), with their exact local paths
+- For a missing or stale user-level bootstrap, the exact user-level instruction file and the single block from `REPOSITORY-CONFIG.md`, expanded to a stable installed guide path. Get explicit confirmation before changing user-level instructions. If setup is running from a temporary worktree, use the stable installed copy or tell the user to install it first.
 
 Let them edit before writing.
 
 ### 4. Write
 
 Create the resolved user-local directory if necessary. Write only `files.tracker`, `files.domain`, and `files.labels` (the last when Section B ran). Update existing local files without discarding unrelated user customisations. Do not edit project instructions or legacy preference files.
+
+After explicit approval, add or update the one bootstrap block in the selected user-level instruction file, preserving every unrelated section. Do not duplicate it on reruns. This is a one-time per-harness change, not a per-repository pointer. If the user declines it or the harness cannot load user-level instructions, clearly state that preference discovery is not automatic: they must explicitly load the shared guide in each session. Do not claim setup is automatically available without an active bootstrap.
 
 When Section B ran on GitHub or GitLab, create each configured label the tracker lacks (`gh label create` / `glab label create`).
 
@@ -107,4 +111,4 @@ For "other" issue trackers, write the local `issue-tracker.md` using the user's 
 
 ### 5. Done
 
-Run the resolver requiring `tracker domain` and also `labels` when Section B ran, then read the written files to confirm the agreed preferences. Tell the user the exact local directory and which skills read it. They can edit these files directly later. Configuration is personal, not committed or automatically shared with teammates; each user runs setup. Changing the canonical remote changes the key, and moving the main checkout to another parent changes the default root, so rerun setup or explicitly migrate confirmed preferences to the newly resolved directory.
+Run the resolver requiring `tracker domain` and also `labels` when Section B ran, then read the written files to confirm the agreed preferences. Verify the approved user-level bootstrap points to an existing installed guide and report whether it is active or still needs loading in a new session. Tell the user the exact preference directory and bootstrap file. They can edit preferences directly later. Configuration is personal, not committed or automatically shared with teammates; each user runs setup. Changing the canonical remote changes the key, and moving the main checkout to another parent changes the default root, so rerun setup or explicitly migrate confirmed preferences to the newly resolved directory.

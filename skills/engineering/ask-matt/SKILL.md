@@ -94,4 +94,4 @@ Off the main flow entirely.
 
 ## Precondition
 
-**`/setup-matt-pocock-skills`**: run before your first engineering flow to configure the issue tracker, triage labels, and domain-doc paths in the sibling `skill-config` folder beside the main checkout, keyed by the canonical Git remote. Worktrees share that location; an absolute `MATT_POCOCK_SKILLS_CONFIG_HOME` override can select another root. Install setup alongside consumers, even for individual-skill installs. Consumers resolve the current repo's local preferences directly, not through `AGENTS.md` / `CLAUDE.md` pointers. Missing preferences mean setup first, never a tracker fallback. Glossaries, ADRs and other project artifacts stay in the project. Custom issue trackers also work.
+**`/setup-matt-pocock-skills`**: run before your first tracker-dependent engineering flow to configure preferences in the sibling `skill-config` folder. A one-time user-level instruction loads the shared configuration guide for every skill; project instructions and individual skills need no resolver boilerplate. Without domain preferences, conventional glossary/ADR paths still work. Custom issue trackers also work.

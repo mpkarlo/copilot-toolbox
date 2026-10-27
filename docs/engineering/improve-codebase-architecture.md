@@ -27,9 +27,9 @@ Where it is confusable with siblings:
 
 ## Prerequisites
 
-Install and run [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills) first. Its Git/Node.js resolver reads the current repo's user-local domain preferences by canonical remote. Missing or invalid preferences mean setup first. If the glossary/map or ADRs at the configured project paths exist, it reads them and uses your domain's own nouns. Missing artifacts are normal. A candidate then reads as "deepen the Order intake module," not "refactor the FooBarHandler."
+None to run it. If `GLOSSARY.md` or ADRs in `docs/adr/` exist, it reads them and uses your domain's own nouns. A candidate then reads as "deepen the Order intake module," not "refactor the FooBarHandler."
 
-It writes in two places, unchanged by local preference storage. The report goes to `<tmpdir>/architecture-review-<timestamp>.html`, outside the repo. During the grilling loop it adds or sharpens terms in the configured project glossary, creating it lazily. It also offers to record a rejected candidate as a project ADR, so a future run does not suggest it again.
+It writes in two places. The report goes to `<tmpdir>/architecture-review-<timestamp>.html`, outside the repo. During the grilling loop it adds or sharpens terms in `GLOSSARY.md`, and creates that file if it does not exist. It also offers to record a rejected candidate as an ADR, so a future run does not suggest it again.
 
 ## Depth, and the report that hunts for it
 

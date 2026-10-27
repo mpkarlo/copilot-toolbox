@@ -12,10 +12,6 @@ Reach for it the moment you hit a question you can't settle by talking: a state 
 
 You will also arrive here without choosing to. [wayfinder](https://aihero.dev/skills-wayfinder) files `prototype` decision [tickets](https://www.aihero.dev/ai-coding-dictionary/ticket) on its map, and you work one with this skill.
 
-## Prerequisites
-
-A standalone prototype needs no tracker configuration. Before reading or updating an implementation issue, the skill uses [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills)' shared Git/Node.js resolver to read this repo's user-local tracker workflow by canonical remote. Install and run setup alongside the skill for those issue operations. Missing or invalid config stops publication with a setup-first message, rather than guessing a tracker. Prototype code, branches and other artifacts keep their existing locations.
-
 ## Two branches
 
 The question picks the branch, and the branches produce different artifacts:

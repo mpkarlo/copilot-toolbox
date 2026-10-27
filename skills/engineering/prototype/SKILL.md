@@ -7,8 +7,6 @@ description: Build a throwaway prototype to answer a design question. Use when t
 
 A prototype is **throwaway code that answers a question**. The question decides the shape.
 
-Before reading or updating an implementation issue, read [REPOSITORY-CONFIG.md](../setup-matt-pocock-skills/REPOSITORY-CONFIG.md), run its resolver in the current project with `tracker`, and read `files.tracker`. Use that workflow to publish the context pointer and answer. Missing or invalid config stops the issue operation with a request to run `/setup-matt-pocock-skills`; never guess a tracker. A standalone prototype with no issue operation needs no tracker configuration, and artifact output locations remain unchanged.
-
 ## Pick a branch
 
 Identify which question is being answered, using the user's prompt, the surrounding code, or by asking if the user is around:

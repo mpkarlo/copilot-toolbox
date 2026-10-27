@@ -2,7 +2,7 @@
 
 `setup-matt-pocock-skills` answers three questions about one repo: where issues live, what the triage labels are called, and where the domain docs sit. It records the answers as markdown files in a user-local configuration directory keyed by the canonical Git remote, not in the project.
 
-Those files are the only thing that varies between repos. The skills themselves are identical everywhere. They read the current repo's user-local `issue-tracker.md` at run time and do what it says, without `AGENTS.md` or `CLAUDE.md` pointers. That is why the set is not tied to GitHub, and why you never edit a skill file to point it at another tracker. Invoking it with "link the skills to a custom issue tracker" works with anything you can connect to programmatically, with no changes to the skills.
+Those files are the only thing that varies between repos. The skills themselves are identical everywhere. One user-level bootstrap loads the shared configuration guide, which supplies the current repo's preferences to the session. Individual skills keep their existing instructions, without repeated resolver requirements or project instruction pointers. That is why the set is not tied to GitHub, and why you never edit a skill file to point it at another tracker.
 
 It is a prompt-driven skill backed by a deterministic, read-only path resolver. It inspects your remote and existing preferences, proposes what it found, and waits for confirmation before writing the local files. Glossaries, ADRs, tickets and other project artifacts stay where they were.
 
@@ -10,7 +10,7 @@ It is a prompt-driven skill backed by a deterministic, read-only path resolver. 
 
 You invoke this by typing `/setup-matt-pocock-skills`; the [agent](https://www.aihero.dev/ai-coding-dictionary/agent) won't reach for it on its own. Its metadata marks it non-invokable on purpose, so no other skill can fire it for you.
 
-Reach for it once per repo, before the first use of any other engineering skill. If [triage](https://aihero.dev/skills-triage), [to-spec](https://aihero.dev/skills-to-spec), [to-tickets](https://aihero.dev/skills-to-tickets) or [wayfinder](https://aihero.dev/skills-wayfinder) start guessing where your issues go, or apply labels your tracker doesn't have, this repo has not been set up yet. You can run it in a repo halfway through a project. The skill reads what is already there, so no earlier work is lost.
+Reach for it once per repo before tracker-dependent work, or to choose custom domain-document paths. If [triage](https://aihero.dev/skills-triage), [to-spec](https://aihero.dev/skills-to-spec), [to-tickets](https://aihero.dev/skills-to-tickets) or [wayfinder](https://aihero.dev/skills-wayfinder) lack a tracker or mapping, setup supplies them. Optional glossary lookups do not require setup: absent domain preferences retain conventional project paths. You can run setup halfway through a project without losing earlier work.
 
 ## Prerequisites
 
@@ -26,6 +26,14 @@ Set `MATT_POCOCK_SKILLS_CONFIG_HOME` to an absolute path to override the `skill-
 For example, the complete Windows tracker path for that checkout is `C:\Code\skill-config\mpkarlo-my-skills-ea29c2237fcb\issue-tracker.md`. The readable name is sanitised and the hash is the first 12 SHA-256 hex characters of the canonical identity `github.com/mpkarlo/my-skills`. Setup prints the resolved absolute directory and every written file path before confirmation and after saving. Installation alone creates no preference files.
 
 The identity comes from `origin`'s fetch URL, or the sole remote when there is no `origin`. Multiple remotes without `origin` require an explicit choice. Transport, credentials, trailing slash and `.git` are removed; the hostname is lowercased, as are repository paths on GitHub.com and GitLab.com. Non-default ports remain distinct. Worktrees resolve from their main checkout, so share preferences even when located elsewhere. Clones share only when their checkout parents or override roots match; forks do not share with upstream. A remote-less Git repo uses its real Git common directory as the identity and its main checkout name as the readable prefix. If you have not initialised Git, setup asks before doing so.
+
+## One bootstrap, not one change per skill
+
+Setup offers one short block in the **user-level instruction file your harness loads**, after confirming its exact path and text. The block points to the shared `REPOSITORY-CONFIG.md` in a stable installed setup directory. It applies across projects: the guide resolves the current repository and loads its preferences at session start or before the first engineering skill, then again when changing repositories.
+
+No project `AGENTS.md` or `CLAUDE.md` changes are needed. Each harness needs its own one-time bootstrap; setup does not assume that one harness reads another's global file. If you decline that edit, explicitly load the guide yourself each session. If the harness has no user-level instruction support, discovery cannot be automatic. This is agent instruction indirection, not a filesystem alias for external scripts.
+
+Tracker operations still stop when tracker configuration is missing, and role-applying operations require a label mapping. Domain preferences are optional: without `domain.md`, skills retain root `GLOSSARY.md`, `GLOSSARY-MAP.md` when present, and relevant `docs/adr/` paths. Missing artifacts remain normal. With a configured layout, the shared guide supplies alternate project paths without changing the domain skills.
 
 ## The three decisions
 
@@ -60,9 +68,9 @@ No. GitHub, GitLab and local markdown under `.scratch/` all ship as ready-made t
 
 Rerun to migrate legacy project config, change trackers, or refresh instructions that have drifted from newer templates. Setup reads existing preferences first and preserves customisations. You can edit the local files directly for everyday changes.
 
-**Will it edit `CLAUDE.md`, `AGENTS.md`, or existing `docs/agents/` files?**
+**Will it edit project `CLAUDE.md`, `AGENTS.md`, or existing `docs/agents/` files?**
 
-No. Setup can read them as migration input, then copy confirmed preferences to user storage. It leaves the old files and pointers untouched. Consumers no longer depend on which instruction file a [harness](https://www.aihero.dev/ai-coding-dictionary/harness) reads.
+No. Setup can read them as migration input, then copy confirmed preferences to sibling storage. It leaves project files and old pointers untouched. It separately offers a single user-level bootstrap, with explicit confirmation, in the file your [harness](https://www.aihero.dev/ai-coding-dictionary/harness) actually loads.
 
 **It didn't create my triage labels.**
 
@@ -74,7 +82,7 @@ No. It configures three things: tracker, labels, doc layout. Skills stay opinion
 
 **Can I keep config outside every repo, or share it across clones?**
 
-Yes. The default is the sibling `skill-config` folder, and worktrees share their main checkout's preferences. Use `MATT_POCOCK_SKILLS_CONFIG_HOME` for a shared root when clones have different parents. Changing the remote changes the directory name; moving the main checkout changes the default root. Rerun setup or explicitly copy confirmed preferences into the newly resolved directory. Older AppData/XDG/Application Support config is not silently read or moved. A missing, empty, unreadable or incomplete required config stops the dependent operation with a setup-first message, never an invented tracker default.
+Yes. The default is the sibling `skill-config` folder, and worktrees share their main checkout's preferences. Use `MATT_POCOCK_SKILLS_CONFIG_HOME` for a shared root when clones have different parents. Changing the remote changes the directory name; moving the main checkout changes the default root. Rerun setup or explicitly copy confirmed preferences into the newly resolved directory. Older AppData/XDG/Application Support config is not silently read or moved. Missing required tracker or label preferences stop their dependent operations with a setup-first message. Domain preferences remain optional.
 
 **Isn't it strange to have a skill that configures the other skills?**
 
@@ -83,6 +91,7 @@ One long-standing complaint says yes, in these words: *"having a skill to set up
 ## It's working if
 
 - Setup reports the exact user-local directory containing your confirmed preferences.
+- One user-level bootstrap points to an existing installed guide; individual skills have no repeated lookup boilerplate.
 - Project instruction files, legacy config and domain artifacts are unchanged by preference setup.
 - The tracker it proposed matches the remote you use, and the label strings match labels that exist in your tracker.
 - Afterwards, `/to-tickets` publishes without asking you where issues live, and `/triage` applies labels rather than inventing them.
