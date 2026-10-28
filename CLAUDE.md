@@ -28,6 +28,14 @@ No em-dashes anywhere in this repo's prose (`SKILL.md` files, docs, `README.md`,
 
 ## Agent skills
 
+### Issue tracker
+
+Issues and specs live in GitHub Issues; use `gh` for tracker operations. See `docs/agents/issue-tracker.md`.
+
 ### Triage labels
 
-Canonical names, unchanged. See `docs/agents/triage-labels.md`. Issues are judged against [`SCOPE.md`](./SCOPE.md).
+The five canonical triage labels are used unchanged. Issues are judged against `SCOPE.md`. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: root `GLOSSARY.md` and `docs/adr/`. See `docs/agents/domain.md`.
