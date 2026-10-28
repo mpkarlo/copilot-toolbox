@@ -1,5 +1,5 @@
 ---
-"mattpocock-skills": patch
+"copilot-toolbox": patch
 ---
 
 `teach` writes its workspace to the directory you ran it in, not the skill folder (#377).

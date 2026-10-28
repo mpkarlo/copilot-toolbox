@@ -1,5 +1,5 @@
 ---
-"mattpocock-skills": minor
+"copilot-toolbox": minor
 ---
 
 Add optional Local-only storage for repository tracker workflows, triage-label mappings and domain-document preferences. Project mode remains the default, using the original `docs/agents/` preferences and project instruction pointers.

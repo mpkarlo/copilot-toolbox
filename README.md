@@ -1,41 +1,56 @@
-<p>
-  <a href="https://www.aihero.dev/s/skills-newsletter">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="https://res.cloudinary.com/total-typescript/image/upload/v1777382277/skills-repo-dark_2x.png">
-      <source media="(prefers-color-scheme: light)" srcset="https://res.cloudinary.com/total-typescript/image/upload/v1777382277/skill-repo-light_2x.png">
-      <img alt="Skills" src="https://res.cloudinary.com/total-typescript/image/upload/v1777382277/skill-repo-light_2x.png" width="369">
-    </picture>
-  </a>
-</p>
+# Copilot Toolbox
 
-# Skills For Real Engineers
+Practical, reusable skills for shaping, building, reviewing, and improving software with coding agents, plus tools for everyday work.
 
-[![skills.sh](https://skills.sh/b/mattpocock/skills)](https://skills.sh/mattpocock/skills)
+This repository began as a fork of [mattpocock/skills](https://github.com/mattpocock/skills). The original MIT license and attribution are preserved.
 
-My agent skills that I use every day to do real engineering - not vibe coding.
+## Installation
 
-Developing real applications is hard. Approaches like GSD, BMAD, and Spec-Kit try to help by owning the process. But while doing so, they take away your control and make bugs in the process hard to resolve.
-
-These skills are designed to be small, easy to adapt, and composable. They work with any model. They're based on decades of engineering experience. Hack around with them. Make them your own. Enjoy.
-
-If you want to keep up with changes to these skills, and any new ones I create, you can join ~60,000 other devs on my newsletter:
-
-[Sign Up To The Newsletter](https://www.aihero.dev/s/skills-newsletter)
-
-## Installation (30-second setup)
-
-A plugin updates itself. [skills.sh](https://skills.sh/mattpocock/skills) copies editable files into your project, and you update them by hand. Pick one per agent, because installing both gives you every skill twice.
+The recommended route for the GitHub Copilot app is the `mpkarlo` plugin marketplace. It packages the promoted skills in the portable Agent Plugins format.
 
 ### 1. Get the skills
+
+<details>
+<summary><strong>GitHub Copilot app</strong></summary>
+
+In the app, open **Customize**, open the marketplace settings beside the marketplace dropdown, and add `https://github.com/mpkarlo/copilot-toolbox`. Browse the `mpkarlo` marketplace and install **copilot-toolbox**.
+
+</details>
+
+<details>
+<summary><strong>GitHub Copilot CLI</strong></summary>
+
+```bash
+copilot plugin marketplace add mpkarlo/copilot-toolbox
+copilot plugin install copilot-toolbox@mpkarlo
+```
+
+To enable marketplace auto-updates, add this once to `~/.copilot/settings.json`:
+
+```json
+{
+  "extraKnownMarketplaces": {
+    "mpkarlo": { "source": { "source": "github", "repo": "mpkarlo/copilot-toolbox" }, "autoUpdate": true }
+  }
+}
+```
+
+</details>
+
+<details>
+<summary><strong>Visual Studio Code</strong></summary>
+
+Run **Chat: Manage Plugin Marketplaces**, choose **Add Marketplace...**, and enter `https://github.com/mpkarlo/copilot-toolbox`. Then find and install **copilot-toolbox** from **Customize**.
+
+</details>
 
 <details>
 <summary><strong>Claude Code</strong></summary>
 
 ```bash
-claude plugin install mattpocock-skills@claude-plugins-official
+claude plugin marketplace add mpkarlo/copilot-toolbox
+claude plugin install copilot-toolbox@mpkarlo
 ```
-
-Updates itself by default.
 
 </details>
 
@@ -43,33 +58,9 @@ Updates itself by default.
 <summary><strong>Codex</strong></summary>
 
 ```bash
-codex plugin marketplace add mattpocock/skills
-codex plugin add mattpocock-skills@mattpocock
+codex plugin marketplace add mpkarlo/copilot-toolbox
+codex plugin add copilot-toolbox@mpkarlo
 ```
-
-Updates itself at startup.
-
-</details>
-
-<details>
-<summary><strong>GitHub Copilot</strong> (CLI and VS Code)</summary>
-
-```bash
-copilot plugin marketplace add mattpocock/skills
-copilot plugin install mattpocock-skills@mattpocock
-```
-
-Then, once, add to `~/.copilot/settings.json`:
-
-```json
-{
-  "extraKnownMarketplaces": {
-    "mattpocock": { "source": { "source": "github", "repo": "mattpocock/skills" }, "autoUpdate": true }
-  }
-}
-```
-
-In VS Code, run **Chat: Install Plugin From Source** and enter `https://github.com/mattpocock/skills`. It updates daily.
 
 </details>
 
@@ -77,8 +68,8 @@ In VS Code, run **Chat: Install Plugin From Source** and enter `https://github.c
 <summary><strong>Gemini CLI</strong> (manual updates)</summary>
 
 ```bash
-gemini skills install https://github.com/mattpocock/skills.git --path skills/engineering
-gemini skills install https://github.com/mattpocock/skills.git --path skills/productivity
+gemini skills install https://github.com/mpkarlo/copilot-toolbox.git --path skills/engineering
+gemini skills install https://github.com/mpkarlo/copilot-toolbox.git --path skills/productivity
 ```
 
 Re-run both commands to update.
@@ -89,7 +80,7 @@ Re-run both commands to update.
 <summary><strong>Any other agent, or editable files</strong> (manual updates)</summary>
 
 ```bash
-npx skills@latest add mattpocock/skills -a <agent>  # cursor, opencode, devin, windsurf, amp, pi; omit -a to choose
+npx skills@latest add mpkarlo/copilot-toolbox -a <agent>  # cursor, opencode, devin, windsurf, amp, pi; omit -a to choose
 ```
 
 When the installer asks which skills to take, include `setup-matt-pocock-skills`. To update, run `npx skills@latest update`, and re-run `add` to pick up new skills.
@@ -108,11 +99,11 @@ In your agent, run it once per repo. It will:
 
 In Local-only mode, each consuming skill follows a short reference to the [shared guide](./skills/engineering/setup-matt-pocock-skills/REPOSITORY-CONFIG.md), which finds that checkout's preferences. Install the setup skill alongside any skill that needs Local-only preferences. No app-specific integration, extra runtime, hashes or environment-variable overrides are required. Setup preserves the existing mode on reruns and asks before switching; installation alone creates no preference files.
 
-### 3. Bam - you're ready to go.
+### 3. You're ready to go.
 
 ## Why These Skills Exist
 
-I built these skills as a way to fix common failure modes I see with Claude Code, Codex, and other coding agents.
+The collection addresses recurring failure modes in agent-assisted software work.
 
 ### #1: The Agent Didn't Do What I Want
 
@@ -129,7 +120,7 @@ This is just the same in the AI age. There is a communication gap between you an
 - [`/grill-me`](./skills/productivity/grill-me/SKILL.md) - for non-code uses
 - [`/grill-with-docs`](./skills/engineering/grill-with-docs/SKILL.md) - same as [`/grill-me`](./skills/productivity/grill-me/SKILL.md), but adds more goodies (see below)
 
-These are my most popular skills. They help you align with the agent before you get started, and think deeply about the change you're making. Use them _every_ time you want to make a change.
+These are central skills for aligning with an agent before starting and thinking deeply about the change. Use them whenever you want to make a change.
 
 ### #2: The Agent Is Way Too Verbose
 
@@ -139,7 +130,7 @@ These are my most popular skills. They help you align with the agent before you 
 
 **The Problem**: At the start of a project, devs and the people they're building the software for (the domain experts) are usually speaking different languages.
 
-I felt the same tension with my agents. Agents are usually dropped into a project and asked to figure out the jargon as they go. So they use 20 words where 1 will do.
+The same mismatch appears when an agent has to infer a project's jargon as it goes. Without a shared language, it may use 20 words where 1 will do.
 
 **The Fix** for this is a shared language. It's a document that helps agents decode the jargon used in the project.
 
@@ -148,7 +139,7 @@ I felt the same tension with my agents. Agents are usually dropped into a projec
 Example
 </summary>
 
-Here's an example [glossary](https://github.com/mattpocock/course-video-manager/blob/076a5a7a182db0fe1e62971dd7a68bcadf010f1c/CONTEXT.md) (still named `CONTEXT.md` at that pinned commit, from before the skills renamed the convention), from my `course-video-manager` repo. Which one is easier to read?
+Here's an example [glossary](https://github.com/mattpocock/course-video-manager/blob/076a5a7a182db0fe1e62971dd7a68bcadf010f1c/CONTEXT.md) (still named `CONTEXT.md` at that pinned commit, from before the skills renamed the convention), from the upstream author's `course-video-manager` repository. Which one is easier to read?
 
 - **BEFORE**: "There's a problem when a lesson inside a section of a course is made 'real' (i.e. given a spot in the file system)"
 - **AFTER**: "There's a problem with the materialization cascade"
@@ -182,9 +173,9 @@ It's time to look at your feedback loops. Without feedback on how the code it pr
 
 For automated tests, a red-green-refactor loop is critical. This is where the agent writes a failing test first, then fixes the test. This helps give the agent a consistent level of feedback that results in far better code.
 
-I've built a **[`/tdd`](./skills/engineering/tdd/SKILL.md) skill** you can slot into any project. It encourages red-green-refactor and gives the agent plenty of guidance on what makes good and bad tests.
+The **[`/tdd`](./skills/engineering/tdd/SKILL.md) skill** encourages red-green-refactor and gives the agent guidance on what makes good and bad tests.
 
-For debugging, I've also built a **[`/diagnosing-bugs`](./skills/engineering/diagnosing-bugs/SKILL.md)** skill that wraps best debugging practices into a disciplined loop, gated phase by phase.
+For debugging, **[`/diagnosing-bugs`](./skills/engineering/diagnosing-bugs/SKILL.md)** wraps established debugging practices into a disciplined, phase-gated loop.
 
 ### #4: We Built A Ball Of Mud
 
@@ -204,11 +195,11 @@ This is built in to every layer of these skills:
 
 - [`/to-spec`](./skills/engineering/to-spec/SKILL.md) quizzes you about which modules you're touching before creating a spec
 
-And crucially, [`/improve-codebase-architecture`](./skills/engineering/improve-codebase-architecture/SKILL.md) surveys a codebase for deepening opportunities and hands you the candidates. I recommend running it on your codebase once every few days. It is a survey, not a rescue: on a genuinely old codebase it will find real candidates, but it won't untangle the mud for you.
+And crucially, [`/improve-codebase-architecture`](./skills/engineering/improve-codebase-architecture/SKILL.md) surveys a codebase for deepening opportunities and presents candidates. Running it every few days can surface useful improvements. It is a survey, not a rescue: on a genuinely old codebase it will find real candidates, but it won't untangle the mud for you.
 
 ### Summary
 
-Software engineering fundamentals matter more than ever. These skills are my best effort at condensing these fundamentals into repeatable practices, to help you ship the best apps of your career. Enjoy.
+Software engineering fundamentals matter more than ever. These skills condense those fundamentals into repeatable practices to help you ship better software.
 
 ## Reference
 
@@ -216,7 +207,7 @@ These split on one axis: who can invoke them. **User-invoked** skills are reacha
 
 ### Engineering
 
-Skills I use daily for code work.
+Skills for code work.
 
 **User-invoked**
 

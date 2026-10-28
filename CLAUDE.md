@@ -6,9 +6,11 @@ Skills are organized into bucket folders under `skills/`:
 - `in-progress/`: beta: public on purpose, feedback wanted, not shipped in the plugin
 - `deprecated/`: no longer used
 
-Every skill in `engineering/` or `productivity/` (the **promoted** buckets) must have a reference in the top-level `README.md` and an entry in `.claude-plugin/plugin.json`'s `skills` array (the Claude Code plugin ships exactly the promoted set). Skills in `misc/`, `in-progress/`, and `deprecated/` must not appear in either.
+Every skill in `engineering/` or `productivity/` (the **promoted** buckets) must have a reference in the top-level `README.md` and an entry in `.claude-plugin/plugin.json`'s `skills` array. The portable Copilot plugin ships the same curated set. Skills in `misc/`, `in-progress/`, and `deprecated/` must not appear in either plugin.
 
-Install commands are copied verbatim from [.agents/install-block.md](./.agents/install-block.md). `.claude-plugin/marketplace.json` is the repo's own marketplace. Every agent except Claude Code installs from it to get automatic updates, and Claude Code uses `claude-plugins-official`. Run `claude plugin validate . --strict` after touching either manifest. [ADR 0002](./.agents/adr/0002-ship-as-a-claude-code-plugin.md) records why.
+Install commands are copied verbatim from [.agents/install-block.md](./.agents/install-block.md). `.claude-plugin/marketplace.json` is the `mpkarlo` catalog for Claude Code and Codex. `.github/plugin/marketplace.json` is the catalog for the GitHub Copilot app, Copilot CLI, and VS Code; it points to the portable plugin at `plugins/copilot-toolbox`.
+
+The canonical skill sources stay bucketed under `skills/`. Agent Plugins expects a flat `skills/<name>/SKILL.md` layout, so `plugins/copilot-toolbox/skills/` is generated from the promoted source directories. After changing promoted skills, run `npm run sync:copilot-plugin`, and verify with `npm run check:copilot-plugin`. `npm run version` keeps both plugin manifests and the Copilot marketplace entry aligned with `package.json`. Run `claude plugin validate . --strict` after touching either marketplace manifest.
 
 Each skill entry in the top-level `README.md` must link the skill name to its `SKILL.md`.
 

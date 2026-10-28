@@ -1,0 +1,21 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "copilot-toolbox",
+  "version": "1.3.1",
+  "description": "Practical skills for shaping, building, reviewing, and improving software with coding agents.",
+  "author": {
+    "name": "mpkarlo",
+    "url": "https://github.com/mpkarlo"
+  },
+  "homepage": "https://github.com/mpkarlo/copilot-toolbox",
+  "repository": "https://github.com/mpkarlo/copilot-toolbox",
+  "license": "MIT",
+  "keywords": [
+    "copilot",
+    "engineering",
+    "skills",
+    "tdd",
+    "code-review",
+    "productivity"
+  ]
+}

@@ -1,15 +1,15 @@
 {
-  "name": "mattpocock",
+  "name": "mpkarlo",
   "owner": {
-    "name": "Matt Pocock",
-    "url": "https://www.aihero.dev"
+    "name": "mpkarlo",
+    "url": "https://github.com/mpkarlo"
   },
-  "description": "Matt Pocock's skills for real engineering, as an installable Claude Code plugin.",
+  "description": "Agent skills for practical software engineering and productivity workflows.",
   "plugins": [
     {
-      "name": "mattpocock-skills",
+      "name": "copilot-toolbox",
       "source": "./",
-      "description": "Matt Pocock's agent skills for real engineering (grilling, spec/ticket flows, TDD, code review, domain modelling and more).",
+      "description": "Practical skills for shaping, building, reviewing, and improving software with coding agents.",
       "category": "engineering",
       "keywords": [
         "engineering",

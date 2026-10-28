@@ -1,0 +1,18 @@
+{
+  "name": "mpkarlo",
+  "metadata": {
+    "description": "Agent skills for practical software engineering and productivity workflows.",
+    "version": "1.0.0"
+  },
+  "owner": {
+    "name": "mpkarlo"
+  },
+  "plugins": [
+    {
+      "name": "copilot-toolbox",
+      "source": "plugins/copilot-toolbox",
+      "description": "Practical skills for shaping, building, reviewing, and improving software with coding agents.",
+      "version": "1.3.1"
+    }
+  ]
+}
