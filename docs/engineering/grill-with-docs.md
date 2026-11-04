@@ -6,7 +6,7 @@ It is **[stateful](https://www.aihero.dev/ai-coding-dictionary/stateful)**. Ever
 
 ## When to reach for it
 
-You invoke this by typing `/grill-with-docs`, and the agent won't reach for it on its own.
+This skill is intended for explicit requests; ask for `/grill-with-docs` when it is available. See the [invocation guidance](../../.agents/invocation.md) for Copilot compatibility.
 
 Reach for it at the start of a change, in a repo, when the plan is still fuzzy and the words for the thing are not settled yet. It is the single-session tool. Which grilling skill you want depends on what is in front of you:
 
@@ -46,10 +46,10 @@ The glossary is the main output. This skill builds domain language: the project'
 Scope decides it. Use this for anything you can settle in one session; use [wayfinder](wayfinder.md) when the effort is too big to hold in one, and it charts the work as a map of decision [tickets](https://www.aihero.dev/ai-coding-dictionary/ticket) first. Wayfinder is slower and denser, and reaching for it on a well-scoped feature is the common mistake. It does not replace this skill, and it can start a grilling session for the parts of the map that suit one.
 
 **It ran, but no `GLOSSARY.md` and no ADRs appeared.**
-There are two known causes. The first is that nothing qualified. ADRs need all three gates, and a session about a change with no new vocabulary has nothing to write. The second is a real bug. When the skill runs inside another orchestration layer (a spec-driven-development wrapper, a multi-agent framework, a rule that invokes it as a step in someone else's pipeline), users report that the file-writing half silently does not happen, while the interview still runs. The bug is filed and unfixed. If you are in that setup, check the working directory before you trust the session's output.
+Nothing may have qualified. ADRs need all three gates, and a session about a change with no new vocabulary has nothing to write. Upstream users also report that the file-writing half sometimes does not run inside another orchestration layer while the interview continues. This fork has not verified that behaviour in Copilot. Check the working directory and ask the agent what it loaded and wrote.
 
 **It asked everything at once, with no recommendations, and never mentioned `GLOSSARY.md`.**
-That is the skill failing to load its two dependencies. Because `SKILL.md` is a one-line delegation, an agent that does not pick up [grilling](../productivity/grilling.md) and [domain-modeling](domain-modeling.md) guesses at what grilling means, and you get every question at once with no structure. Partial loading is more confusing. `grilling` loads, `domain-modeling` does not, and you get a good interview with no paper trail. How often it happens depends on the model and the [effort](https://www.aihero.dev/ai-coding-dictionary/effort) level, and it is the most reported problem with this skill. If you suspect it, ask the agent directly which skills it loaded.
+One possible cause is a failure to load [grilling](../productivity/grilling.md), [domain-modeling](domain-modeling.md), or both. The skill calls each dependency, but this fork has not verified how reliably those calls load in Copilot. Ask the agent which skills it loaded and check the resulting files rather than assuming either call succeeded.
 
 **Where did all my other decisions go?**
 Into the conversation only. This is the most serious open complaint about the skill. The glossary is not a spec, most answers do not earn an ADR, and no record links each resolved answer to a spec, a ticket and a test. Later steps soften precise answers (ordering guarantees, negative requirements, numeric defaults) into weaker prose, and the result can look complete while missing the thing you decided. For now, keep the session and feed it straight to [to-spec](to-spec.md). Then re-read the spec against your own answers rather than assuming it captured them.

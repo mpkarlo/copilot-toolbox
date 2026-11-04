@@ -6,7 +6,7 @@ It reads the tickets as a **task graph**, not a list. Blocking edges decide what
 
 ## When to reach for it
 
-You invoke this by typing `/implement-spec`, and the agent won't reach for it on its own.
+This skill is intended for explicit requests; ask for `/implement-spec` when it is available. See the [invocation guidance](../../.agents/invocation.md) for Copilot compatibility.
 
 | Your situation | Reach for |
 | --- | --- |

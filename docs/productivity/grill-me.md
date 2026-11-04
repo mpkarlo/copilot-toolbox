@@ -6,7 +6,7 @@ It is **[stateless](https://www.aihero.dev/ai-coding-dictionary/stateless)**. It
 
 ## When to reach for it
 
-You invoke this by typing `/grill-me`; the [agent](https://www.aihero.dev/ai-coding-dictionary/agent) won't reach for it on its own. Start it in a **fresh conversation**, not on top of a plan you already had an agent write.
+This skill is intended for explicit requests; ask the [agent](https://www.aihero.dev/ai-coding-dictionary/agent) for `/grill-me` when it is available. Start it in a **fresh conversation**, not on top of a plan you already had an agent write. Availability depends on the Copilot product and version; see the [invocation guidance](../../.agents/invocation.md).
 
 Reach for it as soon as you have an idea worth taking seriously (a feature, a product direction, a business call, a piece of writing), and long before you have worked out what it involves. Vagueness is not a reason to wait, because the session exists to remove it. If you can already specify the thing precisely, you don't need to grill it.
 
@@ -52,11 +52,13 @@ Count rounds, not questions. Forty-six questions across four rounds is an ordina
 Usually the scope was too large. Ask the agent to break the work into smaller pieces first, then grill each one. Very long sessions also drift into the **[dumb zone](https://www.aihero.dev/ai-coding-dictionary/smart-zone)**, where the [context window](https://www.aihero.dev/ai-coding-dictionary/context-window) is full enough that the questions get worse.
 
 **Can I go back to one question at a time?**
-Yes. Add this to your global `CLAUDE.md`:
+You can ask for it in your request:
 
 ```
 When grilling, ask one question at a time.
 ```
+
+For a standing preference, put the same instruction in the project instructions your Copilot client uses, such as `AGENTS.md`. Instruction loading depends on the client and its configuration.
 
 **What if I genuinely don't know the answer?**
 Say so. "I don't know" is a real answer, and a question you can't answer is usually a sign to prototype rather than to guess.

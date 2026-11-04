@@ -8,7 +8,7 @@ Two filters stop the report from becoming generic cleanup advice. First, every c
 
 ## When to reach for it
 
-You invoke this by typing `/improve-codebase-architecture`; the [agent](https://www.aihero.dev/ai-coding-dictionary/agent) will not reach for it on its own.
+This skill is intended for explicit requests; ask the [agent](https://www.aihero.dev/ai-coding-dictionary/agent) for `/improve-codebase-architecture` when it is available. See the [invocation guidance](../../.agents/invocation.md) for Copilot compatibility.
 
 It is not a step in the main build loop. You run it periodically to queue up more work that improves the codebase. People use it in four situations:
 
@@ -87,9 +87,9 @@ Partly. It works well on big existing codebases that lack consistent structure, 
 
 Rarely, so know that before you start. The skill exists to output findings, so it tends to produce candidates instead of concluding that nothing is wrong. Use the strength badges to correct for this. If every candidate in a report is `Speculative`, the skill found nothing.
 
-**Does it work in Codex or another harness?**
+**Does it work with GitHub Copilot?**
 
-Partly. The exploration step names Claude Code's `Agent` tool with `subagent_type=Explore` directly. A [harness](https://www.aihero.dev/ai-coding-dictionary/harness) without that tool may skip the parallel exploration instead of using its own equivalent. The skill still runs, but the scan is less thorough. Someone has proposed a harness-neutral rewrite, but it is not merged.
+The source names Claude Code's `Agent` tool with `subagent_type=Explore` for parallel exploration. This fork has not evaluated that step with Copilot; agent-behavior evaluation is deferred in #4. Treat parallel exploration as unverified rather than assuming Copilot substitutes an equivalent tool.
 
 **How do I actually implement deep modules in TypeScript?**
 

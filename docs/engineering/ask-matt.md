@@ -6,7 +6,7 @@ It recommends and stops. It does not grill, write a [spec](https://www.aihero.de
 
 ## When to reach for it
 
-You invoke this by typing `/ask-matt`; the agent won't reach for it on its own.
+This skill is intended for explicit requests; ask for `/ask-matt` when it is available. Availability depends on the Copilot product and version; see the [invocation guidance](../../.agents/invocation.md).
 
 | Your situation | What the router gives back |
 | --- | --- |
@@ -54,7 +54,7 @@ People keep asking for one in the README. This skill is that list. A static tabl
 
 **It told me half the skills aren't installed.**
 
-This is a known bug, and it is not fixed. Most of the skills the router routes you through set `disable-model-invocation: true`, which means the harness leaves them out of the skill list it injects into the agent's context. The agent reads that list as exhaustive and reports them missing. In one reported session, it declared the whole spec-and-tickets flow absent and rerouted to bare `/grilling` and `/tdd`. Sixteen of the plugin's twenty-seven skills carry the flag, so this is the common case rather than an edge. They are installed. Type the slash command anyway, or check `.claude-plugin/plugin.json`, which is the authority on what is present.
+User-invoked skills set `disable-model-invocation: true`, so they may not appear in the model's list of available skills. Copilot CLI issue [#4438](https://github.com/github/copilot-cli/issues/4438) reports that discovery does not prove a user-invoked skill loads. We have not checked this across the Copilot app, Copilot CLI, and Visual Studio Code. The [generated Copilot skill folders](../../plugins/copilot-toolbox/skills/) show what is in the plugin, but they do not prove what loads in a session. Agent-behavior evaluation remains deferred in [#4](https://github.com/mpkarlo/copilot-toolbox/issues/4).
 
 **It described a skill's behaviour, and the skill doesn't do that.**
 
@@ -70,7 +70,7 @@ No. Three separate proposals have asked for a router that reads your local `skil
 
 **It told me to edit a SKILL.md.**
 
-That advice is often correct, but the edit rarely lasts. Someone asked it how to make [implement](./implement.md) close tickets, was told to add a line to the skill, and saw the problem at once. `npx skills update` overwrites the file, and the plugin install is read-only. Put standing behaviour in your own `CLAUDE.md` or `AGENTS.md`, or say it in the invocation. Changes you make in the prompt survive updates. People point the flow at Linear instead of GitHub this way, or ask it which open tickets could run in parallel.
+An edit to an installed plugin can be replaced by an update. Put standing behaviour in the project instructions your Copilot client uses, such as `AGENTS.md`, or include it in your request. Which instruction files are loaded depends on the client and its configuration. People use a request to point the flow at Linear instead of GitHub, or ask which open tickets could run in parallel.
 
 **It named a skill I don't have, or missed one I do.**
 

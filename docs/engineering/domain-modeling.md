@@ -6,7 +6,7 @@ It is the **active** discipline, not the passive one. Any skill can read `GLOSSA
 
 ## When to reach for it
 
-Type `/domain-modeling`, or the agent reaches for it automatically when a task fits. In practice, automatic invocation is the weakest part of the skill. When `grill-with-docs` or `wayfinder` say to load it, [models](https://www.aihero.dev/ai-coding-dictionary/model) often load `grilling` and skip this one. If a [grilling](https://www.aihero.dev/ai-coding-dictionary/grilling) session runs and `GLOSSARY.md` is unchanged at the end, that is what happened. Invoke it by name alongside the other skill.
+Request `/domain-modeling` when it is available, or the agent may select it when a task fits. It is intended for model invocation; see the [invocation guidance](../../.agents/invocation.md) for Copilot compatibility. Upstream users report that dependent skills sometimes fail to load, but this fork has not verified how often that happens in Copilot. An unchanged `GLOSSARY.md` can also mean no term was resolved, so ask the agent which skills it loaded before drawing a conclusion.
 
 Reach for it when the *words* are the problem:
 

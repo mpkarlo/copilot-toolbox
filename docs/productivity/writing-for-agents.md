@@ -8,7 +8,7 @@ It was called `writing-great-skills` until v1.1. The new name fits what it alway
 
 ## When to reach for it
 
-Type `/writing-for-agents`, or the agent reaches for it on its own when you're creating or editing a skill, or modifying `AGENTS.md` or `CLAUDE.md`.
+Request `/writing-for-agents`, or the agent may reach for it when you're creating or editing a skill, or modifying `AGENTS.md` or `CLAUDE.md`.
 
 Reach for it by hand for everything else an agent reads: your docs, specs and [tickets](https://www.aihero.dev/ai-coding-dictionary/ticket), system and [AFK](https://www.aihero.dev/ai-coding-dictionary/afk) prompts. The test is one question: does an agent read this? It does not matter how the agent gets the document: a pointer names it, a human pastes it, or it is in the repo. To find out what a codebase contains, use [grill-with-docs](../engineering/grill-with-docs.md). This reference controls how a document reads, not what it knows.
 
@@ -16,7 +16,7 @@ Reach for it by hand for everything else an agent reads: your docs, specs and [t
 
 The central idea is two budgets that every document and pointer spends:
 
-- **Context load**: the cost of always-loaded material on the agent's window: an `AGENTS.md` line, a skill description, anything sitting in context every [turn](https://www.aihero.dev/ai-coding-dictionary/turn) whether or not it fires.
+- **Context load**: the cost of material the agent loads into its window: an applicable `AGENTS.md` line, a skill description, or anything else held in context across [turns](https://www.aihero.dev/ai-coding-dictionary/turn) whether or not it is relevant.
 - **Cognitive load**: the cost to you of remembering which documents exist and when to reach for each. You are the index. Do not try to minimise this cost, because it is the price of human agency.
 
 Once you think in these two loads, most authoring decisions (split or don't, inline or disclose, point or push) become the same trade made in different places.
@@ -46,8 +46,8 @@ Agents told to "streamline" optimise for length, because length is the thing the
 **How do I know when it's done?**
 When it works, and you can no longer find duplication, sediment or no-ops. There is no automated eval. You check by running the document by hand and using the failure-mode vocabulary to diagnose problems. When a document misbehaves, the same vocabulary helps you fix it: name the failure mode first, then fix that.
 
-**Should this live in `CLAUDE.md` or somewhere else?**
-Ask which load you want to pay. `CLAUDE.md` loads into every [session](https://www.aihero.dev/ai-coding-dictionary/session) unconditionally. Material behind a pointer costs only the pointer's own line until it fires. Anything that applies in one session out of ten costs context load in the other nine.
+**Should this live in the project instructions or somewhere else?**
+Ask which load you want to pay. Instructions actually loaded into a [session](https://www.aihero.dev/ai-coding-dictionary/session) consume context even when they are irrelevant. A pointer can keep details out of context until the agent follows it, but the agent may miss the pointer. Which instruction files are loaded depends on the Copilot product and configuration.
 
 **Do I need to rewrite my documents for each new model?**
 Mostly no, and over-fitting to one model causes its own problems. Updating for a new model is usually another no-op pass rather than a rewrite.

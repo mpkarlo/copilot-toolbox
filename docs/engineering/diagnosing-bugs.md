@@ -6,7 +6,7 @@ It will not let the agent form a theory until a **tight** feedback loop exists: 
 
 ## When to reach for it
 
-Type `/diagnosing-bugs`, or the agent reaches for it on its own when a task fits. It is model-invoked, and fires on "diagnose" or "debug this", or on a report that something is broken, throwing, failing, or slow.
+Request `/diagnosing-bugs` when it is available, or the agent may select it for "diagnose", "debug this", or a report that something is broken, throwing, failing, or slow. It is intended for model invocation; see the [invocation guidance](../../.agents/invocation.md) for Copilot compatibility.
 
 Reach for it on the hard ones: a bug you can't solve at first look, an intermittent flake, a regression introduced between two known-good states. It is slow and thorough on purpose, so it is the wrong tool for a question you want answered in one message.
 
@@ -57,7 +57,15 @@ Phase 5 has one exception. The agent writes the regression test before the fix, 
 ## Common questions
 
 **It fires on quick questions where I just wanted a direct answer.**
-This is the most-reported problem with the skill. On GPT-5.6-Sol especially, users report it triggering on a plain description of a problem: "the model triggers the rather formal diagnosing-bugs skill instead. It then goes on to construct a reproduction scenario (often building a mock scenario with limited value) before giving me a response or suggestion. This results in considerable reply delays." Four separate people reported the same problem on [issue #578](https://github.com/mattpocock/skills/issues/578). The accepted fix is to start with a lighter approach and move to the full diagnosis only when the problem needs it, but that change has not shipped. The skill is tuned for Claude Code's invocation behaviour, and a [model](https://www.aihero.dev/ai-coding-dictionary/model) with a lower activation threshold fires it too often. Until the fix ships, the workaround is to say what you want ("just answer this, don't diagnose") or to disable model invocation for it in your [harness](https://www.aihero.dev/ai-coding-dictionary/harness).
+
+This is the most-reported problem with the skill. On GPT-5.6-Sol especially, users report it triggering on a plain description of a problem:
+
+> "the model triggers the rather formal diagnosing-bugs skill instead. It then goes on to construct a reproduction scenario
+> (often building a mock scenario with limited value) before giving me a response or suggestion. This results in considerable reply delays."
+
+Four separate people reported the same problem on [issue #578](https://github.com/mattpocock/skills/issues/578). The accepted fix is to start with a lighter approach and move to the full diagnosis only when the problem needs it, but that change has not shipped.
+
+The upstream skill is tuned for Claude Code's invocation behaviour. This fork has not evaluated its trigger threshold or the reported workaround in GitHub Copilot. Agent-behavior evaluation is deferred in #4, so treat this as a potential risk, not a verified Copilot behavior.
 
 **Can I point it at a codebase and ask where the performance problems are?**
 No. It diagnoses one failure you can already name. Its performance branch is for a regression with a symptom (establish a baseline measurement, then bisect, measure first and fix second), not for a proactive sweep. A skill for the proactive version was [proposed and closed](https://github.com/mattpocock/skills/issues/431); no skill does it now.
@@ -95,4 +103,4 @@ Optional Local-only preferences are available when `setup-matt-pocock-skills` is
 
 `diagnosing-bugs` is a reach-for-it-anytime standalone. You start it when something is broken, and it ends when the fix and its regression test are in. It keeps no state and needs no prior setup. [ask-matt](./ask-matt.md) routes "Something's broken" here.
 
-Two neighbours matter. [retro](./retro.md) comes after it: once the fix is in, run it in the same session to ask what would have prevented the bug, while the session has more information than it had at the start. `diagnosing-bugs` never invokes `retro` itself, because `retro` is user-invoked. [triage](./triage.md) comes before it for bugs that arrive as raw reports from other people, and does a shallower version of the same first two phases.
+Two neighbours matter. [retro](./retro.md) comes after it: once the fix is in, run it in the same session to ask what would have prevented the bug, while the session has more information than it had at the start. `diagnosing-bugs` does not instruct the agent to invoke `retro`, which is intended for explicit requests. [triage](./triage.md) comes before it for bugs that arrive as raw reports from other people, and does a shallower version of the same first two phases.

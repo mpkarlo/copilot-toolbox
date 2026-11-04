@@ -6,7 +6,7 @@ It never reopens the plan. There is no interview, no clarifying round, no propos
 
 ## When to reach for it
 
-You invoke this by typing `/implement` yourself, and the agent won't reach for it on its own. It ships with `disable-model-invocation: true`, so no other skill can call it either. Wherever [ask-matt](ask-matt.md) or [to-tickets](to-tickets.md) says "then `/implement` per ticket", that is an instruction to you, not something the agent will do unprompted.
+`implement` is intended for explicit requests; ask for `/implement` when it is available. Its `disable-model-invocation: true` metadata expresses that intent, not a guarantee of how every Copilot product enforces or loads it. When [ask-matt](ask-matt.md) or [to-tickets](to-tickets.md) says "then `/implement` per ticket", that is a handoff for you. See the [invocation guidance](../../.agents/invocation.md).
 
 Where the work currently lives decides whether this is the right skill:
 

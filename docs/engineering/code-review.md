@@ -6,12 +6,12 @@ The skill never merges or re-ranks the two axes. The report ends with a worst is
 
 ## When to reach for it
 
-Type `/code-review`, or the agent reaches for it automatically when you ask to review a branch, a PR, work in progress, or anything "since X".
+Request `/code-review` when it is available, or the agent may select it when you ask to review a branch, a PR, work in progress, or anything "since X". It is intended for model invocation; see the [invocation guidance](../../.agents/invocation.md) for Copilot compatibility.
 
 | Your situation | Reach for |
 | --- | --- |
 | A diff exists and you want to know if it is built right *and* is the right thing | `code-review` |
-| You want bugs hunted in the diff: null paths, races, off-by-one | Claude Code's own built-in review, not this one (see the name clash below) |
+| You want bugs hunted in the diff: null paths, races, off-by-one | Use a separate bug-focused review process; this skill focuses on standards and spec compliance |
 | Nothing is written yet and you want it written test-first | [tdd](./tdd.md) |
 | A whole spec needs building, review included | [implement](./implement.md), which calls this skill itself |
 | The whole codebase has drifted, not one diff | [improve-codebase-architecture](./improve-codebase-architecture.md) |
@@ -49,18 +49,13 @@ The **smell baseline** sits under the repo's standards. It is twelve code smells
 
 ## Common questions
 
-**It collides with Claude Code's own `/code-review`. What do I do?**
+**Can I use this outside Copilot?**
 
-This is the most reported problem with the skill, and it is not fixed. Claude Code ships its own `/code-review`, which does something different: it hunts bugs in the diff, where this one checks spec compliance and repo standards. When you install this library, one of them wins, and which one depends on how you installed:
-
-- **Plugin marketplace.** Every skill gets a `copilot-toolbox:` prefix, and the built-in becomes hard to reach at the unqualified name.
-- **Plain skills install.** The local file wins, and this skill shadows the built-in.
-
-One answer is to remove Claude Code's built-in skills entirely. That saves a lot of [context](https://www.aihero.dev/ai-coding-dictionary/context), and the collision stops mattering. The shadowing itself is arguably a Claude Code [harness](https://www.aihero.dev/ai-coding-dictionary/harness) bug (a skill author should be free to name a skill anything), so the other answer is to rename the local copy. `npx skills update` undoes an edit to the frontmatter or a renamed directory. The durable workaround users report is to fork the skill to a new name and drop `code-review` from the managed set. Keep a note of the commit you forked from so you can re-sync by hand.
+This repository documents and ships the plugin for GitHub Copilot only. The skill source files remain available in the repository, but other agents are not supported or tested.
 
 **Its sub-agents keep invoking `/code-review` again and spawn more agents.**
 
-This is a known open bug. Several people have reproduced it, in more than one harness. The Standards and Spec prompts do not forbid delegation, so a sub-agent can find the skill again and fan out again. One report reached more than 50 agents. The fix people have applied on forks is one line appended to both sub-agent briefs: "Do not invoke `/code-review` or spawn additional agents: perform this review directly." Some prefer to handle it at the harness level so every skill inherits the guard. Neither is in the shipped skill yet. If you run this unattended, watch the agent count.
+Reports from other harnesses describe this behavior, but it has not been evaluated for the Copilot plugin. The Standards and Spec prompts do not forbid delegation, so a sub-agent could find the skill again and fan out again. One report reached more than 50 agents. A mitigation used on some forks is to append this line to both sub-agent briefs: "Do not invoke `/code-review` or spawn additional agents: perform this review directly." This behavior evaluation is deferred in #4, so treat the risk and mitigation as unverified for Copilot. If you run this unattended, watch the agent count.
 
 **Should I run it in the same [session](https://www.aihero.dev/ai-coding-dictionary/session) that wrote the code?**
 

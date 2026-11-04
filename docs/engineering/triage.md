@@ -8,7 +8,7 @@ It also differs from labelling by hand because it recommends and then waits. It 
 
 ## When to reach for it
 
-You invoke this by typing `/triage` and then describing what you want in plain language. The [agent](https://www.aihero.dev/ai-coding-dictionary/agent) won't reach for it on its own. Examples: "Show me anything that needs my attention", "let's look at #42", "move #42 to ready-for-agent".
+This skill is intended for explicit requests; ask the [agent](https://www.aihero.dev/ai-coding-dictionary/agent) for `/triage` when it is available, then describe what you want in plain language. Examples: "Show me anything that needs my attention", "let's look at #42", "move #42 to ready-for-agent". See the [invocation guidance](../../.agents/invocation.md) for Copilot compatibility.
 
 | What you have | Where to go |
 | --- | --- |

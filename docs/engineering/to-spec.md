@@ -6,7 +6,7 @@ It does not interview you. When you reach for it, the deciding is already done. 
 
 ## When to reach for it
 
-You invoke this by typing `/to-spec`; the [agent](https://www.aihero.dev/ai-coding-dictionary/agent) won't reach for it on its own.
+This skill is intended for explicit requests; ask the [agent](https://www.aihero.dev/ai-coding-dictionary/agent) for `/to-spec` when it is available. See the [invocation guidance](../../.agents/invocation.md) for Copilot compatibility.
 
 Reach for it when the build is too big for one agent [session](https://www.aihero.dev/ai-coding-dictionary/session) and must be split across several. That is the whole trigger:
 

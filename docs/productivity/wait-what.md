@@ -2,11 +2,11 @@
 
 You type `wait-what` when you did not understand a message. The [agent](https://www.aihero.dev/ai-coding-dictionary/agent) then re-pitches what it just said. It adds the context you were missing, writes in plain English, and uses the vocabulary from your project's `GLOSSARY.md`.
 
-The skill is three lines long. That is the design, not an unfinished draft. Skills against verbosity usually fail because they grow too long. A four-hundred-line concision skill still leaves the [model](https://www.aihero.dev/ai-coding-dictionary/model) verbose, because the model copies the length of the skill, not its request. This one has a single precise leading word and nothing else.
+The skill's main instruction is deliberately short. It asks for missing context, simplified English, and the project's vocabulary instead of adding a long set of rules for the [model](https://www.aihero.dev/ai-coding-dictionary/model) to follow.
 
 ## When to reach for it
 
-You invoke it by typing `/wait-what`. The agent will not reach for it on its own, and it shouldn't. Only you know when you stopped following.
+This skill is intended for explicit requests; ask for `/wait-what` when it is available. Only you know when you stopped following. Availability depends on the Copilot product and version; see the [invocation guidance](../../.agents/invocation.md).
 
 Use it as soon as you notice you're skimming. For example, the agent has started to use jargon it invented, put five acronyms in one sentence, or explained a decision whose premise you never saw. It fixes the conversation you're already in. To stop the jargon arriving at all, use [grill-with-docs](../engineering/grill-with-docs.md), which builds the shared language upfront.
 
@@ -20,9 +20,9 @@ The skill says re-pitch **that**, not "that last message". What lost you is usua
 
 ## It plugs into the language you already have
 
-The body reuses the leading words already in your global `CLAUDE.md` and your project's `GLOSSARY.md`. ASD-STE100 Simplified Technical English sets the register. The ubiquitous language supplies the nouns. The skill, `CLAUDE.md` and `GLOSSARY.md` use the same [tokens](https://www.aihero.dev/ai-coding-dictionary/token), so invoking it is not a new instruction. It is a reminder of one the agent already agreed to.
+The skill asks for ASD-STE100 Simplified Technical English and the ubiquitous language in your project's `GLOSSARY.md`. If a `GLOSSARY-MAP.md` identifies multiple contexts, it points the agent to the relevant glossary. The skill does not require a particular global instruction file.
 
-If you have no `GLOSSARY.md` (and no `GLOSSARY-MAP.md` pointing to one for the context at hand), the skill still works. You lose only the domain-vocabulary half.
+If you have no glossary for the context, ask the agent to re-pitch without project-specific vocabulary.
 
 ## It's working if
 

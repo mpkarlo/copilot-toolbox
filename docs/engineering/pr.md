@@ -6,7 +6,7 @@ The summary is a visual, not a paragraph. A default PR body describes the diff i
 
 ## When to reach for it
 
-Type `/pr`, or the agent reaches for it automatically whenever it is writing a PR body.
+Request `/pr` when it is available, or the agent may select it when writing a PR body. It is intended for model invocation; see the [invocation guidance](../../.agents/invocation.md) for Copilot compatibility.
 
 | Your situation | Reach for |
 | --- | --- |
@@ -75,7 +75,7 @@ Optional Local-only preferences are available when `setup-matt-pocock-skills` is
 
 ## Where it fits
 
-`pr` comes between review and retro when the build ships as a pull request: `to-spec → to-tickets → implement → code-review → pr → retro`. It is model-invoked, so it also fires on its own any time the agent writes a PR body outside that chain.
+`pr` comes between review and retro when the build ships as a pull request: `to-spec → to-tickets → implement → code-review → pr → retro`. It is intended for model invocation, so an agent may also select it when writing a PR body outside that chain.
 
 - [code-review](code-review.md) runs before it, because a PR body should describe a diff that has already been reviewed.
 - [implement](implement.md) produces the commits the body describes.
