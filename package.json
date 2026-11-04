@@ -10,6 +10,8 @@
   "license": "MIT",
   "scripts": {
     "test:repository-config": "node --test scripts/repository-config.test.mjs",
+    "test:cli-compatibility": "node --test scripts/check-cli-compatibility.test.mts",
+    "check:cli-compatibility": "node scripts/check-cli-compatibility.mts",
     "sync:copilot-plugin": "node scripts/sync-copilot-plugin.mjs",
     "check:copilot-plugin": "node scripts/sync-copilot-plugin.mjs --check",
     "changeset": "changeset",
