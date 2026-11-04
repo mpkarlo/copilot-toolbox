@@ -1,6 +1,7 @@
 ---
 name: pr
 description: "Use when writing a PR body."
+license: MIT
 metadata:
   credits:
     skill: show-me
