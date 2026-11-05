@@ -6,7 +6,7 @@ The [agent](https://www.aihero.dev/ai-coding-dictionary/agent) writes the script
 
 ## When to reach for it
 
-You can type `/wizard`, and the agent can also reach for it on its own. When it hits a step you have to take (a key it can't mint, a dashboard it can't click), it builds you a wizard instead of writing the instructions into the chat, where they scroll away.
+You can request `/wizard`, and the agent may also reach for it on its own. When it hits a step you have to take (a key it can't mint, a dashboard it can't click), it can build a wizard instead of writing the instructions into the chat, where they scroll away.
 
 Reach for it when the next thing blocking you is a trip through a dashboard:
 
@@ -17,7 +17,7 @@ Reach for it when the next thing blocking you is a trip through a dashboard:
 | A project has to move from state A to state B once | Walks the transition and reports what it could not do |
 | You are about to write those steps into a README | Writes an executable version instead, which fails visibly when a step goes stale |
 
-Don't reach for it to *decide* what to build; for that, [grill-with-docs](https://aihero.dev/skills-grill-with-docs) and [to-spec](https://aihero.dev/skills-to-spec) are the tools.
+Don't reach for it to *decide* what to build; for that, [grill-with-docs](grill-with-docs.md) and [to-spec](to-spec.md) are the tools.
 
 ## Prerequisites
 
@@ -41,7 +41,7 @@ For each captured value, scoping decides where it goes:
 
 ## The template already solves the UX
 
-The [template](https://github.com/mattpocock/skills/blob/main/skills/engineering/wizard/template.sh) ships the whole experience: progress with time remaining, confirmation gates, cross-platform URL opening including WSL, hidden entry for secrets, idempotent `.env` upserts, `gh secret` / `gh variable` writes, and a closing summary of everything it had to skip. Everything above the `STAGES` marker is a fixed library, identical in every wizard and never hand-edited. Because the library never changes, every wizard behaves the same way. The only work per wizard is to scope the procedure and author its stages.
+The [template](../../skills/engineering/wizard/template.sh) ships the whole experience: progress with time remaining, confirmation gates, cross-platform URL opening including WSL, hidden entry for secrets, idempotent `.env` upserts, `gh secret` / `gh variable` writes, and a closing summary of everything it had to skip. Everything above the `STAGES` marker is a fixed library, identical in every wizard and never hand-edited. Because the library never changes, every wizard behaves the same way. The only work per wizard is to scope the procedure and author its stages.
 
 The agent that writes a wizard never runs it end to end, because the script opens browsers and waits for human input. The agent checks it statically instead: `bash -n`, `shellcheck` where available, and a trace that every value lands where scoping said it would, with every `set_secret` name matching a real `secrets.*` reference in CI. So the first run is yours, and that run is the test.
 
@@ -56,7 +56,7 @@ The agent that writes a wizard never runs it end to end, because the script open
 
 **Do my API keys end up in the model's context?**
 
-No. The agent writes a script; it doesn't run it. You run the script yourself, and it captures the key with hidden terminal entry and writes it straight to `.env` or `gh secret`. The wizard is a CLI, and the model is not connected to it. This holds only for values the wizard captures at runtime. If you paste a key into the chat while scoping the procedure, it's in the [context](https://www.aihero.dev/ai-coding-dictionary/context) like any other pasted text.
+The skill tells the agent to write the script, not run it. Values you enter during your own run are not sent to the agent by the skill, but terminal output, logs, or files may later be visible to it. The skill also tells the agent to inspect `.env` files while scoping, which can expose existing values. Avoid pasting secrets into chat, restrict access where appropriate, and review the script and its outputs before sharing them.
 
 **Can I go back and fix a value I mistyped?**
 
@@ -70,13 +70,13 @@ Partly, and less than the launch reactions assumed. It reads the repo before it 
 
 Nowhere in particular. It's a standalone, not a chain step. The common guess is `/grill-with-docs → /to-spec → /wizard`, and that sequence is fine, but the trigger is a manual procedure showing up, which can happen at any point: before you start, mid-build, or long after ship. It also works as a discovery tool. Scoping finds the hidden prerequisites of a task, like the three API keys you hadn't thought about, before you commit to the work.
 
-**Does it work outside Claude Code?**
+**How does it work with Copilot?**
 
-The script does. It's plain bash, and it runs the same whatever [harness](https://www.aihero.dev/ai-coding-dictionary/harness) generated it. The skill itself is model-invoked, so it's listed everywhere: type `/wizard` in Claude Code or `$wizard` in Codex, or just describe the setup you're stuck on. Being model-invoked also keeps it clear of [#693](https://github.com/mattpocock/skills/issues/693), where Claude's desktop and web apps drop *user-invoked* skills from the [model](https://www.aihero.dev/ai-coding-dictionary/model)'s listing and report them as not installed.
+This fork ships and documents the skill for GitHub Copilot. It is intended for model invocation, and you can request `/wizard` explicitly when your client loads it. Discovery and automatic selection vary by product and version; see the [invocation guidance](../../.agents/invocation.md). The generated script requires bash, and GitHub secret or variable stages also use `gh`.
 
 **Didn't this used to be user-invoked?**
 
-It did. It's now model-invoked, so the agent reaches for it unprompted when it hits a step you have to take. Nothing you could do before stopped working. Model invocation lets the agent call the skill as well as you, so `/wizard` behaves as it did. The change fixes one failure. Before, an agent that hit a credentials wall mid-build dumped six numbered steps into the chat for you to follow by hand. Now it writes a wizard.
+It did. Its metadata now expresses model-invoked intent, so the agent may select it when a manual step appears. You can also request it by name where it is available. The metadata alone does not guarantee discovery or automatic selection in every Copilot product or version.
 
 **It used to be in `in-progress/`. Where is it now?**
 
@@ -93,4 +93,4 @@ It did. It's now model-invoked, so the agent reaches for it unprompted when it h
 
 ## Where it fits
 
-`wizard` is a reach-for-it-anytime standalone, sitting at the line where automation stops and a human has to click. Its nearest neighbour is [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills), because both exist to get a repo into a working state. That one configures this skill set, and `wizard` generates a setup path for everything else. It also pairs with [implement](https://aihero.dev/skills-implement): when a build lands a feature that needs credentials or a manual cutover, a wizard covers the steps only a human can do. When you're unsure which skill fits the moment, [ask-matt](https://aihero.dev/skills-ask-matt) routes you.
+`wizard` is a reach-for-it-anytime standalone, sitting at the line where automation stops and a human has to click. Its nearest neighbour is [setup-matt-pocock-skills](setup-matt-pocock-skills.md), because both exist to get a repo into a working state. That one configures this skill set, and `wizard` generates a setup path for everything else. It also pairs with [implement](implement.md): when a build lands a feature that needs credentials or a manual cutover, a wizard covers the steps only a human can do. When you're unsure which skill fits the moment, [ask-matt](ask-matt.md) routes you.

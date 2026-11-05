@@ -6,16 +6,16 @@ It grills you about the **send**, never the subject. An interview about the topi
 
 ## When to reach for it
 
-You invoke this by typing `/to-questionnaire`; the [agent](https://www.aihero.dev/ai-coding-dictionary/agent) won't reach for it on its own.
+This skill is intended for explicit requests; ask the [agent](https://www.aihero.dev/ai-coding-dictionary/agent) for `/to-questionnaire` when it is available. See the [invocation guidance](../../.agents/invocation.md) for Copilot compatibility.
 
 Reach for it when a decision is blocked on knowledge that lives in one other person's head: a client, a domain expert, an exec who owns the business rules, a colleague on a team you don't sit with. Which skill you want depends on where the answers are:
 
 | The answers are in… | Reach for |
 | --- | --- |
-| Your own head, unsharpened | [grill-me](https://aihero.dev/skills-grill-me) |
-| The codebase | [grill-with-docs](https://aihero.dev/skills-grill-with-docs) |
+| Your own head, unsharpened | [grill-me](grill-me.md) |
+| The codebase | [grill-with-docs](../engineering/grill-with-docs.md) |
 | Someone else's head | `to-questionnaire` |
-| Nobody's head yet, the question needs something to react to | [prototype](https://aihero.dev/skills-prototype) |
+| Nobody's head yet, the question needs something to react to | [prototype](../engineering/prototype.md) |
 
 The common case is a [grilling](https://www.aihero.dev/ai-coding-dictionary/grilling) session that stalls because some of the questions it raised aren't yours to answer. Run `/to-questionnaire` in that same conversation to take those questions offline, then bring the answers back and carry on.
 
@@ -75,4 +75,4 @@ Yes, and plenty of people did before it existed: `OPEN_QUESTIONS.md` files, spre
 
 `to-questionnaire` is a reach-for-it-anytime standalone. You use it where your own knowledge ends and the next move is to ask another person, not to run another skill. That is most often mid-flow, when planning has stalled on something that isn't yours to decide.
 
-Its neighbour is [grill-me](https://aihero.dev/skills-grill-me), and the two differ on where the answers live. Grilling gets the answers from you; a questionnaire gets them from someone else. Feed what comes back into another grilling round, or into [grill-with-docs](https://aihero.dev/skills-grill-with-docs) or [to-spec](https://aihero.dev/skills-to-spec) if the work is heading for a build. When you're unsure which skill fits the moment, [ask-matt](https://aihero.dev/skills-ask-matt) routes you.
+Its neighbour is [grill-me](grill-me.md), and the two differ on where the answers live. Grilling gets the answers from you; a questionnaire gets them from someone else. Feed what comes back into another grilling round, or into [grill-with-docs](../engineering/grill-with-docs.md) or [to-spec](../engineering/to-spec.md) if the work is heading for a build. When you're unsure which skill fits the moment, [ask-matt](../engineering/ask-matt.md) routes you.

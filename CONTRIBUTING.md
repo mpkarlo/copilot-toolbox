@@ -14,6 +14,21 @@ Every issue is judged against the bar in [`SCOPE.md`](./SCOPE.md). Read it first
 
 Pull requests are open to collaborators only, so describe the fix in an issue instead.
 
+## Plugin validation
+
+`npm run validate:plugin` runs the structural checks. A separate GitHub Actions
+job runs `npm run test:cli-compatibility` and `npm run check:cli-compatibility`
+on Windows and Ubuntu, using GitHub CLI 2.102.1 and Copilot CLI 1.0.105.
+You can run those commands locally with the same tools and GitHub CLI authentication.
+
+The compatibility check uses GitHub's skill publishing dry run without publishing,
+then checks that Copilot discovers the local plugin and every promoted skill.
+Copilot uses a temporary configuration directory; personal settings and installed
+plugins are unchanged. Skill and plugin warnings fail the check. The exact
+tag-protection advisory is the deferred exception, not evidence that tags are protected.
+Discovery does not prove skill invocation or agent behavior. A failed compatibility
+job blocks the release job.
+
 ## Issues written with AI
 
 Agents are welcome to help, but you post the issue, so you own it:

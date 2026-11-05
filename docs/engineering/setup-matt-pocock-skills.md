@@ -4,13 +4,13 @@
 
 Those files are the only thing that varies between repos. The skills themselves keep their original behavior. Project mode uses `docs/agents/`; in Local-only mode, each consumer reads a short reference to one shared guide, which finds preferences outside the repository. That is why the set is not tied to GitHub, and why you never edit a skill file to point it at another tracker.
 
-It is a prompt-driven skill, not a deterministic script. It reads your `git remote`, `CLAUDE.md` and `GLOSSARY.md`, proposes what it found, and waits for you to confirm before it writes anything.
+It is a prompt-driven skill, not a deterministic script. It reads your `git remote`, existing `AGENTS.md` and `CLAUDE.md` files, and `GLOSSARY.md`, proposes what it found, and waits for you to confirm before it writes anything.
 
 ## When to reach for it
 
-You invoke this by typing `/setup-matt-pocock-skills`; the [agent](https://www.aihero.dev/ai-coding-dictionary/agent) won't reach for it on its own. Its metadata marks it non-invokable on purpose, so no other skill can fire it for you.
+This skill is intended for explicit requests; ask the [agent](https://www.aihero.dev/ai-coding-dictionary/agent) for `/setup-matt-pocock-skills`. Its manual-only metadata expresses that intent, not a guarantee that every Copilot product or version loads it. See the [invocation guidance](../../.agents/invocation.md).
 
-Reach for it once per repo, before the first use of any other engineering skill. If [triage](https://aihero.dev/skills-triage), [to-spec](https://aihero.dev/skills-to-spec), [to-tickets](https://aihero.dev/skills-to-tickets) or [wayfinder](https://aihero.dev/skills-wayfinder) start guessing where your issues go, or apply labels your tracker doesn't have, this repo has not been set up yet. You can run it in a repo halfway through a project. The skill reads what is already there, so no earlier work is lost.
+Reach for it once per repo, before the first use of any other engineering skill. If [triage](triage.md), [to-spec](to-spec.md), [to-tickets](to-tickets.md) or [wayfinder](wayfinder.md) start guessing where your issues go, or apply labels your tracker doesn't have, this repo has not been set up yet. You can run it in a repo halfway through a project. The skill reads what is already there, so no earlier work is lost.
 
 ## Prerequisites
 
@@ -21,7 +21,7 @@ Reach for it once per repo, before the first use of any other engineering skill.
 | `issue-tracker.md` | `docs/agents/` |
 | `domain.md` | `docs/agents/` |
 | `triage-labels.md` | `docs/agents/`, only when the `triage` skill is installed |
-| An `## Agent skills` block | whichever of `CLAUDE.md` or `AGENTS.md` already exists |
+| An `## Agent skills` block | `CLAUDE.md` if it exists; otherwise `AGENTS.md`, or a file you choose if neither exists |
 
 You commit those files as markdown so the team shares the preferences. Existing Project-mode setups continue working without migration.
 
@@ -73,21 +73,21 @@ No. GitHub, GitLab and local markdown under `.scratch/` all ship as ready-made t
 
 The direct answer after v1.1 was yes. The skill's own closing message is softer. It tells you to re-run only to switch trackers or start over. Both are defensible. The seed templates change between versions, so a `docs/agents/issue-tracker.md` from an older release can go out of date against the skills that now read it. If a downstream skill does something different from what the docs describe, re-run setup. It is cheap. Local-only mode refreshes its own preferences without changing the selected mode.
 
-**It wrote to `CLAUDE.md`, but I'm on Codex.**
+**It wrote to `CLAUDE.md`, but my Copilot setup uses `AGENTS.md`.**
 
-In Project mode, this is a known gap, and still open. The file-selection rule is "edit `CLAUDE.md` if it exists, else `AGENTS.md`". It checks which file exists, not which harness is running. In a repo with a `CLAUDE.md` left over from Claude Code, the skill writes its `## Agent skills` block to a file Codex never reads. Users have two workarounds: move the block to `AGENTS.md` by hand, or keep `AGENTS.md` canonical and make `CLAUDE.md` a one-line pointer at it. If neither file exists, the skill asks you which to create instead of picking one. This has confused people who expected it to decide. Local-only mode leaves both project files untouched; its consumer skills reference the shared guide directly.
+In Project mode, the skill edits `CLAUDE.md` if it exists, otherwise `AGENTS.md`. It chooses by file existence, not by which instructions your Copilot product uses. If neither exists, it asks you which to create. Review the chosen file and put the `## Agent skills` instructions where your Copilot setup reads them. If both files remain, a later setup run still chooses `CLAUDE.md`. Local-only mode leaves both files untouched; its consumer skills reference the shared guide directly.
 
 **It didn't create my triage labels.**
 
-When the label section runs, setup writes the role mapping and creates missing configured labels on GitHub or GitLab, in either storage mode. [Wayfinder](https://aihero.dev/skills-wayfinder)'s `wayfinder:map` and `wayfinder:<type>` labels are separate from these five triage roles.
+When the label section runs, setup writes the role mapping and creates missing configured labels on GitHub or GitLab, in either storage mode. [Wayfinder](wayfinder.md)'s `wayfinder:map` and `wayfinder:<type>` labels are separate from these five triage roles.
 
 **Can I configure the other skills' behaviour here ([grilling](https://www.aihero.dev/ai-coding-dictionary/grilling) cadence, question format, tone)?**
 
-No. It configures three things: tracker, labels, doc layout. Users have asked to make it the place for per-user preferences. The answer is that skills stay opinionated and take no per-user config. Preferences belong in your `CLAUDE.md` as plain instructions, which every skill already reads.
+No. It configures three things: tracker, labels, doc layout. To adjust another skill's behaviour, include your preference in the request or in the applicable project instructions, such as `AGENTS.md`. Which instruction files are loaded depends on your Copilot product and configuration.
 
-**Can I keep the config in `~/.claude` instead of committing it to every repo?**
+**Can I keep the configuration outside the repo?**
 
-Choose Local-only mode to avoid committing preferences, but this fork uses the sibling `.skills/<main-checkout-folder-name>/` directory, not `~/.claude`. A user who runs the skills across many repos has an open request for user-level storage; this option keeps separate preferences per main checkout. Worktrees share their main checkout's configuration, while separate clones have separate paths. Moving or renaming the checkout changes that path; changing its remote does not. Setup does not move preferences automatically.
+Choose Local-only mode to avoid committing preferences. This fork uses the sibling `.skills/<main-checkout-folder-name>/` directory, keeping separate preferences per main checkout. Worktrees share their main checkout's configuration, while separate clones have separate paths. Moving or renaming the checkout changes that path; changing its remote does not. Setup does not move preferences automatically.
 
 **Isn't it strange to have a skill that configures the other skills?**
 
@@ -104,4 +104,4 @@ One long-standing complaint says yes, in these words: *"having a skill to set up
 
 ## Where it fits
 
-`setup-matt-pocock-skills` is the **run-once setup** for the engineering flow, the precondition everything else assumes rather than a step in the chain. Its neighbours are its readers: [triage](https://aihero.dev/skills-triage), which applies the label vocabulary written here; [to-spec](https://aihero.dev/skills-to-spec) and [to-tickets](https://aihero.dev/skills-to-tickets), which publish into the tracker named here; and [wayfinder](https://aihero.dev/skills-wayfinder), which reads the "Wayfinding operations" section of the same tracker file to learn how to store maps and child [tickets](https://www.aihero.dev/ai-coding-dictionary/ticket). [domain-modeling](https://aihero.dev/skills-domain-modeling) later fills in the domain-doc layout that setup records. It creates `GLOSSARY.md` and ADRs only when you resolve a term or decision, so a repo with no domain docs after setup is normal. For which skill to reach for next, [ask-matt](https://aihero.dev/skills-ask-matt) routes the whole set.
+`setup-matt-pocock-skills` is the **run-once setup** for the engineering flow, the precondition everything else assumes rather than a step in the chain. Its neighbours are its readers: [triage](triage.md), which applies the label vocabulary written here; [to-spec](to-spec.md) and [to-tickets](to-tickets.md), which publish into the tracker named here; and [wayfinder](wayfinder.md), which reads the "Wayfinding operations" section of the same tracker file to learn how to store maps and child [tickets](https://www.aihero.dev/ai-coding-dictionary/ticket). [domain-modeling](domain-modeling.md) later fills in the domain-doc layout that setup records. It creates `GLOSSARY.md` and ADRs only when you resolve a term or decision, so a repo with no domain docs after setup is normal. For which skill to reach for next, [ask-matt](ask-matt.md) routes the whole set.

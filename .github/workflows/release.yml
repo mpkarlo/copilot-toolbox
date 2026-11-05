@@ -4,13 +4,100 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
+  validate:
+    name: Validate (${{ matrix.os }})
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate plugin packages
+        run: npm run validate:plugin
+
+  compatibility:
+    name: CLI compatibility (${{ matrix.os }})
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install pinned validation CLIs
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          function Install-ValidationCli($Repository, $Tag, $Asset, $ChecksumAsset, $Directory) {
+            $destination = Join-Path $env:RUNNER_TEMP $Directory
+            New-Item -ItemType Directory -Path $destination | Out-Null
+            Invoke-WebRequest "https://github.com/$Repository/releases/download/$Tag/$Asset" `
+              -OutFile (Join-Path $destination $Asset)
+            Invoke-WebRequest "https://github.com/$Repository/releases/download/$Tag/$ChecksumAsset" `
+              -OutFile (Join-Path $destination $ChecksumAsset)
+            $checksumLine = @(Get-Content (Join-Path $destination $ChecksumAsset) |
+              Where-Object { ($_ -split '\s+')[-1].TrimStart('*') -eq $Asset })
+            if ($checksumLine.Count -ne 1) { throw "Missing or ambiguous checksum: $Asset" }
+            $expected = ($checksumLine[0] -split '\s+')[0]
+            $archive = Join-Path $destination $Asset
+            if ((Get-FileHash $archive -Algorithm SHA256).Hash -ne $expected) {
+              throw "Checksum mismatch: $Asset"
+            }
+            if ($Asset.EndsWith('.zip')) {
+              Expand-Archive -LiteralPath $archive -DestinationPath $destination
+            } else {
+              tar -xzf $archive -C $destination
+              if ($LASTEXITCODE -ne 0) { throw "Extraction failed: $Asset" }
+            }
+            return $destination
+          }
+          $ghPlatform = if ($IsWindows) { 'windows_amd64.zip' } else { 'linux_amd64.tar.gz' }
+          $copilotPlatform = if ($IsWindows) { 'win32-x64.zip' } else { 'linux-x64.tar.gz' }
+          $ghDirectory = Install-ValidationCli 'cli/cli' 'v2.102.1' "gh_2.102.1_$ghPlatform" 'gh_2.102.1_checksums.txt' 'validation-gh'
+          $copilotDirectory = Install-ValidationCli 'github/copilot-cli' 'v1.0.105' "copilot-$copilotPlatform" 'SHA256SUMS.txt' 'validation-copilot'
+          $ghBin = if ($IsWindows) { Join-Path $ghDirectory 'bin' } else { Join-Path $ghDirectory 'gh_2.102.1_linux_amd64/bin' }
+          $ghBin >> $env:GITHUB_PATH
+          $copilotDirectory >> $env:GITHUB_PATH
+
+      - name: Validate CLI compatibility
+        run: npm run test:cli-compatibility && npm run check:cli-compatibility
+
   release:
     name: Version
     runs-on: ubuntu-latest
+    needs: [validate, compatibility]
+    if: github.event_name == 'push'
     permissions:
       contents: write
       pull-requests: write

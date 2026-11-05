@@ -6,17 +6,17 @@ It plans and does not build. Every ticket asks a question, and the answer is a d
 
 ## When to reach for it
 
-You invoke this by typing `/wayfinder`; the [agent](https://www.aihero.dev/ai-coding-dictionary/agent) won't reach for it on its own.
+This skill is intended for explicit requests; ask the [agent](https://www.aihero.dev/ai-coding-dictionary/agent) for `/wayfinder` when it is available. Availability depends on the Copilot product and version; see the [invocation guidance](../../.agents/invocation.md).
 
 It is the heaviest flow in the set, so the trigger is narrow. The effort must be larger than one agent session can hold, and the route to the destination must be unclear. The split is session count: `/grill-with-docs` for single-session planning, `/wayfinder` for multi-session planning.
 
 | What you have in front of you | What to run |
 | --- | --- |
-| A well-scoped feature you can settle in one sitting | [grill-me](https://aihero.dev/skills-grill-me), or [grill-with-docs](https://aihero.dev/skills-grill-with-docs) when there is a codebase |
+| A well-scoped feature you can settle in one sitting | [grill-me](../productivity/grill-me.md), or [grill-with-docs](grill-with-docs.md) when there is a codebase |
 | A greenfield project, or a build spanning many sessions, with the route still unclear | `/wayfinder` |
-| A thread where the deciding is already done | [to-spec](https://aihero.dev/skills-to-spec): skip straight past the map |
-| A cleared wayfinder map | [to-spec](https://aihero.dev/skills-to-spec), then [to-tickets](https://aihero.dev/skills-to-tickets) and [implement](https://aihero.dev/skills-implement) |
-| An existing session that has already grown too big | say "hand off to `/wayfinder`" ([handoff](https://aihero.dev/skills-handoff) bridges into a map as well as out of one) |
+| A thread where the deciding is already done | [to-spec](to-spec.md): skip straight past the map |
+| A cleared wayfinder map | [to-spec](to-spec.md), then [to-tickets](to-tickets.md) and [implement](implement.md) |
+| An existing session that has already grown too big | say "hand off to `/wayfinder`" ([handoff](../productivity/handoff.md) bridges into a map as well as out of one) |
 
 Greenfield is not a requirement. People use wayfinder routinely on legacy and half-built codebases, and it can be more useful there, because much of the fog is "what is already true here" rather than "what should we do".
 
@@ -24,7 +24,7 @@ Greenfield is not a requirement. People use wayfinder routinely on legacy and ha
 
 Optional Local-only preferences are available when `setup-matt-pocock-skills` is installed alongside this skill; it follows a link to the shared guide, and otherwise retains the project's existing configuration and fallback behavior.
 
-The map and its tickets live on the repo's issue tracker, so wayfinder needs the tracker setup from [setup-matt-pocock-skills](https://aihero.dev/skills-setup-matt-pocock-skills). That step writes a "Wayfinding operations" section. The section describes how to express the map, its child tickets, blocking edges, and frontier queries on GitHub, GitLab, or local markdown. Wayfinder finds that doc through the pointer in your `CLAUDE.md` / `AGENTS.md`, not at a fixed path. With no tracker configured, it falls back to local markdown files.
+The map and its tickets live on the repo's issue tracker. [setup-matt-pocock-skills](setup-matt-pocock-skills.md) can configure a "Wayfinding operations" section describing the map, child tickets, blocking edges, and frontier queries. Project mode uses an instruction-file pointer; Local-only mode uses the shared preference guide. With no tracker configured, wayfinder falls back to local markdown files.
 
 The tracker does real work. Its native blocking links show the frontier in the tracker's own UI. On a tracker without native dependency links (a self-hosted Gitea, say), wayfinder infers blockers from the map text. That works, but you must supervise it more closely.
 
@@ -47,9 +47,9 @@ Every ticket carries a `wayfinder:<type>` label. Each ticket is either **[HITL](
 
 | Type | Mode | Reach for it when | Resolved by |
 | --- | --- | --- | --- |
-| `grilling` | HITL | The default. The question can be settled by talking it through. | [grilling](https://aihero.dev/skills-grilling) plus [domain-modeling](https://aihero.dev/skills-domain-modeling), in a fresh session |
-| `prototype` | HITL | "How should this look" or "how should this behave": a question talking cannot settle. | [prototype](https://aihero.dev/skills-prototype), with a link from the ticket to the built artifact |
-| `research` | AFK | A fact outside the working directory is blocking a decision. | A [research](https://aihero.dev/skills-research) [subagent](https://www.aihero.dev/ai-coding-dictionary/subagent), started when you chart the map and run in parallel on a `research/<name>` branch |
+| `grilling` | HITL | The default. The question can be settled by talking it through. | [grilling](../productivity/grilling.md) plus [domain-modeling](domain-modeling.md), in a fresh session |
+| `prototype` | HITL | "How should this look" or "how should this behave": a question talking cannot settle. | [prototype](prototype.md), with a link from the ticket to the built artifact |
+| `research` | AFK | A fact outside the working directory is blocking a decision. | A [research](research.md) [subagent](https://www.aihero.dev/ai-coding-dictionary/subagent), started when you chart the map and run in parallel on a `research/<name>` branch |
 | `task` | Either | Nothing to decide, but manual work blocks a decision, such as provisioning access, signing up for a service, or moving data so you can see its shape. | The agent alone where it can, otherwise a precise checklist for the human |
 
 `task` is the only type that *does* rather than decides. It belongs on the map only because it unblocks a decision, never because it delivers part of the destination. This type goes wrong most often in practice. Agents read it as an implementation step and start to write product code inside the map.
@@ -65,7 +65,7 @@ Session count, not project size. `/grill-with-docs` is single-session planning; 
 The end of the whole map, not just the first session. The question reads ambiguously, but wayfinder is a multi-session tool by definition, so a session-scoped answer never makes sense. Typical destinations are a [spec](https://www.aihero.dev/ai-coding-dictionary/spec) to hand off, a decision to lock before planning starts, a proof of concept, or an in-place change such as a data migration.
 
 **The map is cleared. Didn't wayfinder already write the spec and make the tickets? Why do I still need `/to-spec` and `/to-tickets`?**
-No. Wayfinder's tickets are decision tickets, and by the time the map closes they are all closed too. What is left is a map full of linked decisions, which is not a build plan. [to-spec](https://aihero.dev/skills-to-spec) collapses those linked decisions into one spec (`/to-spec #<map_issue>`), and [to-tickets](https://aihero.dev/skills-to-tickets) slices that spec into tracer-bullet implementation tickets. If you loop the map straight into [implement](https://aihero.dev/skills-implement), you skip the collapse and lose the linked detail. Go straight to implementation only when the effort turned out small. Some people run the shorter pipeline and report that it works. The two extra steps give you an explicit spec that a reviewer or a colleague can read, which matters more when you do not work alone.
+No. Wayfinder's tickets are decision tickets, and by the time the map closes they are all closed too. What is left is a map full of linked decisions, which is not a build plan. [to-spec](to-spec.md) collapses those linked decisions into one spec (`/to-spec #<map_issue>`), and [to-tickets](to-tickets.md) slices that spec into tracer-bullet implementation tickets. If you loop the map straight into [implement](implement.md), you skip the collapse and lose the linked detail. Go straight to implementation only when the effort turned out small. Some people run the shorter pipeline and report that it works. The two extra steps give you an explicit spec that a reviewer or a colleague can read, which matters more when you do not work alone.
 
 **My agent started writing production code in the middle of a wayfinder session.**
 This is the most-reported failure with this skill, and a real gap in the skill causes it. You can override wayfinder's "plan, don't do" default in the map's **Notes**. But the agent writes the Notes, so the constraint and its exemption live in a file that the constrained agent owns. One user watched an agent write "this map carries execution" into its own Notes. In later sessions the agent read that line back as permission and built on a live server. The skill has no hard stop for "I meant the default." Until it does, read the Notes on any map you did not chart yourself, keep implementation in separate sessions, and treat any `wayfinder:task` that looks like a slice of the build as mis-typed.
@@ -80,7 +80,7 @@ The frontier shows you which tickets you can take, and blocking edges make paral
 No. Any issue tracker works. GitHub has the best support, because its native sub-issues and blocking relationships make the frontier visible without opening the map. People also use GitLab, Linear, Jira and local markdown. There are two caveats. On a tracker with no native blocking, wayfinder infers the dependency graph from text, and you must correct it by hand. Local markdown puts the artifacts in your repo, which is not recommended, because material stored in the repo tends to persist by accident. Open-source maintainers hit the opposite problem (public trackers fill up with agent-generated planning tickets) and often choose local markdown anyway.
 
 **The grilling is exhausting. Every question is three paragraphs long.**
-This is the sharpest open complaint about wayfinder, and nobody has fixed it yet. One user broke it down this way: the verbosity itself causes decision exhaustion, and the length hides *why* the agent asks a question, so you lose the chain from decision to decision as the map grows. The verbosity looks like a property of the current set of [models](https://www.aihero.dev/ai-coding-dictionary/model) rather than of the skill. Users try two mitigations: a lower [reasoning effort](https://www.aihero.dev/ai-coding-dictionary/effort), and a plain-language instruction in your global `CLAUDE.md`. Expect to think hard here anyway. Wayfinder demands a lot of thinking from you, and that is most of its purpose, not a defect.
+This is the sharpest open complaint about wayfinder, and nobody has fixed it yet. One user broke it down this way: the verbosity itself causes decision exhaustion, and the length hides *why* the agent asks a question, so you lose the chain from decision to decision as the map grows. Users try a lower [reasoning effort](https://www.aihero.dev/ai-coding-dictionary/effort) where available, or ask for shorter questions in the request or applicable project instructions. Expect to think hard here anyway. Wayfinder demands a lot of thinking from you, and that is most of its purpose, not a defect.
 
 **A decision I already closed turned out to be wrong. Do I edit the old ticket or make a new one?**
 There is no official guidance, and the agent's default is unhelpful. It tends to design around the bad decision instead of challenging it, so you must steer it yourself. What works is to tell wayfinder plainly what changed. It then updates the map, revises the affected tickets, and comments on the closed ones. You can recover from scope changes mid-map. But if you *designed* a map to change, that is a sign the scope is wrong.
@@ -100,6 +100,6 @@ It is this skill. v1.1 renamed it to `wayfinder`, and you invoke it as `/wayfind
 
 ## Where it fits
 
-`wayfinder` is a **situational on-ramp**, not the default starting point. Most work still starts on the grill-led idea → ship chain. You use wayfinder when the idea is too big to hold in one session. It rejoins that chain at [to-spec](https://aihero.dev/skills-to-spec), because a cleared map hands off and does not build.
+`wayfinder` is a **situational on-ramp**, not the default starting point. Most work still starts on the grill-led idea → ship chain. You use wayfinder when the idea is too big to hold in one session. It rejoins that chain at [to-spec](to-spec.md), because a cleared map hands off and does not build.
 
-Most of the work happens in other skills that wayfinder schedules. [grilling](https://aihero.dev/skills-grilling) and [domain-modeling](https://aihero.dev/skills-domain-modeling) resolve the default ticket type, [prototype](https://aihero.dev/skills-prototype) resolves the tickets that talk cannot settle, and [research](https://aihero.dev/skills-research) runs as a subagent so its reading stays out of your session. [handoff](https://aihero.dev/skills-handoff) moves work in and out: into a map from a conversation that grew too big, and out of a map when a side quest appears mid-session. For anything else, [ask-matt](https://aihero.dev/skills-ask-matt) routes over the whole set.
+Most of the work happens in other skills that wayfinder schedules. [grilling](../productivity/grilling.md) and [domain-modeling](domain-modeling.md) resolve the default ticket type, [prototype](prototype.md) resolves the tickets that talk cannot settle, and [research](research.md) runs as a subagent so its reading stays out of your session. [handoff](../productivity/handoff.md) moves work in and out: into a map from a conversation that grew too big, and out of a map when a side quest appears mid-session. For anything else, [ask-matt](ask-matt.md) routes over the whole set.

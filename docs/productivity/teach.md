@@ -6,7 +6,7 @@ It does not teach from what the [model](https://www.aihero.dev/ai-coding-diction
 
 ## When to reach for it
 
-You invoke this by typing `/teach`; the [agent](https://www.aihero.dev/ai-coding-dictionary/agent) won't reach for it on its own.
+This skill is intended for explicit requests; ask the [agent](https://www.aihero.dev/ai-coding-dictionary/agent) for `/teach` when it is available. See the [invocation guidance](../../.agents/invocation.md) for Copilot compatibility.
 
 Reach for it when the learning is the project: a language, a framework, a codebase you have just joined, yoga, shaders, a certification. It is not the tool for one explanation in passing.
 
@@ -14,10 +14,10 @@ Reach for it when the learning is the project: a language, a framework, a codeba
 | --- | --- |
 | To learn a topic over weeks, with sessions that accumulate | `teach` |
 | One idea explained inside the session you are already in | Just ask, in that session |
-| The agent's last message re-pitched because it didn't land | [wait-what](https://aihero.dev/skills-wait-what) |
-| To sharpen thinking you already have, rather than acquire new material | [grill-me](https://aihero.dev/skills-grill-me) |
-| A background agent to read [primary sources](https://www.aihero.dev/ai-coding-dictionary/primary-source) and leave you a cited document | [research](https://aihero.dev/skills-research) |
-| To learn something that came up mid-grilling, without derailing the [grilling](https://www.aihero.dev/ai-coding-dictionary/grilling) | [handoff](https://aihero.dev/skills-handoff) out to a teaching workspace, then `teach` there |
+| The agent's last message re-pitched because it didn't land | [wait-what](wait-what.md) |
+| To sharpen thinking you already have, rather than acquire new material | [grill-me](grill-me.md) |
+| A background agent to read [primary sources](https://www.aihero.dev/ai-coding-dictionary/primary-source) and leave you a cited document | [research](../engineering/research.md) |
+| To learn something that came up mid-grilling, without derailing the [grilling](https://www.aihero.dev/ai-coding-dictionary/grilling) | [handoff](handoff.md) out to a teaching workspace, then `teach` there |
 
 ## Prerequisites
 
@@ -62,7 +62,7 @@ In the directory you ran `/teach` in ([#377](https://github.com/mattpocock/skill
 All three approaches work: staying in the same session, re-invoking `/teach` in a new session, or opening a new session in the same folder. Each lesson is its own invocation. The course state lives in the folder, not in the conversation. Common practice is to open a fresh session in the workspace and say `/teach next lesson for <topic>`.
 
 **How do I know it isn't teaching me something it made up?**
-You don't, on the skill's word alone. You read the primary sources. `teach` is not reliable enough to trust unchecked, and no skill built on an LLM is. The grounding (`RESOURCES.md`, citations in every lesson, one recommended primary source per lesson) makes it cheap to check a lesson. It does not remove the need to check. This failure has happened: one user learning a 2x2 Rubik's cube got made-up move sequences that don't solve it. In a case like that, check the model, the harness, the effort setting, and the source. Risk is highest in procedural domains with precise notation, and lowest where the output is immediately verifiable, like code you can run.
+You don't, on the skill's word alone. You read the primary sources. `teach` is not reliable enough to trust unchecked, and no skill built on an LLM is. The grounding (`RESOURCES.md`, citations in every lesson, one recommended primary source per lesson) makes it cheap to check a lesson. It does not remove the need to check. This failure has happened: one user learning a 2x2 Rubik's cube got made-up move sequences that don't solve it. In a case like that, check the model, the Copilot product and version, the effort setting, and the source. Risk is highest in procedural domains with precise notation, and lowest where the output is immediately verifiable, like code you can run.
 
 **The correct quiz answer is always the first option.**
 Several people have confirmed this on Sonnet, Opus and GLM, and it is still unfixed. `SKILL.md` now requires every answer to be the same number of words. That removes a different clue (the correct answer used to be the only fully-reasoned one), but says nothing about position. One contributor tested an instruction-level fix for position, and the correct answer still landed in slot A 33 times out of 33 across nine lessons ([#335](https://github.com/mattpocock/skills/issues/335)). So the real fix is a quiz component in `assets/` that shuffles the answers, not better wording. Until that ships, ignore answer position. Your `assets/` directory is yours to change, so you can ask for a component that shuffles at render time as a local fix.
@@ -77,7 +77,9 @@ No to the first, and not reliably to the second. The skill designs lessons aroun
 No. Most reported use is outside coding: Korean, Japanese formal register, piano, guitar, board game design, OpenSCAD, film plots, Azure and CCNA certifications, university exams, and children of eight and ten getting printable books on escape rooms and fire salamanders. Nothing in the skill is specific to programming. Mission, resources, zone of proximal development and drill work the same way in any domain. Within code, users report the most value from getting oriented in an unfamiliar codebase or a new team's stack, more than from learning a language from scratch.
 
 **Which model should I run it with?**
-There is no canonical answer, and the reported differences are large. Users report that higher [reasoning effort](https://www.aihero.dev/ai-coding-dictionary/effort) produces better lessons than the medium setting. One user ran the same skill through Copilot CLI with Codex and got a single 30-line HTML card where Claude Code produced a full lesson. It runs unmodified in Claude Cowork, if your organisation lets you add skills there. If the lessons come out thin, change model, [harness](https://www.aihero.dev/ai-coding-dictionary/harness) or effort before rewriting your prompt.
+There is no canonical answer, and upstream reports describe large differences. Users report that higher [reasoning effort](https://www.aihero.dev/ai-coding-dictionary/effort) produces better lessons than the medium setting. One user compared running the same skill through Copilot CLI with Codex against Claude Code and saw a single 30-line HTML card versus a full lesson. That is an anecdotal report, not a controlled comparison or an evaluation of this fork's Copilot plugin. Compatibility with other agents is not claimed or tested here.
+
+If lessons come out thin, try another model or a different reasoning-effort setting where available before rewriting your prompt.
 
 ## It's working if
 
@@ -94,4 +96,4 @@ There is no canonical answer, and the reported differences are large. Users repo
 
 `teach` is a **reach-for-it-anytime standalone**. It is not a step in a build chain and shares no artifacts with the engineering flow; it works in its own directory for as long as you study the topic.
 
-Its one real neighbour is [handoff](https://aihero.dev/skills-handoff). Together they answer "what do I do if I'm being grilled about something I don't understand?" Don't stop the grilling to learn. `/handoff` to a teaching workspace, learn the topic there with `/teach`, then go back and continue where you left off. The nearby alternative is [research](https://aihero.dev/skills-research), for when what you want is a cited document rather than lessons and retention. When you are not sure which skill or flow fits, [ask-matt](https://aihero.dev/skills-ask-matt) routes you over the whole set.
+Its one real neighbour is [handoff](handoff.md). Together they answer "what do I do if I'm being grilled about something I don't understand?" Don't stop the grilling to learn. `/handoff` to a teaching workspace, learn the topic there with `/teach`, then go back and continue where you left off. The nearby alternative is [research](../engineering/research.md), for when what you want is a cited document rather than lessons and retention. When you are not sure which skill or flow fits, [ask-matt](../engineering/ask-matt.md) routes you over the whole set.

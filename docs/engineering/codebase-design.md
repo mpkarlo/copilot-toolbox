@@ -6,7 +6,7 @@ It is a reference, not a process. It runs no loop, produces no artifact, and nev
 
 ## When to reach for it
 
-Type `/codebase-design`, or the agent reaches for it automatically when a design task fits.
+Request `/codebase-design` when it is available, or the agent may select it when a design task fits. It is intended for model invocation; see the [invocation guidance](../../.agents/invocation.md) for Copilot compatibility.
 
 Reach for it when you already know which code you're redesigning and you need to think about its shape: where the seam goes, how small the interface can get, whether an extraction removes complexity from its callers. Also use it to settle an argument about what a design word means.
 
@@ -15,10 +15,10 @@ Several skills are close to it. Pick by the problem you have:
 | The problem | The skill |
 |---|---|
 | The shape of one module: its interface, its seam, its depth | `codebase-design` |
-| The *words of the domain*: "account" means three things, two people mean different things by "cancellation" | [domain-modeling](https://aihero.dev/skills-domain-modeling) |
-| You don't yet know *which* module to redesign | [improve-codebase-architecture](https://aihero.dev/skills-improve-codebase-architecture) (the survey that finds candidates) |
-| You want the design argued with, not just named | [grilling](https://aihero.dev/skills-grilling) |
-| There's a concrete behaviour to build and you want tests that survive a refactor | [tdd](https://aihero.dev/skills-tdd) |
+| The *words of the domain*: "account" means three things, two people mean different things by "cancellation" | [domain-modeling](./domain-modeling.md) |
+| You don't yet know *which* module to redesign | [improve-codebase-architecture](./improve-codebase-architecture.md) (the survey that finds candidates) |
+| You want the design argued with, not just named | [grilling](../productivity/grilling.md) |
+| There's a concrete behaviour to build and you want tests that survive a refactor | [tdd](./tdd.md) |
 
 ## The vocabulary
 
@@ -43,7 +43,7 @@ The skill does *not* define depth as the ratio of implementation lines to interf
 - **The interface is the test surface.** Callers and tests cross the same seam. If you want to test *past* the interface, the module is the wrong shape.
 - **One adapter means a hypothetical seam. Two adapters means a real one.** Don't cut a seam until something varies across it. A single-adapter seam is just indirection.
 
-Two supporting files go further, and the skill reads them on demand rather than up front. [DEEPENING.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/codebase-design/DEEPENING.md) classifies a candidate's dependencies into four categories (in-process, local-substitutable, remote-but-owned, true-external), because the category decides how you test the deepened module across its seam. [DESIGN-IT-TWICE.md](https://github.com/mattpocock/skills/blob/main/skills/engineering/codebase-design/DESIGN-IT-TWICE.md) starts parallel [sub-agents](https://www.aihero.dev/ai-coding-dictionary/subagent) to produce three or more radically different interfaces for the same module, then compares them on depth, locality and seam placement.
+Two supporting files go further, and the skill reads them on demand rather than up front. [DEEPENING.md](../../skills/engineering/codebase-design/DEEPENING.md) classifies a candidate's dependencies into four categories (in-process, local-substitutable, remote-but-owned, true-external), because the category decides how you test the deepened module across its seam. [DESIGN-IT-TWICE.md](../../skills/engineering/codebase-design/DESIGN-IT-TWICE.md) starts parallel [sub-agents](https://www.aihero.dev/ai-coding-dictionary/subagent) to produce three or more radically different interfaces for the same module, then compares them on depth, locality and seam placement.
 
 ## Common questions
 
@@ -67,9 +67,9 @@ No. People have pushed back on this many times, and the skill has not changed. [
 
 It does now, but for a long time it did not. v1.0 removed the inline deep-module notes from `tdd` in favour of this shared skill, but nobody added a pointer to replace them, so `tdd` defined "seam" for itself and referenced nothing. The pointer is now in `tdd`, and the agent follows it when the open question is the shape of the interface, not the tests. `tdd` still owns "seam" as the boundary you *test* at; this skill owns the module shape behind it.
 
-**Does the design-it-twice pattern work outside Claude Code?**
+**Does the design-it-twice pattern work with GitHub Copilot?**
 
-Not cleanly. `DESIGN-IT-TWICE.md` says "spawn 3+ sub-agents in parallel using the Agent tool", and "Agent" is the name of a Claude Code [tool](https://www.aihero.dev/ai-coding-dictionary/tool). The repo ships metadata for other [harnesses](https://www.aihero.dev/ai-coding-dictionary/harness), including Codex, and those may have no tool with that name. So the parallel-design phase is less portable than the skill's metadata suggests. [Issue #564](https://github.com/mattpocock/skills/issues/564) tracks this, and it is open.
+`DESIGN-IT-TWICE.md` asks the agent to spawn three or more sub-agents with the "Agent" tool, a name from Claude Code. This fork has not evaluated that parallel-design step with GitHub Copilot; agent-behavior evaluation is deferred in #4. Treat the runtime step as unverified. The earlier cross-harness portability discussion is tracked in [mattpocock/skills#564](https://github.com/mattpocock/skills/issues/564).
 
 **Can I add my own concepts to the glossary, such as connascence, module secrets, [progressive disclosure](https://www.aihero.dev/ai-coding-dictionary/progressive-disclosure)?**
 
@@ -85,4 +85,4 @@ People have proposed those. [Issue #180](https://github.com/mattpocock/skills/is
 
 ## Where it fits
 
-`codebase-design` is a **reach-for-it-anytime standalone**, and the vocabulary layer underneath the engineering skills rather than a step in any chain. Its closest neighbour is [domain-modeling](https://aihero.dev/skills-domain-modeling), the parallel reference for the *problem domain*'s words rather than the module's shape. The two are usually wanted together, since naming a deep module well needs both. [improve-codebase-architecture](https://aihero.dev/skills-improve-codebase-architecture) is the other: it surveys a codebase for deepening candidates and writes every one of them in this glossary, so it finds the module and you design it in this skill's words. When you're unsure which skill or flow fits, [ask-matt](https://aihero.dev/skills-ask-matt) routes you.
+`codebase-design` is a **reach-for-it-anytime standalone**, and the vocabulary layer underneath the engineering skills rather than a step in any chain. Its closest neighbour is [domain-modeling](./domain-modeling.md), the parallel reference for the *problem domain*'s words rather than the module's shape. The two are usually wanted together, since naming a deep module well needs both. [improve-codebase-architecture](./improve-codebase-architecture.md) is the other: it surveys a codebase for deepening candidates and writes every one of them in this glossary, so it finds the module and you design it in this skill's words. When you're unsure which skill or flow fits, [ask-matt](./ask-matt.md) routes you.

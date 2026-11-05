@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "strict": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "types": ["node"],
+    "allowImportingTsExtensions": true
+  },
+  "include": [
+    "scripts/check-cli-compatibility.mts",
+    "scripts/check-cli-compatibility.test.mts",
+    "scripts/validate-plugin.mts",
+    "scripts/validate-plugin.test.mts",
+    "scripts/validate-skill-structure.mts",
+    "scripts/validate-skill-structure.test.mts",
+    "scripts/validate-skill-links.mts",
+    "scripts/validate-skill-links.test.mts"
+  ]
+}

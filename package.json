@@ -10,15 +10,32 @@
   "license": "MIT",
   "scripts": {
     "test:repository-config": "node --test scripts/repository-config.test.mjs",
+    "test:cli-compatibility": "node --test scripts/check-cli-compatibility.test.mts",
+    "check:cli-compatibility": "node scripts/check-cli-compatibility.mts",
     "sync:copilot-plugin": "node scripts/sync-copilot-plugin.mjs",
     "check:copilot-plugin": "node scripts/sync-copilot-plugin.mjs --check",
     "changeset": "changeset",
     "version": "changeset version && node scripts/sync-plugin-version.mjs",
-    "check-plugin-version": "node scripts/sync-plugin-version.mjs --check"
+    "check-plugin-version": "node scripts/sync-plugin-version.mjs --check",
+    "test:plugin-manifest": "node --test scripts/validate-plugin.test.mts",
+    "test:skill-structure": "node --test scripts/validate-skill-structure.test.mts",
+    "test:skill-links": "node --test scripts/validate-skill-links.test.mts",
+    "typecheck:validation": "tsc --project tsconfig.plugin-validation.json",
+    "check:plugin-manifest": "node scripts/validate-plugin.mts",
+    "check:skill-structure": "node scripts/validate-skill-structure.mts",
+    "check:skill-links": "node scripts/validate-skill-links.mts",
+    "validate:plugin": "npm run test:repository-config && npm run test:copilot-plugin && npm run test:plugin-manifest && npm run test:skill-structure && npm run test:skill-links && npm run typecheck:validation && npm run check:plugin-manifest && npm run check:skill-structure && npm run check:skill-links && npm run check:copilot-plugin && npm run check-plugin-version",
+    "test:copilot-plugin": "node --test scripts/sync-copilot-plugin.test.mjs"
   },
   "devDependencies": {
     "@changesets/changelog-github": "^0.7.0",
-    "@changesets/cli": "^2.30.0"
+    "@changesets/cli": "^2.30.0",
+    "@types/markdown-it": "14.2.0",
+    "@types/node": "22.20.5",
+    "ajv": "8.20.0",
+    "markdown-it": "14.3.3",
+    "typescript": "5.9.3",
+    "yaml": "2.9.1"
   },
   "packageManager": "npm@10.9.4"
 }

@@ -6,7 +6,7 @@ It is the **active** discipline, not the passive one. Any skill can read `GLOSSA
 
 ## When to reach for it
 
-Type `/domain-modeling`, or the agent reaches for it automatically when a task fits. In practice, automatic invocation is the weakest part of the skill. When `grill-with-docs` or `wayfinder` say to load it, [models](https://www.aihero.dev/ai-coding-dictionary/model) often load `grilling` and skip this one. If a [grilling](https://www.aihero.dev/ai-coding-dictionary/grilling) session runs and `GLOSSARY.md` is unchanged at the end, that is what happened. Invoke it by name alongside the other skill.
+Request `/domain-modeling` when it is available, or the agent may select it when a task fits. It is intended for model invocation; see the [invocation guidance](../../.agents/invocation.md) for Copilot compatibility. Upstream users report that dependent skills sometimes fail to load, but this fork has not verified how often that happens in Copilot. An unchanged `GLOSSARY.md` can also mean no term was resolved, so ask the agent which skills it loaded before drawing a conclusion.
 
 Reach for it when the *words* are the problem:
 
@@ -15,8 +15,8 @@ Reach for it when the *words* are the problem:
 | Two people mean different things by "cancellation" | `domain-modeling`: pick the canonical term, list the other under `_Avoid_` |
 | "Account" is doing three jobs in three files | `domain-modeling`: split it into Customer and User |
 | You just made a hard-to-reverse architectural choice | `domain-modeling`: it offers an ADR, if the choice clears the bar |
-| The module's *shape* is the problem: where the seam goes, how deep the interface is | [codebase-design](https://aihero.dev/skills-codebase-design) |
-| You want the whole plan interrogated before you build | [grill-with-docs](https://aihero.dev/skills-grill-with-docs), which drives this skill underneath |
+| The module's *shape* is the problem: where the seam goes, how deep the interface is | [codebase-design](codebase-design.md) |
+| You want the whole plan interrogated before you build | [grill-with-docs](grill-with-docs.md), which drives this skill underneath |
 | You want a term looked up, not changed | Nothing. Read `GLOSSARY.md`. It is a file. |
 
 ## Prerequisites
@@ -49,7 +49,7 @@ The `GLOSSARY.md` rule matters most, because it is the one that breaks in practi
 
 When you state how something works, the skill checks the code and points out any contradiction. *"Your code cancels entire Orders, but you just said partial cancellation is possible, which is right?"* The skill makes the language and the code agree, out loud, before it changes either.
 
-It cross-references **code** and the committed `GLOSSARY.md` and ADRs, and nothing else. It does not search your issue tracker. If your team argued out a naming collision and settled it in a closed issue months ago, the skill raises it again as if it were new. There is [an open request](https://github.com/mattpocock/skills/issues/717) to fix this. Until then, put the instruction in your selected `domain.md`: `docs/agents/domain.md` in Project mode, or the Local-only preference directory described in the [setup guide](https://aihero.dev/skills-setup-matt-pocock-skills).
+It cross-references **code** and the committed `GLOSSARY.md` and ADRs, and nothing else. It does not search your issue tracker. If your team argued out a naming collision and settled it in a closed issue months ago, the skill raises it again as if it were new. There is [an open request](https://github.com/mattpocock/skills/issues/717) to fix this. Until then, put the instruction in your selected `domain.md`: `docs/agents/domain.md` in Project mode, or the Local-only preference directory described in the [setup guide](setup-matt-pocock-skills.md).
 
 ## Common questions
 
@@ -85,4 +85,4 @@ No, and there is no plan for a skill that does. A domain language you do not und
 
 ## Where it fits
 
-`domain-modeling` is a **model-invoked reference** that runs *underneath* other skills more often than it runs on its own. [grill-with-docs](https://aihero.dev/skills-grill-with-docs) drives it through a grilling session, [wayfinder](https://aihero.dev/skills-wayfinder) loads it while charting a map, [triage](https://aihero.dev/skills-triage) uses it to keep [tickets](https://www.aihero.dev/ai-coding-dictionary/ticket) in the project's own words, and [improve-codebase-architecture](https://aihero.dev/skills-improve-codebase-architecture) calls it as decisions settle. Its closest sibling is [codebase-design](https://aihero.dev/skills-codebase-design). Together they are the vocabulary layer under everything else, this one for the *domain*, that one for the module's *shape*. It is also reachable directly, when you want the discipline without committing to the steps of whatever skill would normally load it. When you are unsure which skill fits, [ask-matt](https://aihero.dev/skills-ask-matt) routes you.
+`domain-modeling` is a **model-invoked reference** that runs *underneath* other skills more often than it runs on its own. [grill-with-docs](grill-with-docs.md) drives it through a grilling session, [wayfinder](wayfinder.md) loads it while charting a map, [triage](triage.md) uses it to keep [tickets](https://www.aihero.dev/ai-coding-dictionary/ticket) in the project's own words, and [improve-codebase-architecture](improve-codebase-architecture.md) calls it as decisions settle. Its closest sibling is [codebase-design](codebase-design.md). Together they are the vocabulary layer under everything else, this one for the *domain*, that one for the module's *shape*. It is also reachable directly, when you want the discipline without committing to the steps of whatever skill would normally load it. When you are unsure which skill fits, [ask-matt](ask-matt.md) routes you.
