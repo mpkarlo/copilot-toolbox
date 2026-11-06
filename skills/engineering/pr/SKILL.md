@@ -10,7 +10,7 @@ metadata:
     url: "https://github.com/humanlayer/skills/blob/main/plugins/show-me/skills/show-me/SKILL.md"
 ---
 
-Before using repo-specific tracker, triage-label, or domain-document preferences, follow [the Local-only lookup guide](../setup-matt-pocock-skills/REPOSITORY-CONFIG.md). If none are selected, keep this skill's existing behavior.
+Before using repo-specific tracker, triage-label, or domain-document preferences, follow [the Local-only lookup guide](../cpt-configure/REPOSITORY-CONFIG.md). If none are selected, keep this skill's existing behavior.
 
 Use this template for writing the PR body:
 

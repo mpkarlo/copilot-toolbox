@@ -1,11 +1,11 @@
 ---
-name: setup-matt-pocock-skills
-description: "Configure this repo for the engineering skills: set up its issue tracker, triage label vocabulary, and domain doc layout. Run once before first use of the other engineering skills."
-license: MIT
+name: cpt-configure
+description: "Configure repeatable repository or Local-only preferences for Copilot Toolbox skills."
 disable-model-invocation: true
+license: MIT
 ---
 
-# Setup Matt Pocock's Skills
+# Configure Copilot Toolbox
 
 Configure the current repository's preferences:
 
@@ -15,16 +15,20 @@ Configure the current repository's preferences:
 
 This is a prompt-driven skill, not a deterministic script. Explore, present what you found, confirm with the user, then write.
 
-For Local-only mode, read [REPOSITORY-CONFIG.md](./REPOSITORY-CONFIG.md) and use Git and existing file tools to find the main checkout. If this is not yet a Git working tree, ask before initialising one for Local-only mode. No additional runtime or package installation is needed. Project mode retains the original setup process.
+For Local-only mode, read [REPOSITORY-CONFIG.md](./REPOSITORY-CONFIG.md) and use Git and existing file tools to find the main checkout. If this is not yet a Git working tree, ask before initialising one for Local-only mode. No additional runtime or package installation is needed. Project mode keeps its preference files under `docs/agents/` and its pointer in `AGENTS.md`.
 
 ## Configuration mode
 
-Keep the mode already used by this repository when rerunning setup. If no preference files exist in either location, ask which mode to use, recommending **Project mode**:
+Keep the mode already used by this repository when rerunning setup. If no preference files exist in either location, ask which mode to use, recommending **Local-only mode** to keep personal preferences out of the repository:
 
-- **Project mode** (original): save preferences under `docs/agents/` and maintain the original pointer in the existing `CLAUDE.md` or `AGENTS.md` file.
-- **Local-only mode** (opt-in): save preferences under `..\.skills\<main-checkout-folder-name>\` on Windows or `../.skills/<main-checkout-folder-name>/` on Linux/macOS, relative to the main checkout. Do not edit project files. The consuming skills refer to the shared `REPOSITORY-CONFIG.md` guide; install this setup skill alongside any skill that needs Local-only preferences.
+- **Local-only mode**: save preferences under `..\.skills\<main-checkout-folder-name>\` on Windows or `../.skills/<main-checkout-folder-name>/` on Linux/macOS, relative to the main checkout. Do not edit project files. The consuming skills refer to the shared `REPOSITORY-CONFIG.md` guide; install this setup skill alongside any skill that needs Local-only preferences.
+- **Project mode**: save preferences under `docs/agents/` and maintain the `## Agent skills` pointer in `AGENTS.md`.
 
-If both locations contain preferences and setup cannot determine the chosen mode, ask which to use. Do not merge or migrate files unless the user explicitly requests it.
+If both locations contain preferences, ask which to use. When switching modes, write the approved settings to the selected location without moving, merging, or deleting files in the previous location. Carry the saved PR/MR request-surface value into the selected location without changing the prior files.
+
+Keep the PR/MR request-surface setting out of the questions and settings snapshot. Preserve its saved value across mode switches; use the selected template's default only when neither location has a saved value.
+
+Accept multiple requested preference changes together. Preserve every unmentioned setting and custom instruction.
 
 In Local-only mode, show the resolved absolute directory before confirmation and after writing, listing the full path of each file written. Setup creates preference files only after the user confirms; installing the skills does not create them.
 
@@ -36,7 +40,7 @@ Look at the current repo to understand its starting state. Read whatever exists;
 
 - The canonical remote: is this a GitHub repo? Which one? Do not confuse a fork with upstream.
 - Existing project preferences in `docs/agents/`, and Local-only preferences in the main checkout's sibling `.skills/<main-checkout-folder-name>/`, if present. Reuse user edits when updating setup.
-- `AGENTS.md` and `CLAUDE.md` at the repo root: does either exist? Is there already an `## Agent skills` section in either?
+- `AGENTS.md` at the repo root: does it exist, and is there already an `## Agent skills` section?
 - `GLOSSARY.md` and `GLOSSARY-MAP.md` at the repo root, and the legacy `CONTEXT.md` / `CONTEXT-MAP.md`. In Project mode, preserve the original offer to `git mv` legacy artifacts to their `GLOSSARY` names and update `docs/agents/domain.md`. In Local-only mode, leave the artifacts unchanged and record their existing paths in the local domain preferences.
 - `docs/adr/` and any `src/*/docs/adr/` directories
 - `.scratch/`: a sign that a local-markdown issue tracker convention is already in use
@@ -60,9 +64,9 @@ Default posture: these skills were designed for GitHub. If a `git remote` points
 - **Local markdown**: issues live as files under `.scratch/<feature>/` in this repo (good for solo projects or repos without a remote)
 - **Other** (Jira, Linear, etc.): ask the user to describe the workflow in one paragraph; the skill will record it as freeform prose
 
-Record the choice in `issue-tracker.md` in the resolved configuration directory. The GitHub and GitLab templates carry a "PRs as a request surface" flag, defaulted **off**. Leave it off and don't raise it: a user who wants external PRs in the triage queue can flip the flag in their local file later.
+Record the choice in `issue-tracker.md` in the resolved configuration directory.
 
-A GitHub or GitLab tracker needs a reachable repo. When the user picks one and no `git remote` points at that host, get the repo URL from them and wire it up (`git init` if needed, `git remote add origin <url>`) before going further. Done when `gh repo view` / `glab repo view` prints the project from inside this directory; if it can't, stop and tell the user what's missing.
+Before writing preferences or creating labels, verify that the selected GitHub or GitLab CLI resolves the intended repository (`gh repo view --json nameWithOwner` or `glab repo view`). If the remote points elsewhere or the repository cannot be verified, stop and report the mismatch or failure. Do not initialize Git or change remotes without previewing those exact Git changes and getting approval.
 
 **Section B: Triage label vocabulary.** Skip this section entirely if the `triage` skill isn't installed (exploration told you), since an uninstalled skill needs no labels.
 
@@ -71,6 +75,8 @@ If it is installed, ask exactly one question:
 > Do you want to keep the default triage labels? (recommended: **yes**)
 
 The defaults are the five canonical roles, each label string equal to its name: `needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`. On **yes**, write them as-is. Only if the user says no, usually because their tracker already uses other names (e.g. `bug:triage` for `needs-triage`), collect the overrides so `triage` applies existing labels instead of creating duplicates.
+
+Before previewing any label creation, retrieve the complete label list from the verified project and compare the configured names exactly. If lookup fails or the result is incomplete, report the error and stop; never guess that a label is missing. Include only confirmed missing labels in the preview.
 
 **Section C: Domain docs.** Preserve any configured or discovered paths. For a new layout, default to **single-context** (one `GLOSSARY.md` + `docs/adr/` at the repo root). This fits almost every repo; write the preference without asking. Do not create the glossary or ADR directory.
 
@@ -81,24 +87,19 @@ Offer **multi-context** (a root `GLOSSARY-MAP.md` pointing to per-context `GLOSS
 Show the user a draft of:
 
 - The canonical repository and selected mode
-- The contents of `issue-tracker.md`, `domain.md`, and `triage-labels.md` (the last when Section B ran), with their exact write paths for the selected mode
-- In Project mode, the original `## Agent skills` block for the selected project instruction file (see step 4).
+- One snapshot of applicable settings. Give each setting's current value, or its proposed value when new, and one plain-language Description. Include the tracker, storage mode, triage roles when applicable, and domain-document paths. Explain that the glossary records project terms and ADRs record durable design decisions. Do not expose the PR/MR request-surface setting.
+- The exact preference paths and the `AGENTS.md` pointer change, if any
+- Any Git or tracker actions, including Git initialization, remote changes, and exact missing label names, listed separately from file writes
 
-Let them edit before writing.
+Let them edit the snapshot and preview. Get confirmation before writing files or taking Git or tracker actions.
 
 ### 4. Write
 
 Create the selected configuration directory if necessary. Write the preferences under `docs/agents/` in **Project mode**, or the resolved sibling `.skills/<main-checkout-folder-name>/` directory in **Local-only mode**. Update existing preferences without discarding user customisations; do not move or delete the other mode's files unless migration was explicitly requested.
 
-**Project mode: pick the instruction file to edit using the original rules:**
+**Project mode:** update only the `## Agent skills` block in the existing `AGENTS.md`. Preserve the surrounding content. If `AGENTS.md` does not exist, ask before creating it. Never update `CLAUDE.md`.
 
-- If `CLAUDE.md` exists, edit it.
-- Else if `AGENTS.md` exists, edit it.
-- If neither exists, ask the user which one to create; don't pick for them.
-
-Never create `AGENTS.md` when `CLAUDE.md` already exists (or vice versa); always edit the one that's already there.
-
-If an `## Agent skills` block already exists in the chosen file, update its contents in-place rather than appending a duplicate. Don't overwrite user edits to the surrounding sections.
+If an `## Agent skills` block already exists in `AGENTS.md`, update its contents in-place rather than appending a duplicate. Don't overwrite user edits to the surrounding sections.
 
 The block:
 
@@ -120,9 +121,9 @@ The block:
 
 Include the `### Triage labels` sub-block, and write `triage-labels.md` in the selected directory, only when `triage` is installed and Section B ran. When it isn't, both are omitted.
 
-**Local-only mode:** leave all repository files unchanged. The consuming skill's guide reference loads preferences when that skill is used. Install this setup skill alongside the consuming skill so its shared guide is available.
+**Local-only mode:** leave all repository files unchanged and do not write the resolved preference path into project files. The consuming skill's generic guide reference loads preferences when that skill is used. Install this setup skill alongside the consuming skill so its shared guide is available.
 
-When Section B ran on GitHub or GitLab, create each configured label the tracker lacks (`gh label create` / `glab label create`).
+When Section B ran on GitHub or GitLab, create only the confirmed missing labels after the user approved the preview (`gh label create` / `glab label create`).
 
 Use the seed templates in this skill folder as a starting point for the selected mode's files:
 

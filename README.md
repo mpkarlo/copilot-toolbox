@@ -87,7 +87,7 @@ When the installer asks which skills to take, include `setup-matt-pocock-skills`
 
 </details>
 
-### 2. Run `/setup-matt-pocock-skills`
+### 2. Run `/cpt-configure`
 
 In your agent, run it once per repo. It will:
 
@@ -97,7 +97,7 @@ In your agent, run it once per repo. It will:
 
 **Project mode** remains the default: setup saves preferences under `docs/agents/` and maintains the original project `CLAUDE.md` / `AGENTS.md` pointers. **Local-only mode** is optional: save the same preferences in `..\.skills\<main-checkout-folder-name>\` on Windows, or `../.skills/<main-checkout-folder-name>/` on Linux/macOS, relative to the main checkout. Worktrees share their main checkout's preferences. Glossaries, ADRs and local tickets remain in the project.
 
-In Local-only mode, each consuming skill follows a short reference to the [shared guide](./skills/engineering/setup-matt-pocock-skills/REPOSITORY-CONFIG.md), which finds that checkout's preferences. Install the setup skill alongside any skill that needs Local-only preferences. No app-specific integration, extra runtime, hashes or environment-variable overrides are required. Setup preserves the existing mode on reruns and asks before switching; installation alone creates no preference files.
+In Local-only mode, each consuming skill follows a short reference to the [shared guide](./skills/engineering/cpt-configure/REPOSITORY-CONFIG.md), which finds that checkout's preferences. Install `cpt-configure` alongside any skill that needs Local-only preferences. No app-specific integration, extra runtime, hashes or environment-variable overrides are required. Setup preserves the existing mode on reruns and asks before switching; installation alone creates no preference files.
 
 ### 3. You're ready to go.
 
@@ -215,7 +215,7 @@ Skills for code work.
 - **[grill-with-docs](./skills/engineering/grill-with-docs/SKILL.md)**: Grilling session that also builds your project's domain model, sharpening terminology and updating `GLOSSARY.md` and ADRs inline.
 - **[triage](./skills/engineering/triage/SKILL.md)**: Move issues through a state machine of triage roles.
 - **[improve-codebase-architecture](./skills/engineering/improve-codebase-architecture/SKILL.md)**: Scan a codebase for deepening opportunities, present them as a visual HTML report, then grill through whichever one you pick.
-- **[setup-matt-pocock-skills](./skills/engineering/setup-matt-pocock-skills/SKILL.md)**: Configure this repo for the engineering skills (issue tracker, triage labels, domain doc layout). Run once per repo before using the other engineering skills.
+- **[cpt-configure](./skills/engineering/cpt-configure/SKILL.md)**: Configure this repo for the engineering skills (issue tracker, triage labels, domain doc layout). Run before the first tracker-dependent skill, and whenever you want to review or change repository preferences.
 - **[to-spec](./skills/engineering/to-spec/SKILL.md)**: Turn the current conversation into a spec and publish it to the issue tracker. No interview, just synthesizes what you've already discussed.
 - **[to-tickets](./skills/engineering/to-tickets/SKILL.md)**: Break any plan, spec, or conversation into a set of tracer-bullet tickets, each declaring its blocking edges, written as text in a local file, or as native blocking links on a real tracker.
 - **[implement](./skills/engineering/implement/SKILL.md)**: Build the work described by a spec or set of tickets, driving `/tdd` at pre-agreed seams and closing out with `/code-review` before committing.
