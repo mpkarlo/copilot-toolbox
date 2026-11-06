@@ -45,6 +45,18 @@ function fixture(t: test.TestContext): string {
     name: "copilot-toolbox",
     version: "1.3.1",
   }));
+  writeFileSync(join(root, "package-lock.json"), JSON.stringify({
+    name: "copilot-toolbox",
+    version: "1.3.1",
+    lockfileVersion: 3,
+    requires: true,
+    packages: {
+      "": {
+        name: "copilot-toolbox",
+        version: "1.3.1",
+      },
+    },
+  }));
   writeFileSync(join(marketplaceDirectory, "marketplace.json"), JSON.stringify({
     name: "copilot-toolbox",
     metadata: {
@@ -158,3 +170,71 @@ test("rejects inconsistent package and plugin versions", (t) => {
 
   assert.match(validatePluginRepository(root).join("\n"), /version must match/i);
 });
+
+const lockVersionFields = [
+  {
+    label: "package-lock.json.version",
+    set(lock: Record<string, unknown>, value: unknown): void {
+      if (value === undefined) {
+        delete lock.version;
+      } else {
+        lock.version = value;
+      }
+    },
+  },
+  {
+    label: 'package-lock.json.packages[""].version',
+    set(lock: Record<string, unknown>, value: unknown): void {
+      const packages = lock.packages as Record<string, Record<string, unknown>>;
+      if (value === undefined) {
+        delete packages[""].version;
+      } else {
+        packages[""].version = value;
+      }
+    },
+  },
+];
+
+for (const field of lockVersionFields) {
+  test(`rejects a missing ${field.label}`, (t) => {
+    const root = fixture(t);
+    const path = join(root, "package-lock.json");
+    const lock = readJson(path);
+    field.set(lock, undefined);
+    writeJson(path, lock);
+
+    assert.ok(
+      validatePluginRepository(root).some(
+        (error) => error.includes(field.label) && /valid semantic version/.test(error),
+      ),
+    );
+  });
+
+  test(`rejects a malformed ${field.label}`, (t) => {
+    const root = fixture(t);
+    const path = join(root, "package-lock.json");
+    const lock = readJson(path);
+    field.set(lock, "not-a-version");
+    writeJson(path, lock);
+
+    assert.ok(
+      validatePluginRepository(root).some(
+        (error) => error.includes(field.label) && /valid semantic version/.test(error),
+      ),
+    );
+  });
+
+  test(`rejects a mismatched ${field.label}`, (t) => {
+    const root = fixture(t);
+    const path = join(root, "package-lock.json");
+    const lock = readJson(path);
+    field.set(lock, "1.3.2");
+    writeJson(path, lock);
+
+    assert.ok(
+      validatePluginRepository(root).some(
+        (error) => error.includes(field.label) && /must match package\.json\.version/.test(error),
+      ),
+    );
+  });
+}

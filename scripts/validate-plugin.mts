@@ -14,6 +14,8 @@ const schemaPath = join(
   "1.0.0",
   "plugin.schema.json",
 );
+const semanticVersionPattern =
+  /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-(?:0|[1-9]\d*|\d*[A-Za-z-][0-9A-Za-z-]*)(?:\.(?:0|[1-9]\d*|\d*[A-Za-z-][0-9A-Za-z-]*))*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?$/;
 
 function isObject(value: unknown): value is JsonObject {
   return value !== null && typeof value === "object" && !Array.isArray(value);
@@ -47,6 +49,20 @@ function fieldString(
   return value;
 }
 
+function semanticVersionField(
+  object: JsonObject,
+  field: string,
+  label: string,
+  errors: string[],
+): string | undefined {
+  const value = object[field];
+  if (typeof value !== "string" || !semanticVersionPattern.test(value)) {
+    errors.push(`${label}.${field} must be a valid semantic version.`);
+    return undefined;
+  }
+  return value;
+}
+
 function isInside(root: string, path: string): boolean {
   const pathFromRoot = relative(root, path);
   return pathFromRoot === "" ||
@@ -60,9 +76,11 @@ export function validatePluginRepository(root = repositoryRoot): string[] {
   const pluginPath = join(root, "plugins", "copilot-toolbox", "plugin.json");
   const marketplacePath = join(root, ".github", "plugin", "marketplace.json");
   const packagePath = join(root, "package.json");
+  const packageLockPath = join(root, "package-lock.json");
   const plugin = readJson(pluginPath, "Plugin manifest", errors);
   const marketplace = readJson(marketplacePath, "Copilot marketplace", errors);
   const packageJson = readJson(packagePath, "package.json", errors);
+  const packageLock = readJson(packageLockPath, "package-lock.json", errors);
 
   if (!isObject(plugin)) {
     errors.push("Plugin manifest must be a JSON object.");
@@ -87,6 +105,9 @@ export function validatePluginRepository(root = repositoryRoot): string[] {
   if (!isObject(packageJson)) {
     errors.push("package.json must be a JSON object.");
   }
+  if (!isObject(packageLock)) {
+    errors.push("package-lock.json must be a JSON object.");
+  }
   if (!isObject(marketplace) || !isObject(plugin) || !isObject(packageJson)) {
     return errors;
   }
@@ -107,9 +128,39 @@ export function validatePluginRepository(root = repositoryRoot): string[] {
   }
 
   const packageName = fieldString(packageJson, "name", "package.json", errors);
-  const packageVersion = fieldString(packageJson, "version", "package.json", errors);
+  const packageVersion = semanticVersionField(packageJson, "version", "package.json", errors);
   const pluginName = fieldString(plugin, "name", "Plugin manifest", errors);
   const pluginVersion = fieldString(plugin, "version", "Plugin manifest", errors);
+
+  if (isObject(packageLock)) {
+    const lockVersion = semanticVersionField(
+      packageLock,
+      "version",
+      "package-lock.json",
+      errors,
+    );
+    const packages = packageLock.packages;
+    if (!isObject(packages)) {
+      errors.push("package-lock.json.packages must be an object.");
+    }
+    const rootPackage = isObject(packages) ? packages[""] : undefined;
+    if (!isObject(rootPackage)) {
+      errors.push('package-lock.json.packages[""] must be an object.');
+    } else {
+      const rootVersion = semanticVersionField(
+        rootPackage,
+        "version",
+        'package-lock.json.packages[""]',
+        errors,
+      );
+      if (rootVersion && packageVersion && rootVersion !== packageVersion) {
+        errors.push('package-lock.json.packages[""].version must match package.json.version.');
+      }
+    }
+    if (lockVersion && packageVersion && lockVersion !== packageVersion) {
+      errors.push("package-lock.json.version must match package.json.version.");
+    }
+  }
 
   if (packageName && pluginName && packageName !== pluginName) {
     errors.push("Plugin manifest name must match package.json.name.");
