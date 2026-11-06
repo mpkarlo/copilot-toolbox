@@ -6,7 +6,7 @@ This repository began as a fork of [mattpocock/skills](https://github.com/mattpo
 
 ## Installation
 
-The recommended route for the GitHub Copilot app is the `mpkarlo` plugin marketplace. It packages the promoted skills in the portable Agent Plugins format.
+The supported routes are the GitHub Copilot app, Copilot CLI, and VS Code through the `mpkarlo` plugin marketplace. It packages the promoted skills in the portable Agent Plugins format. Sources remain available for other agents, but this fork does not claim tested support for them.
 
 ### 1. Get the skills
 
@@ -25,7 +25,7 @@ copilot plugin marketplace add mpkarlo/copilot-toolbox
 copilot plugin install copilot-toolbox@mpkarlo
 ```
 
-To enable marketplace auto-updates, add this once to `~/.copilot/settings.json`:
+Then, once, add to `~/.copilot/settings.json`:
 
 ```json
 {
@@ -44,49 +44,6 @@ Run **Chat: Manage Plugin Marketplaces**, choose **Add Marketplace...**, and ent
 
 </details>
 
-<details>
-<summary><strong>Claude Code</strong></summary>
-
-```bash
-claude plugin marketplace add mpkarlo/copilot-toolbox
-claude plugin install copilot-toolbox@mpkarlo
-```
-
-</details>
-
-<details>
-<summary><strong>Codex</strong></summary>
-
-```bash
-codex plugin marketplace add mpkarlo/copilot-toolbox
-codex plugin add copilot-toolbox@mpkarlo
-```
-
-</details>
-
-<details>
-<summary><strong>Gemini CLI</strong> (manual updates)</summary>
-
-```bash
-gemini skills install https://github.com/mpkarlo/copilot-toolbox.git --path skills/engineering
-gemini skills install https://github.com/mpkarlo/copilot-toolbox.git --path skills/productivity
-```
-
-Re-run both commands to update.
-
-</details>
-
-<details>
-<summary><strong>Any other agent, or editable files</strong> (manual updates)</summary>
-
-```bash
-npx skills@latest add mpkarlo/copilot-toolbox -a <agent>  # cursor, opencode, devin, windsurf, amp, pi; omit -a to choose
-```
-
-When the installer asks which skills to take, include `setup-matt-pocock-skills`. To update, run `npx skills@latest update`, and re-run `add` to pick up new skills.
-
-</details>
-
 ### 2. Run `/cpt-configure`
 
 In your agent, run it once per repo. It will:
@@ -95,7 +52,7 @@ In your agent, run it once per repo. It will:
 - Ask you what labels you apply to tickets when you triage them (`/triage` uses labels)
 - Ask you where you want to save any docs we create
 
-**Project mode** remains the default: setup saves preferences under `docs/agents/` and maintains the original project `CLAUDE.md` / `AGENTS.md` pointers. **Local-only mode** is optional: save the same preferences in `..\.skills\<main-checkout-folder-name>\` on Windows, or `../.skills/<main-checkout-folder-name>/` on Linux/macOS, relative to the main checkout. Worktrees share their main checkout's preferences. Glossaries, ADRs and local tickets remain in the project.
+**Local-only mode** is recommended for new setups: save preferences in `..\.skills\<main-checkout-folder-name>\` on Windows, or `../.skills/<main-checkout-folder-name>/` on Linux/macOS, relative to the main checkout. Worktrees share their main checkout's preferences. **Project mode** saves preferences under `docs/agents/` and updates only the `## Agent skills` block in `AGENTS.md`, asking before creating a missing file. Glossaries, ADRs and local tickets remain in the project.
 
 In Local-only mode, each consuming skill follows a short reference to the [shared guide](./skills/engineering/cpt-configure/REPOSITORY-CONFIG.md), which finds that checkout's preferences. Install `cpt-configure` alongside any skill that needs Local-only preferences. No app-specific integration, extra runtime, hashes or environment-variable overrides are required. Setup preserves the existing mode on reruns and asks before switching; installation alone creates no preference files.
 
@@ -203,7 +160,7 @@ Software engineering fundamentals matter more than ever. These skills condense t
 
 ## Reference
 
-These split on one axis: who can invoke them. **User-invoked** skills are reachable only when you type them (e.g. `/grill-me`); their job is to orchestrate. **Model-invoked** skills can be invoked by you _or_ reached for automatically by the agent when the task fits; they hold the reusable discipline. A user-invoked skill may invoke model-invoked skills, but never another user-invoked one.
+These categories describe intended invocation. **User-invoked** skills are intended for explicit human requests (e.g. `/grill-me`); their job is to orchestrate. **Model-invoked** skills are intended for human requests or agent selection when the task fits; they hold the reusable discipline. Skill-to-skill instructions should call only model-invoked skills and ask the human to request a user-invoked prerequisite. Manual-only metadata is preserved, but runtime enforcement and skill loading remain unverified. Successful discovery does not establish either; see [validation limits](./CONTRIBUTING.md#plugin-validation).
 
 ### Engineering
 

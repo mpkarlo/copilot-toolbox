@@ -16,6 +16,8 @@ Pull requests are open to collaborators only, so describe the fix in an issue in
 
 ## Plugin validation
 
+The supported plugin distribution is for the GitHub Copilot app, Copilot CLI, and VS Code. See the [installation instructions](./README.md#installation).
+
 `npm run validate:plugin` runs the structural checks. A separate GitHub Actions
 job runs `npm run test:cli-compatibility` and `npm run check:cli-compatibility`
 on Windows and Ubuntu, using GitHub CLI 2.102.1 and Copilot CLI 1.0.105.
@@ -28,6 +30,15 @@ plugins are unchanged. Skill and plugin warnings fail the check. The exact
 tag-protection advisory is the deferred exception, not evidence that tags are protected.
 Discovery does not prove skill invocation or agent behavior. A failed compatibility
 job blocks the release job.
+
+User-invoked skills retain their manual-only metadata. The upstream report
+[github/copilot-cli#4438](https://github.com/github/copilot-cli/issues/4438)
+describes a possible invocation limitation that has not been verified here.
+Successful discovery does not establish that a user-invoked skill loads.
+
+## Maintainer implementation records
+
+Maintainer-authored specs and implementation tracking follow [the repository tracking policy](./docs/agents/issue-tracker.md). The contributor-request guidance below does not prohibit approved maintainer specs.
 
 ## Issues written with AI
 

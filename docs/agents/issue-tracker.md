@@ -2,6 +2,20 @@
 
 Issues and specs for this repo live as GitHub issues. Use the `gh` CLI for all operations.
 
+## Maintainer work tracking
+
+Use public GitHub Issues in `mpkarlo/copilot-toolbox` as the shared record for substantive repository work. Before implementing a change that alters skill behavior, adds or renames a skill, or needs multiple sessions, create or identify its issue. Design interviews may happen first. Typo and formatting fixes do not require an issue.
+
+Use one issue per bounded change, with its spec, acceptance criteria, and unfinished work. Create linked child issues only when independently implementable parts make the split useful.
+
+Keep current requirements and acceptance criteria in the issue body. Record later decisions and review results in comments, updating the body when the agreed scope changes. Record skipped checks and incomplete work explicitly. For recovery work, distinguish prior implementation from newly recorded requirements.
+
+Keep the issue open until agreed validation is complete, independent review findings are resolved or explicitly accepted by the user, the user approves manual review, and the change is committed. Commit only on an explicit user request. Review approval alone authorizes neither a commit nor issue closure.
+
+Use an ADR only for an architectural decision that is hard to reverse, surprising without context, and based on a real tradeoff. Link relevant ADRs from the issue; ordinary setup and review decisions do not need an ADR.
+
+Maintainer implementation records may contain approved specs and plans. Incoming contributor requests follow CONTRIBUTING.md.
+
 ## Conventions
 
 - **Create an issue**: `gh issue create --title "..." --body "..."`. Use a heredoc for multi-line bodies.
