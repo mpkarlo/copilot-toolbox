@@ -1,6 +1,6 @@
 {
   "name": "copilot-toolbox",
-  "version": "1.3.1",
+  "version": "0.1.0",
   "private": true,
   "description": "Practical skills for shaping, building, reviewing, and improving software with coding agents",
   "repository": {
@@ -17,6 +17,7 @@
     "changeset": "changeset",
     "version": "changeset version && node scripts/sync-plugin-version.mjs",
     "check-plugin-version": "node scripts/sync-plugin-version.mjs --check",
+    "test:plugin-version": "node --test scripts/sync-plugin-version.test.mjs",
     "test:plugin-manifest": "node --test scripts/validate-plugin.test.mts",
     "test:skill-structure": "node --test scripts/validate-skill-structure.test.mts",
     "test:skill-links": "node --test scripts/validate-skill-links.test.mts",
@@ -24,7 +25,7 @@
     "check:plugin-manifest": "node scripts/validate-plugin.mts",
     "check:skill-structure": "node scripts/validate-skill-structure.mts",
     "check:skill-links": "node scripts/validate-skill-links.mts",
-    "validate:plugin": "npm run test:repository-config && npm run test:copilot-plugin && npm run test:plugin-manifest && npm run test:skill-structure && npm run test:skill-links && npm run typecheck:validation && npm run check:plugin-manifest && npm run check:skill-structure && npm run check:skill-links && npm run check:copilot-plugin && npm run check-plugin-version",
+    "validate:plugin": "npm run test:repository-config && npm run test:copilot-plugin && npm run test:plugin-version && npm run test:plugin-manifest && npm run test:skill-structure && npm run test:skill-links && npm run typecheck:validation && npm run check:plugin-manifest && npm run check:skill-structure && npm run check:skill-links && npm run check:copilot-plugin && npm run check-plugin-version",
     "test:copilot-plugin": "node --test scripts/sync-copilot-plugin.test.mjs"
   },
   "devDependencies": {
