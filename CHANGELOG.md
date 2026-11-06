@@ -1,5 +1,19 @@
 # copilot-toolbox
 
+## 0.2.0
+
+### Minor Changes
+
+- [#11](https://github.com/mpkarlo/copilot-toolbox/pull/11) [`62b668e`](https://github.com/mpkarlo/copilot-toolbox/commit/62b668e56c4b10021129d1af2f32ffc6361c023c) Thanks [@mpkarlo](https://github.com/mpkarlo)! - Rename `setup-matt-pocock-skills` to `/cpt-configure` and make repository preferences repeatable to review and change. New setups recommend Local-only mode, preserve existing mode choices, and preview repo, Git, and tracker changes before approval.
+
+- [#1](https://github.com/mpkarlo/copilot-toolbox/pull/1) [`bb4d167`](https://github.com/mpkarlo/copilot-toolbox/commit/bb4d1678d932e973d06ca20a5b5b586afd13727f) Thanks [@mpkarlo](https://github.com/mpkarlo)! - Add optional Local-only storage for repository tracker workflows, triage-label mappings and domain-document preferences. New setups ask users to choose a mode, recommending Local-only; Project mode uses the original `docs/agents/` preferences and project instruction pointers.
+
+  Local-only preferences live in `../.skills/<main-checkout-folder-name>/`, relative to the main checkout. Worktrees share those preferences. Setup preserves the existing mode on reruns and asks before switching or migrating; it does not edit project files in Local-only mode.
+
+  Each consuming skill references one shared guide to load Local-only preferences without app-specific integration, hashes, environment-variable overrides or an additional runtime dependency. Missing preferences retain each skill's original setup guidance and fallbacks.
+
+  Glossaries, ADRs, local tickets and other project artifacts keep their original locations. Project mode retains its offer to rename legacy context artifacts; Local-only mode records their existing paths instead.
+
 ## Original project history (1.x)
 
 The entries below record releases of [mattpocock/skills](https://github.com/mattpocock/skills),
