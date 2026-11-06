@@ -130,7 +130,7 @@ test("rejects catalog source paths that do not contain a plugin manifest", (t) =
 
 test("rejects catalog source symlinks that resolve outside the repository", (t) => {
   const root = fixture(t);
-  const outside = mkdtempSync(join(tmpdir(), "outside-plugin-"));
+  const outside = mkdtempSync(`${root}-sibling-`);
   t.after(() => rmSync(outside, { recursive: true, force: true }));
   writeFileSync(join(outside, "plugin.json"), "{}");
   symlinkSync(outside, join(root, "plugins", "linked"), "junction");
@@ -142,6 +142,24 @@ test("rejects catalog source symlinks that resolve outside the repository", (t) 
   writeJson(path, marketplace);
 
   assert.match(validatePluginRepository(root).join("\n"), /resolve to a directory inside the repository/);
+});
+
+test("accepts catalog source symlinks to the repository root and descendants", (t) => {
+  const root = fixture(t);
+  copyFileSync(join(root, "plugins", "copilot-toolbox", "plugin.json"), join(root, "plugin.json"));
+  const path = join(root, ".github", "plugin", "marketplace.json");
+  const marketplace = readJson(path);
+  const plugins = marketplace.plugins as Array<Record<string, unknown>>;
+  for (const [name, target] of [
+    ["linked-root", root],
+    ["linked-child", join(root, "plugins", "copilot-toolbox")],
+  ]) {
+    symlinkSync(target, join(root, "plugins", name), "junction");
+    plugins[0].source = `plugins/${name}`;
+    writeJson(path, marketplace);
+
+    assert.deepEqual(validatePluginRepository(root), []);
+  }
 });
 
 test("rejects plugin manifest paths that resolve outside the repository", (t) => {

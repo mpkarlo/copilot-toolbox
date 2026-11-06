@@ -16,15 +16,15 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const syncScript = fileURLToPath(new URL("./sync-copilot-plugin.mjs", import.meta.url));
-
 function fixture(t) {
   const root = mkdtempSync(join(tmpdir(), "copilot-inventory-"));
   t.after(() => rmSync(root, { recursive: true, force: true }));
   for (const directory of [["scripts"], ["skills", "engineering"], ["skills", "productivity"]]) {
     mkdirSync(join(root, ...directory), { recursive: true });
   }
-  copyFileSync(syncScript, join(root, "scripts", "sync-copilot-plugin.mjs"));
+  for (const name of ["sync-copilot-plugin.mjs", "path-is-within.mts"]) {
+    copyFileSync(new URL(name, import.meta.url), join(root, "scripts", name));
+  }
   writeFileSync(join(root, "LICENSE"), "Example license\n");
   return root;
 }
@@ -53,6 +53,63 @@ function assertRejectedWithoutChanges(root, message) {
     assert.equal(readFileSync(sentinel, "utf8"), "Keep existing output\n");
   }
 }
+
+test("sync and both validators use the shared containment helper", () => {
+  const helperUrl = new URL("./path-is-within.mts", import.meta.url).href;
+  const preload = `
+    import { registerHooks } from "node:module";
+    registerHooks({
+      load(url, context, nextLoad) {
+        if (url !== ${JSON.stringify(helperUrl)}) return nextLoad(url, context);
+        return {
+          format: "module",
+          shortCircuit: true,
+          source: 'export function pathIsWithin() { throw new Error("Shared containment reached"); }',
+        };
+      },
+    });
+  `;
+  for (const name of ["sync-copilot-plugin.mjs", "validate-plugin.mts", "validate-skill-links.mts"]) {
+    const result = spawnSync(process.execPath, [
+      "--import", `data:text/javascript,${encodeURIComponent(preload)}`,
+      fileURLToPath(new URL(name, import.meta.url)), "--check",
+    ], { encoding: "utf8" });
+    assert.notEqual(result.status, 0, name);
+    assert.match(result.stderr, /Shared containment reached/, name);
+  }
+});
+
+test("sync distinguishes skill roots, parents, and sibling-prefix paths", (t) => {
+  const root = fixture(t);
+  addSkill(root, "engineering", "guide");
+  addSkill(root, "engineering", "guide-extra");
+  addSkill(root, "productivity", "reader");
+  const content = [
+    "[Root](../../engineering/guide/)",
+    "[Child](../../engineering/guide/SKILL.md)",
+    "[Parent](../../engineering/)",
+    "[Sibling](../../engineering/guide-extra/SKILL.md)",
+    "[Dot name](../../engineering/guide/..notes.md)",
+    "",
+  ].join("\n");
+  writeFileSync(join(root, "skills", "productivity", "reader", "SKILL.md"), content);
+
+  const result = sync(root);
+
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(
+    readFileSync(join(root, "plugins", "copilot-toolbox", "skills", "reader", "SKILL.md"), "utf8"),
+    [
+      "[Root](../guide)",
+      "[Child](../guide/SKILL.md)",
+      "[Parent](../../engineering/)",
+      "[Sibling](../guide-extra/SKILL.md)",
+      "[Dot name](../guide/..notes.md)",
+      "",
+    ].join("\n"),
+  );
+  assert.equal(sync(root, "--check").status, 0);
+});
 
 test("sync discovers only promoted skills without a Claude manifest", (t) => {
   const root = fixture(t);

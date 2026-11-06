@@ -13,7 +13,6 @@ import {
 import {
   dirname,
   extname,
-  isAbsolute,
   join,
   normalize,
   relative,
@@ -21,6 +20,7 @@ import {
   sep,
 } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { pathIsWithin } from "./path-is-within.mts";
 
 const repo = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const pluginRoot = join(repo, "plugins", "copilot-toolbox");
@@ -55,16 +55,6 @@ const promotedSkillNames = new Set(promotedSkills.map(({ name }) => name));
 const caseInsensitiveSkillNames = new Set(promotedSkills.map(({ name }) => name.toLowerCase()));
 if (caseInsensitiveSkillNames.size !== promotedSkills.length) {
   throw new Error("Skill names must be unique in the Copilot plugin.");
-}
-
-function pathIsWithin(root, path) {
-  const relativePath = relative(root, path);
-  return (
-    relativePath === "" ||
-    (relativePath !== ".." &&
-      !relativePath.startsWith(`..${sep}`) &&
-      !isAbsolute(relativePath))
-  );
 }
 
 function maskCode(markdown) {

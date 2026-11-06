@@ -66,6 +66,21 @@ test("rejects a packaged link that escapes the plugin", (t) => {
   assert.match(validateSkillLinks(root).join("\n"), /Packaged link.*escapes its allowed root/);
 });
 
+test("accepts root and dot-prefixed child links but rejects parents and sibling-prefix paths", (t) => {
+  const root = fixture(t);
+  const pluginRoot = join(root, "plugins", "copilot-toolbox");
+  const skillFile = join(pluginRoot, "skills", "sample-skill", "SKILL.md");
+  writeFileSync(join(pluginRoot, "..notes.md"), "# Notes\n");
+  writeFileSync(skillFile, "[Root](../../)\n[Dot name](../../..notes.md)\n");
+  assert.deepEqual(validateSkillLinks(root), []);
+
+  mkdirSync(join(root, "plugins", "copilot-toolbox-extra"));
+  for (const target of ["../../../", "../../../copilot-toolbox-extra/"]) {
+    writeFileSync(skillFile, `[Outside](${target})\n`);
+    assert.match(validateSkillLinks(root).join("\n"), /Packaged link.*escapes its allowed root/);
+  }
+});
+
 test("rejects a packaged link through a symlink outside the plugin", (t) => {
   const root = fixture(t);
   const externalDirectory = join(root, "external");

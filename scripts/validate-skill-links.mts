@@ -1,21 +1,14 @@
 import MarkdownIt from "markdown-it";
 import { existsSync, readdirSync, readFileSync, realpathSync } from "node:fs";
-import { extname, isAbsolute, join, relative, resolve, sep } from "node:path";
+import { extname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
+import { pathIsWithin } from "./path-is-within.mts";
 
 type Link = { destination: string; line: number };
 
 const repositoryRoot = resolve(fileURLToPath(new URL("..", import.meta.url)));
 const promotedBuckets = ["engineering", "productivity"];
 const markdown = new MarkdownIt();
-
-function isWithin(root: string, path: string): boolean {
-  const pathFromRoot = relative(root, path);
-  return pathFromRoot === "" ||
-    (pathFromRoot !== ".." &&
-      !pathFromRoot.startsWith(`..${sep}`) &&
-      !isAbsolute(pathFromRoot));
-}
 
 function collectMarkdownFiles(
   root: string,
@@ -89,13 +82,13 @@ function checkLinksInFiles(
         continue;
       }
 
-      if (!isWithin(containmentRoot, targetPath)) {
+      if (!pathIsWithin(containmentRoot, targetPath)) {
         errors.push(`${label} ${sourceFile}:${link.line} escapes its allowed root: ${link.destination}`);
       } else if (!existsSync(targetPath)) {
         errors.push(`${label} ${sourceFile}:${link.line} points to a missing file: ${link.destination}`);
       } else {
         try {
-          if (!isWithin(realpathSync(containmentRoot), realpathSync(targetPath))) {
+          if (!pathIsWithin(realpathSync(containmentRoot), realpathSync(targetPath))) {
             errors.push(
               `${label} ${sourceFile}:${link.line} resolves outside its allowed root: ${link.destination}`,
             );
