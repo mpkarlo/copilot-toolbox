@@ -12,7 +12,7 @@
       "name": "copilot-toolbox",
       "source": "plugins/copilot-toolbox",
       "description": "Practical skills for shaping, building, reviewing, and improving software with coding agents.",
-      "version": "1.3.1"
+      "version": "0.1.0"
     }
   ]
 }
