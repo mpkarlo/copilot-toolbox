@@ -1,6 +1,6 @@
 # Copilot Toolbox
 
-A collection of agent skills (slash commands and behaviors) loaded by Claude Code. Skills are organized into buckets and consumed by per-repo configuration emitted by `/setup-matt-pocock-skills`.
+A collection of practical skills for shaping, building, reviewing, and improving software with coding agents. Skills are organized into buckets, and some consume preferences recorded by `/cpt-configure`.
 
 ## Language
 
