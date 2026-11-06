@@ -2,7 +2,7 @@
 "copilot-toolbox": minor
 ---
 
-Add optional Local-only storage for repository tracker workflows, triage-label mappings and domain-document preferences. Project mode remains the default, using the original `docs/agents/` preferences and project instruction pointers.
+Add optional Local-only storage for repository tracker workflows, triage-label mappings and domain-document preferences. New setups ask users to choose a mode, recommending Local-only; Project mode uses the original `docs/agents/` preferences and project instruction pointers.
 
 Local-only preferences live in `../.skills/<main-checkout-folder-name>/`, relative to the main checkout. Worktrees share those preferences. Setup preserves the existing mode on reruns and asks before switching or migrating; it does not edit project files in Local-only mode.
 
