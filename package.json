@@ -1,6 +1,6 @@
 {
   "name": "copilot-toolbox",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "Practical skills for shaping, building, reviewing, and improving software with coding agents",
   "repository": {
