@@ -6,7 +6,7 @@ The configuration is repeatable. It preserves settings and custom instructions y
 
 ## When to reach for it
 
-You invoke it by typing `/cpt-configure`; the agent will not reach for it on its own. Reach for it before the first tracker-dependent engineering skill, or when you want to review or change repository preferences. For help choosing a workflow rather than configuring preferences, use [ask-matt](https://aihero.dev/skills-ask-matt).
+This skill is intended for explicit requests; ask for `/cpt-configure` when it is available. Reach for it before the first tracker-dependent engineering skill, or when you want to review or change repository preferences. For help choosing a workflow rather than configuring preferences, use [ask-matt](./ask-matt.md).
 
 ## Prerequisites
 
@@ -65,4 +65,4 @@ No. It updates only the `## Agent skills` block in `AGENTS.md`; if that file is 
 
 ## Where it fits
 
-`cpt-configure` is repeatable repository configuration, not a step in the build chain. Its neighbors are its readers: [triage](https://aihero.dev/skills-triage) applies its label vocabulary; [to-spec](https://aihero.dev/skills-to-spec), [to-tickets](https://aihero.dev/skills-to-tickets), and [wayfinder](https://aihero.dev/skills-wayfinder) use the configured tracker; [domain-modeling](https://aihero.dev/skills-domain-modeling) uses the recorded domain-document layout. [ask-matt](https://aihero.dev/skills-ask-matt) routes the full skill set.
+`cpt-configure` is repeatable repository configuration, not a step in the build chain. Its neighbors are its readers: [triage](./triage.md) applies its label vocabulary; [to-spec](./to-spec.md), [to-tickets](./to-tickets.md), and [wayfinder](./wayfinder.md) use the configured tracker; [domain-modeling](./domain-modeling.md) uses the recorded domain-document layout. [ask-matt](./ask-matt.md) routes the full skill set.

@@ -1,5 +1,7 @@
 # Explicit `/setup-matt-pocock-skills` pointer only for hard dependencies
 
+> **Current name.** `/setup-matt-pocock-skills` is the historical name for the skill now named `/cpt-configure`. The original decision text below is preserved as recorded.
+
 Engineering skills depend on per-repo config (issue tracker, triage label vocabulary, domain doc layout) seeded by `/setup-matt-pocock-skills`. Some skills cannot meaningfully function without that config: they have to publish to a specific issue tracker or apply a specific label string. Others only use it to sharpen output (vocabulary, ADR awareness) and degrade gracefully without it.
 
 We split these into **hard-dependency** and **soft-dependency** skills:

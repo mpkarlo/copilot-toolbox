@@ -20,7 +20,7 @@ This skill is intended for explicit requests; ask for `/ask-matt` when it is ava
 
 The router names skills; it does not install them. Everything it points at has to be installed for the recommendation to be actionable, and it only knows the promoted skills in this repo.
 
-The tracker-dependent routes (triage, `to-spec`, `to-tickets`, `implement`) assume [cpt-configure](./cpt-configure.md) has already configured an issue tracker in the repo. The router recommends them even before that has happened. Project mode remains the default; optional Local-only mode stores preferences outside the repository, and each consuming skill follows a shared-guide reference to find them.
+The tracker-dependent routes (triage, `to-spec`, `to-tickets`, `implement`) assume [cpt-configure](./cpt-configure.md) has already configured an issue tracker in the repo. The router recommends them even before that has happened. For a new setup, cpt-configure recommends Local-only mode; reruns preserve the existing mode. Each consuming skill follows a shared-guide reference to find Local-only preferences.
 
 ## Flows, not skills
 
