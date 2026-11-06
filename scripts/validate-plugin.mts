@@ -1,8 +1,9 @@
 import { Ajv2020 } from "ajv/dist/2020.js";
 import type { AnySchema } from "ajv";
 import { existsSync, readFileSync, realpathSync } from "node:fs";
-import { dirname, isAbsolute, join, relative, resolve, sep } from "node:path";
+import { dirname, isAbsolute, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { pathIsWithin } from "./path-is-within.mts";
 
 type JsonObject = Record<string, unknown>;
 
@@ -61,14 +62,6 @@ function semanticVersionField(
     return undefined;
   }
   return value;
-}
-
-function isInside(root: string, path: string): boolean {
-  const pathFromRoot = relative(root, path);
-  return pathFromRoot === "" ||
-    (pathFromRoot !== ".." &&
-      !pathFromRoot.startsWith(`..${sep}`) &&
-      !isAbsolute(pathFromRoot));
 }
 
 export function validatePluginRepository(root = repositoryRoot): string[] {
@@ -200,7 +193,7 @@ export function validatePluginRepository(root = repositoryRoot): string[] {
         isAbsolute(source) ||
         source.includes("\\") ||
         sourceSegments.some((segment) => segment === "." || segment === "..") ||
-        !isInside(root, sourcePath)
+        !pathIsWithin(root, sourcePath)
       ) {
         errors.push(`${label}.source must be a repository-relative path without traversal.`);
       } else if (!existsSync(pluginManifestPath)) {
@@ -208,9 +201,9 @@ export function validatePluginRepository(root = repositoryRoot): string[] {
       } else {
         try {
           const realRepositoryRoot = realpathSync(root);
-          if (!isInside(realRepositoryRoot, realpathSync(sourcePath))) {
+          if (!pathIsWithin(realRepositoryRoot, realpathSync(sourcePath))) {
             errors.push(`${label}.source must resolve to a directory inside the repository.`);
-          } else if (!isInside(realRepositoryRoot, realpathSync(pluginManifestPath))) {
+          } else if (!pathIsWithin(realRepositoryRoot, realpathSync(pluginManifestPath))) {
             errors.push(`${label}.source plugin.json must resolve to a file inside the repository.`);
           }
         } catch (error) {
