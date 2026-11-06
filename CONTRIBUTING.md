@@ -22,6 +22,8 @@ The supported plugin distribution is for the GitHub Copilot app, Copilot CLI, an
 job runs `npm run test:cli-compatibility` and `npm run check:cli-compatibility`
 on Windows and Ubuntu, using GitHub CLI 2.102.1 and Copilot CLI 1.0.105.
 You can run those commands locally with the same tools and GitHub CLI authentication.
+The structural checks also require `package.json`, both root `package-lock.json`
+version fields, and the Copilot manifest and catalog versions to agree.
 
 The compatibility check uses GitHub's skill publishing dry run without publishing,
 then checks that Copilot discovers the local plugin and every promoted skill.
