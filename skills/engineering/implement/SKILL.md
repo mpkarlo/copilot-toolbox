@@ -9,7 +9,7 @@ Implement the work described by the user in the spec or tickets.
 
 If the user passes a ticket reference, fetch it from the issue tracker and state its title before starting. If the reference is ambiguous, ask.
 
-Before using repo-specific tracker, triage-label, or domain-document preferences, follow [the Local-only lookup guide](../setup-matt-pocock-skills/REPOSITORY-CONFIG.md). If none are selected, keep this skill's existing behavior.
+Before using repo-specific tracker, triage-label, or domain-document preferences, follow [the Local-only lookup guide](../cpt-configure/REPOSITORY-CONFIG.md). If none are selected, keep this skill's existing behavior.
 
 Call the Skill tool with "tdd" where possible, at pre-agreed seams.
 

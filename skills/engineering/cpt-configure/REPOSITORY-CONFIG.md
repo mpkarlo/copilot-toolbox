@@ -1,6 +1,6 @@
 # Local-only repository preferences
 
-This guide describes the optional Local-only mode. Project mode remains the default and keeps its existing `docs/agents/` files, instruction pointers, and skill behavior. It adds no runtime or package dependency.
+This guide describes Local-only mode. Project mode keeps its `docs/agents/` files and `AGENTS.md` pointer. `cpt-configure` recommends Local-only mode for a new setup and preserves the existing mode on reruns. This guide adds no runtime or package dependency.
 
 ## Discover Local-only preferences
 

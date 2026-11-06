@@ -10,7 +10,7 @@ A discipline for hard bugs. Skip phases only when explicitly justified.
 
 When exploring the codebase, read `GLOSSARY.md` (if it exists) to get a clear mental model of the relevant modules, and check ADRs in the area you're touching.
 
-Before using repo-specific tracker, triage-label, or domain-document preferences, follow [the Local-only lookup guide](../setup-matt-pocock-skills/REPOSITORY-CONFIG.md). If none are selected, keep this skill's existing behavior.
+Before using repo-specific tracker, triage-label, or domain-document preferences, follow [the Local-only lookup guide](../cpt-configure/REPOSITORY-CONFIG.md). If none are selected, keep this skill's existing behavior.
 
 ## Redact
 

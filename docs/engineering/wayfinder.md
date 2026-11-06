@@ -22,9 +22,9 @@ Greenfield is not a requirement. People use wayfinder routinely on legacy and ha
 
 ## Prerequisites
 
-Optional Local-only preferences are available when `setup-matt-pocock-skills` is installed alongside this skill; it follows a link to the shared guide, and otherwise retains the project's existing configuration and fallback behavior.
+Optional Local-only preferences are available when `cpt-configure` is installed alongside this skill; it follows a link to the shared guide, and otherwise retains the project's existing configuration and fallback behavior.
 
-The map and its tickets live on the repo's issue tracker. [setup-matt-pocock-skills](setup-matt-pocock-skills.md) can configure a "Wayfinding operations" section describing the map, child tickets, blocking edges, and frontier queries. Project mode uses an instruction-file pointer; Local-only mode uses the shared preference guide. With no tracker configured, wayfinder falls back to local markdown files.
+The map and its tickets live on the repo's issue tracker. [cpt-configure](cpt-configure.md) can configure a "Wayfinding operations" section describing the map, child tickets, blocking edges, and frontier queries. Project mode uses an instruction-file pointer; Local-only mode uses the shared preference guide. With no tracker configured, wayfinder falls back to local markdown files.
 
 The tracker does real work. Its native blocking links show the frontier in the tracker's own UI. On a tracker without native dependency links (a self-hosted Gitea, say), wayfinder infers blockers from the map text. That works, but you must supervise it more closely.
 

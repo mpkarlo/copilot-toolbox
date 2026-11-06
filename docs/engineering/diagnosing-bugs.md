@@ -97,7 +97,7 @@ v1.0.0 renamed it to `/diagnosing-bugs`. The old name no longer exists. Anything
 
 ## Prerequisites
 
-Optional Local-only preferences are available when `setup-matt-pocock-skills` is installed alongside this skill; it follows a link to the shared guide, and otherwise retains the project's existing configuration and fallback behavior.
+Optional Local-only preferences are available when `cpt-configure` is installed alongside this skill; it follows a link to the shared guide, and otherwise retains the project's existing configuration and fallback behavior.
 
 ## Where it fits
 

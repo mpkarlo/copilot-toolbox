@@ -22,7 +22,7 @@ That last row is a real gap. The skill decides *where* the seams go, but nothing
 
 ## Prerequisites
 
-Optional Local-only preferences are available when `setup-matt-pocock-skills` is installed alongside this skill; it follows a link to the shared guide, and otherwise retains the project's existing configuration and fallback behavior.
+Optional Local-only preferences are available when `cpt-configure` is installed alongside this skill; it follows a link to the shared guide, and otherwise retains the project's existing configuration and fallback behavior.
 
 [codebase-design](codebase-design.md) needs to be installed. `tdd` used to carry its own deep-module and interface-design notes; v1.0 deleted them in favour of the shared skill, and `tdd` now uses its interface-design vocabulary. Nothing else; the skill is [stateless](https://www.aihero.dev/ai-coding-dictionary/stateless) and writes no files of its own.
 

@@ -24,11 +24,11 @@ The same-session case is worth naming because the skill's own first line doesn't
 
 ## Prerequisites
 
-Optional Local-only preferences are available when `setup-matt-pocock-skills` is installed alongside this skill; it follows a link to the shared guide, and otherwise retains the project's existing configuration and fallback behavior.
+Optional Local-only preferences are available when `cpt-configure` is installed alongside this skill; it follows a link to the shared guide, and otherwise retains the project's existing configuration and fallback behavior.
 
 `implement` commits to the branch you are on. It does not create one, and it does not ask. Check you are on the branch you want the work on before you start.
 
-If the tickets came from [to-tickets](to-tickets.md), [setup-matt-pocock-skills](setup-matt-pocock-skills.md) configured the tracker they live on. `code-review` reads the same configuration to find the originating spec at close-out.
+If the tickets came from [to-tickets](to-tickets.md), [cpt-configure](cpt-configure.md) configured the tracker they live on. `code-review` reads the same configuration to find the originating spec at close-out.
 
 ## What one run does
 

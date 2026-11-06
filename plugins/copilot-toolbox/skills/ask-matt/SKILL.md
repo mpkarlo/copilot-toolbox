@@ -11,7 +11,7 @@ You don't remember every skill, so ask.
 
 Before stating what a skill does or recommending a step be skipped, read that skill's SKILL.md: the summaries here are for orientation only.
 
-Before routing repository work that uses tracker, triage-label, or domain-document preferences, follow [the Local-only lookup guide](../setup-matt-pocock-skills/REPOSITORY-CONFIG.md). If none are selected, keep the existing project setup and skill behavior.
+Before routing repository work that uses tracker, triage-label, or domain-document preferences, follow [the Local-only lookup guide](../cpt-configure/REPOSITORY-CONFIG.md). If none are selected, keep the existing project setup and skill behavior.
 
 A **flow** is a path through the skills. Most paths run along one **main flow**, and two **on-ramps** merge onto it. Everything else is standalone, or a vocabulary layer that runs underneath.
 
@@ -97,4 +97,4 @@ Off the main flow entirely.
 
 ## Precondition
 
-**`/setup-matt-pocock-skills`**: run before your first engineering flow to configure the issue tracker, triage labels, and doc layout the other skills assume. Custom issue trackers also work. Project mode remains the default; optional Local-only mode stores preferences outside the repository and consumer skills find them through their shared-guide reference.
+**`/cpt-configure`**: run before your first tracker-dependent engineering flow, or to review or change repository preferences. New setups recommend Local-only mode; reruns preserve the existing mode. Project mode updates only `AGENTS.md`; Local-only mode stores preferences outside the repository and consumer skills find them through their shared-guide reference.

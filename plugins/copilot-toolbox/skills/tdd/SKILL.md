@@ -10,7 +10,7 @@ TDD is the red → green loop. This skill is the reference that makes that loop 
 
 When exploring the codebase, read `GLOSSARY.md` (if it exists) so test names and interface vocabulary match the project's domain language, and respect ADRs in the area you're touching.
 
-Before using repo-specific tracker, triage-label, or domain-document preferences, follow [the Local-only lookup guide](../setup-matt-pocock-skills/REPOSITORY-CONFIG.md). If none are selected, keep this skill's existing behavior.
+Before using repo-specific tracker, triage-label, or domain-document preferences, follow [the Local-only lookup guide](../cpt-configure/REPOSITORY-CONFIG.md). If none are selected, keep this skill's existing behavior.
 
 ## What a good test is
 
