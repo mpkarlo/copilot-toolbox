@@ -2,7 +2,7 @@
 
 This folder is the active release queue for Copilot Toolbox. Add changesets here
 for fork-specific changes. The package, portable plugin manifest and marketplace
-entry start at an untagged `0.1.0` development baseline.
+entry started at an untagged `0.1.0` development baseline.
 
 The 19 inherited pending changesets are preserved in
 [`historical/changesets/mattpocock-skills/`](../historical/changesets/mattpocock-skills/),
@@ -17,8 +17,9 @@ consumes queued changesets, updates the changelog and synchronizes the plugin
 manifest and marketplace version with `package.json`. It is a release operation,
 not a validation command.
 
-The Local-only preferences and `cpt-configure` changesets remain queued for the
-fork, currently proposing `0.2.0`. Release-history archival does not tag a release
+The Local-only preferences and `cpt-configure` changesets were consumed and
+published in `v0.2.0`; see [`CHANGELOG.md`](../CHANGELOG.md). The queue holds only
+changesets added since. Release-history archival does not tag a release
 or repair repository permissions for automated version pull requests. A generated
 `changeset-release/main` branch is not an approved release or permission to merge it.
 
