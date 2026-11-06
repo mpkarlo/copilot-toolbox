@@ -1,5 +1,11 @@
 # copilot-toolbox
 
+## Original project history (1.x)
+
+The entries below record releases of [mattpocock/skills](https://github.com/mattpocock/skills),
+the original project. They are preserved as historical context, not releases of this
+fork. Copilot Toolbox starts from an untagged `0.1.0` development baseline.
+
 ## 1.3.1
 
 ### Patch Changes
