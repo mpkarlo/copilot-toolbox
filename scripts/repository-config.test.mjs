@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, lstatSync, readFileSync } from "node:fs";
 
 const read = (filename) => readFileSync(new URL(`../${filename}`, import.meta.url), "utf8");
 const assertGuideReference = (filename, reference) => {
@@ -75,4 +75,58 @@ test("consumers keep their existing fallback behavior when Local-only config is 
     const skill = read(`skills/engineering/${name}/SKILL.md`);
     assert.match(skill, /If not, tell the user to run `\/cpt-configure`/);
   }
+});
+
+test("supported installation blocks are Copilot-only and copied verbatim", () => {
+  const install = read(".agents/install-block.md");
+  const readme = read("README.md");
+  const blocks = [...install.matchAll(/<canonical-block name="([^"]+)">\r?\n([\s\S]*?)\r?\n<\/canonical-block>/g)];
+  assert.deepEqual(blocks.map((block) => block[1]), ["copilot-app", "copilot", "vscode"]);
+  for (const [, name, content] of blocks) {
+    assert.ok(readme.includes(content.trim()), `README.md differs from the ${name} install block`);
+  }
+  const installation = readme.split("## Installation")[1].split("### 2.")[0];
+  for (const text of [install, installation]) {
+    assert.doesNotMatch(text, /claude plugin|codex plugin|gemini skills|npx skills|\.claude-plugin/);
+  }
+  assert.match(readme, /categories describe intended invocation/);
+  assert.match(readme, /runtime enforcement and skill loading remain unverified/);
+  assert.doesNotMatch(readme, /reachable only when you type|reached for automatically by the agent/);
+  for (const filename of [
+    ".claude-plugin/plugin.json",
+    ".claude-plugin/marketplace.json",
+    "scripts/link-skills.sh",
+    "CLAUDE.md",
+  ]) {
+    assert.equal(existsSync(new URL(`../${filename}`, import.meta.url)), false, filename);
+  }
+});
+
+test("root instructions are a regular file with live policy pointers", () => {
+  const instructionsUrl = new URL("../AGENTS.md", import.meta.url);
+  assert.equal(lstatSync(instructionsUrl).isSymbolicLink(), false);
+  assert.equal(lstatSync(instructionsUrl).isFile(), true);
+  const instructions = read("AGENTS.md");
+  assert.match(instructions, /^Skills are organized/);
+  assert.match(instructions, /Before substantive implementation, follow the issue, review, and completion rules/);
+  assert.doesNotMatch(instructions, /claude-plugin|link-skills|claude plugin validate|https:\/\/aihero\.dev/);
+  assert.match(instructions, /declares intended invocation/);
+  assert.match(instructions, /`disable-model-invocation: true` plus `policy.allow_implicit_invocation: false`/);
+  assert.match(instructions, /Runtime enforcement and skill loading remain unverified/);
+  assert.doesNotMatch(instructions, /reachable|model- or user-reachable/);
+  for (const [, target] of instructions.matchAll(/\]\((\.\/[^)]+)\)/g)) {
+    assert.ok(existsSync(new URL(target.split("#")[0], instructionsUrl)), target);
+  }
+  assert.match(read("docs/agents/issue-tracker.md"), /Commit only on an explicit user request/);
+  assert.match(read("CONTRIBUTING.md"), /contributor-request guidance below does not prohibit approved maintainer specs/);
+});
+
+test("guide policy follows repository Markdown rather than an external publication template", () => {
+  const policy = read(".agents/writing-docs.md");
+  assert.match(policy, /Exact headings and section order are not required/);
+  assert.match(policy, /revision-relative paths/);
+  assert.match(policy, /Expected results, side effects, and limits/);
+  assert.match(policy, /State the intended invocation/);
+  assert.match(policy, /without claiming runtime enforcement or successful loading/);
+  assert.doesNotMatch(policy, /every link is absolute|published at|renders the install widget/);
 });

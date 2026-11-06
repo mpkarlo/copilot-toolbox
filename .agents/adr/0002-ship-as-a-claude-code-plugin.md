@@ -1,5 +1,7 @@
 # Ship the skill set as a native Claude Code plugin; defer a native Codex plugin
 
+> **Superseded in this fork.** The approved [Copilot-only distribution decision in #6](https://github.com/mpkarlo/copilot-toolbox/issues/6) replaces this record's installation and version invariants. The canonical bucketed sources generate one flat Copilot plugin; `package.json` owns its version. The GitHub Copilot app, Copilot CLI, and VS Code use `.github/plugin/marketplace.json`. Claude/Codex manifests and the local harness-link script are retired. Other agents may use the sources without a tested-support claim. The original decision and evidence below remain historical, not current installation guidance.
+
 These skills have always been installable via [skills.sh](https://skills.sh/mattpocock/skills) (`npx skills add mattpocock/skills`), which copies editable skill files into a user's project across Claude Code, Codex, and other Agent-Skills-standard harnesses. A recurring request is a **plug-and-play** distribution: subscribe to the set as a read-only, always-current bundle you don't edit, rather than a fork you own. That is exactly what native plugin systems provide.
 
 We ship a native **Claude Code plugin** and, for now, **defer** a native **Codex plugin**. The split is forced by how each ecosystem's plugin manifest selects skills, against this repo's bucketed layout.
